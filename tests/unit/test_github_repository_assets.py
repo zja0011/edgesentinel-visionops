@@ -41,6 +41,23 @@ class GitHubRepositoryAssetTests(unittest.TestCase):
         self.assertIn("run_release_provenance_test.sh", workflow)
         self.assertIn("check_release_integrity.sh", workflow)
 
+    def test_python36_backports_are_gated_out_of_newer_ci_runtimes(self):
+        requirements = self.read("requirements-api-py36.txt")
+
+        for package in ("dataclasses", "contextvars", "immutables"):
+            self.assertIn(
+                '{}=='.format(package),
+                requirements,
+            )
+            self.assertIn(
+                'python_version < "3.7"',
+                next(
+                    line
+                    for line in requirements.splitlines()
+                    if line.startswith('{}=='.format(package))
+                ),
+            )
+
     def test_release_requires_annotated_matching_tag_and_bounded_token(self):
         workflow = self.read(".github/workflows/release.yml")
 

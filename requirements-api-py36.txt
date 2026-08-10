@@ -15,7 +15,8 @@ contextlib2==21.6.0
 importlib-metadata==4.8.3
 zipp==3.6.0
 
-# Python 3.6 compatibility backports.
-dataclasses==0.8
-contextvars==2.4
-immutables==0.19
+# Python 3.6 compatibility backports. Environment markers keep the same
+# requirements file installable in newer-Python CI environments.
+dataclasses==0.8; python_version < "3.7"
+contextvars==2.4; python_version < "3.7"
+immutables==0.19; python_version < "3.7"
