@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "name": "vision.investigate_removed_item",
+  "version": "1.0.0",
+  "description": "Investigate a bounded object-removal event without inferring an unobserved person's identity.",
+  "triggers": [
+    "调查物品移除",
+    "调查瓶子移除",
+    "谁拿走",
+    "拿走了什么",
+    "物品被拿走",
+    "瓶子被拿走了吗",
+    "最近有没有人拿走",
+    "是否有人拿走",
+    "investigate removed item",
+    "investigate object removal",
+    "who took",
+    "what was removed",
+    "was the bottle removed",
+    "was an item removed",
+    "recent removal"
+  ],
+  "required_tools": [
+    "event.query",
+    "event.get_detail",
+    "evidence.verify_event"
+  ],
+  "allowed_risks": [
+    "L0"
+  ],
+  "max_steps": 4,
+  "priority": 100,
+  "instructions_file": "SKILL.md",
+  "instructions_sha256": "6d6f1b72bb872c2d603e57bd913a843eaf11bc687c6a980d4992f763361f40fe"
+}

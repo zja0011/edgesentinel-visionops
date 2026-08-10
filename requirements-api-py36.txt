@@ -1,0 +1,21 @@
+# API dependency set for the JetPack 4 / Python 3.6.9 container.
+# Keep every version pinned so the offline installation is reproducible.
+fastapi==0.83.0
+uvicorn==0.16.0
+starlette==0.19.1
+pydantic==1.9.2
+asgiref==3.4.1
+click==8.0.4
+h11==0.13.0
+anyio==3.6.2
+typing-extensions==4.1.1
+idna==3.10
+sniffio==1.2.0
+contextlib2==21.6.0
+importlib-metadata==4.8.3
+zipp==3.6.0
+
+# Python 3.6 compatibility backports.
+dataclasses==0.8
+contextvars==2.4
+immutables==0.19

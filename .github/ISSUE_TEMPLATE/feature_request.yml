@@ -1,0 +1,30 @@
+name: Feature request
+description: Propose a bounded product or Harness improvement.
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What operational or developer problem should be solved?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: risk
+    attributes:
+      label: Expected policy risk
+      options: ["L0 read-only", "L1 confirmed bounded write", "L2 privileged action", "Unknown"]
+    validations:
+      required: true
+  - type: textarea
+    id: boundaries
+    attributes:
+      label: Security and resource boundaries
+      description: Describe data, network, model, and device impact.

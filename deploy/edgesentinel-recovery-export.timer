@@ -1,0 +1,12 @@
+[Unit]
+Description=Weekly encrypted EdgeSentinel recovery export (demo profile)
+
+[Timer]
+OnCalendar=Sun *-*-* 02:00:00 Asia/Shanghai
+RandomizedDelaySec=300
+Persistent=true
+AccuracySec=1min
+Unit=edgesentinel-recovery-export.service
+
+[Install]
+WantedBy=timers.target

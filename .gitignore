@@ -1,0 +1,34 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+dist/
+.coverage
+htmlcov/
+
+# Local credentials and operator overrides
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+configs/zones.json
+
+# Third-party/offline installation artifacts
+jetson-inference/
+*.tar
+*.tar.gz
+vendor/python/
+vendor/pip/
+!vendor/wheels/*.tar.gz
+
+# Runtime output (never publish operational data)
+data/
+*.engine
+*.db
+*.sqlite
+*.sqlite3
+*.jsonl
+*.log

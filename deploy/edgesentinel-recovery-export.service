@@ -1,0 +1,28 @@
+[Unit]
+Description=Create and verify an encrypted EdgeSentinel recovery export
+Requires=docker.service edgesentinel-visionops.service
+After=docker.service edgesentinel-visionops.service
+ConditionPathExists=/etc/edgesentinel-visionops/recovery-export.key
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+UMask=0077
+WorkingDirectory=/home/nvidia/projects/edgesentinel-visionops
+ExecStart=/usr/local/libexec/edgesentinel-scheduled-recovery-export
+TimeoutStartSec=1800
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/nvidia/projects/edgesentinel-visionops/data/recovery
+ReadWritePaths=/home/nvidia/edgesentinel-recovery-exports
+ReadWritePaths=/run/lock
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX
+RestrictRealtime=true
+LockPersonality=true
+SystemCallArchitectures=native

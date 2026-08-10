@@ -1,0 +1,7 @@
+interface:
+  display_name: "Investigate Removed Item"
+  short_description: "Investigate bounded item-removal evidence"
+  default_prompt: "Use $investigate-removed-item to investigate the latest bottle-removal event without inferring an unobserved identity."
+
+policy:
+  allow_implicit_invocation: true

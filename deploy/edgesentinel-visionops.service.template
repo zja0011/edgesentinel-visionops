@@ -1,0 +1,56 @@
+[Unit]
+Description=EdgeSentinel VisionOps detached Jetson runtime
+Requires=docker.service
+After=docker.service network-online.target dev-video0.device
+Wants=network-online.target dev-video0.device
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+Environment=EDGESENTINEL_MODEL_MODE=offline
+Environment=EDGESENTINEL_MODEL_PROVIDER=offline
+Environment=EDGESENTINEL_MODEL_API_KEY=
+Environment=EDGESENTINEL_MODEL_TIMEOUT_SECONDS=30
+Environment=EDGESENTINEL_MODEL_MAX_TOKENS=512
+Environment=EDGESENTINEL_MODEL_CREDENTIAL_PERSISTED=0
+Environment=EDGESENTINEL_AGENT_MAX_TOTAL_TOKENS=16384
+Environment=EDGESENTINEL_MODEL_RATE_CARD_ID=
+Environment=EDGESENTINEL_MODEL_INPUT_USD_PER_MILLION=
+Environment=EDGESENTINEL_MODEL_OUTPUT_USD_PER_MILLION=
+Environment=EDGESENTINEL_MODEL_MAX_ESTIMATED_COST_USD=
+Environment=EDGESENTINEL_WEATHER_DEFAULT_LOCATION=
+Environment=EDGESENTINEL_AUTH_ENABLED=1
+Environment=EDGESENTINEL_AUTH_SESSION_SECRET=
+Environment=EDGESENTINEL_AUTH_SESSION_TTL_SECONDS=1800
+Environment=EDGESENTINEL_AUTH_COOKIE_SECURE=0
+Environment=EDGESENTINEL_AUTH_ADMIN_USERNAME=
+Environment=EDGESENTINEL_AUTH_ADMIN_PASSWORD_HASH=
+Environment=EDGESENTINEL_AUTH_OPERATOR_USERNAME=
+Environment=EDGESENTINEL_AUTH_OPERATOR_PASSWORD_HASH=
+Environment=EDGESENTINEL_AUTH_VIEWER_USERNAME=
+Environment=EDGESENTINEL_AUTH_VIEWER_PASSWORD_HASH=
+Environment=EDGESENTINEL_AUTH_CREDENTIAL_PERSISTED=0
+Environment=EDGESENTINEL_TLS_ENABLED=0
+Environment=EDGESENTINEL_TLS_PORT=8443
+Environment=EDGESENTINEL_TLS_CERTIFICATE=/dev/shm/edgesentinel-tls/server.crt
+Environment=EDGESENTINEL_TLS_PRIVATE_KEY=/dev/shm/edgesentinel-tls/server.key
+Environment=EDGESENTINEL_TLS_PUBLIC_ORIGIN=
+Environment=EDGESENTINEL_TLS_CREDENTIAL_PERSISTED=0
+EnvironmentFile=-/etc/edgesentinel-visionops/model-runtime.env
+EnvironmentFile=-/etc/edgesentinel-visionops/model-cost-runtime.env
+EnvironmentFile=-/etc/edgesentinel-visionops/weather-runtime.env
+EnvironmentFile=-/etc/edgesentinel-visionops/auth-runtime.env
+EnvironmentFile=-/etc/edgesentinel-visionops/tls-runtime.env
+ExecStartPre=/bin/sh -c 'until [ -c /dev/video0 ]; do sleep 2; done'
+ExecStartPre=/bin/sh -c 'if [ -L /tmp/edgesentinel_nv_jetson_model ]; then exit 1; fi; if [ -d /tmp/edgesentinel_nv_jetson_model ]; then rm -f -- /tmp/edgesentinel_nv_jetson_model/model && rmdir -- /tmp/edgesentinel_nv_jetson_model; fi; if [ -e /tmp/edgesentinel_nv_jetson_model ] && [ ! -f /tmp/edgesentinel_nv_jetson_model ]; then exit 1; fi; if [ -r /proc/device-tree/model ]; then cp /proc/device-tree/model /tmp/edgesentinel_nv_jetson_model; else touch /tmp/edgesentinel_nv_jetson_model; fi'
+ExecStart=/usr/bin/docker start edgesentinel-visionops
+ExecStartPost=/bin/sh -c 'if [ "$${EDGESENTINEL_TLS_ENABLED:-0}" = "1" ]; then /usr/bin/docker exec edgesentinel-visionops /bin/sh -c "rm -f -- /dev/shm/edgesentinel-tls/server.crt /dev/shm/edgesentinel-tls/server.key; rmdir -- /dev/shm/edgesentinel-tls 2>/dev/null || true; umask 077; mkdir -p /dev/shm/edgesentinel-tls"; fi'
+ExecStartPost=/bin/sh -c 'if [ "$${EDGESENTINEL_TLS_ENABLED:-0}" = "1" ]; then /usr/bin/docker exec -i edgesentinel-visionops /bin/sh -c "umask 077; /bin/cat > /dev/shm/edgesentinel-tls/server.crt" < /etc/edgesentinel-visionops/tls/server.crt; /usr/bin/docker exec -i edgesentinel-visionops /bin/sh -c "umask 077; /bin/cat > /dev/shm/edgesentinel-tls/server.key" < /etc/edgesentinel-visionops/tls/server.key; /usr/bin/docker exec edgesentinel-visionops chmod 0644 /dev/shm/edgesentinel-tls/server.crt; /usr/bin/docker exec edgesentinel-visionops chmod 0600 /dev/shm/edgesentinel-tls/server.key; fi'
+ExecStartPost=/usr/bin/docker exec -e EDGESENTINEL_MODEL_MODE -e EDGESENTINEL_MODEL_PROVIDER -e EDGESENTINEL_MODEL_API_KEY -e EDGESENTINEL_MODEL_TIMEOUT_SECONDS -e EDGESENTINEL_MODEL_MAX_TOKENS -e EDGESENTINEL_MODEL_CREDENTIAL_PERSISTED -e EDGESENTINEL_AGENT_MAX_TOTAL_TOKENS -e EDGESENTINEL_MODEL_RATE_CARD_ID -e EDGESENTINEL_MODEL_INPUT_USD_PER_MILLION -e EDGESENTINEL_MODEL_OUTPUT_USD_PER_MILLION -e EDGESENTINEL_MODEL_MAX_ESTIMATED_COST_USD -e EDGESENTINEL_WEATHER_DEFAULT_LOCATION -e EDGESENTINEL_AUTH_ENABLED -e EDGESENTINEL_AUTH_SESSION_SECRET -e EDGESENTINEL_AUTH_SESSION_TTL_SECONDS -e EDGESENTINEL_AUTH_COOKIE_SECURE -e EDGESENTINEL_AUTH_ADMIN_USERNAME -e EDGESENTINEL_AUTH_ADMIN_PASSWORD_HASH -e EDGESENTINEL_AUTH_OPERATOR_USERNAME -e EDGESENTINEL_AUTH_OPERATOR_PASSWORD_HASH -e EDGESENTINEL_AUTH_VIEWER_USERNAME -e EDGESENTINEL_AUTH_VIEWER_PASSWORD_HASH -e EDGESENTINEL_AUTH_CREDENTIAL_PERSISTED -e EDGESENTINEL_TLS_ENABLED -e EDGESENTINEL_TLS_PORT -e EDGESENTINEL_TLS_CERTIFICATE -e EDGESENTINEL_TLS_PRIVATE_KEY -e EDGESENTINEL_TLS_PUBLIC_ORIGIN -e EDGESENTINEL_TLS_CREDENTIAL_PERSISTED edgesentinel-visionops python3 -m apps.service_manager start --read-only
+ExecStop=/usr/bin/docker exec edgesentinel-visionops bash scripts/edgesentinel_service.sh stop
+ExecStopPost=/usr/bin/docker stop --time 10 edgesentinel-visionops
+TimeoutStartSec=180
+TimeoutStopSec=60
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,118 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out the complete tag
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up compatible Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.8"
+          cache: pip
+          cache-dependency-path: requirements-api-py36.txt
+
+      - name: Validate annotated tag and VERSION
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(tr -d '\r\n' < VERSION)"
+          test "$GITHUB_REF_NAME" = "v$version"
+          test "$(git cat-file -t "$GITHUB_REF_NAME")" = "tag"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Check publication boundary before dependency execution
+        run: python -m apps.repository_publication_gate
+
+      - name: Install pinned runtime dependencies
+        run: python -m pip install -r requirements-api-py36.txt
+
+      - name: Run release gates
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          python -m unittest discover -s tests -q
+          bash scripts/run_repository_publication_gate.sh
+          bash scripts/run_release_provenance_test.sh
+
+      - name: Build verified release metadata
+        id: provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/build_release_artifacts.sh "${{ steps.version.outputs.version }}"
+          bash scripts/check_release_integrity.sh
+          release_id="$(python - <<'PY'
+          import json
+          with open('dist/releases/current-release.json', encoding='utf-8') as source:
+              print(json.load(source)['release_id'])
+          PY
+          )"
+          echo "release_id=$release_id" >> "$GITHUB_OUTPUT"
+
+      - name: Package checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_id="${{ steps.provenance.outputs.release_id }}"
+          version="${{ steps.version.outputs.version }}"
+          release_dir="dist/releases/$release_id"
+          (
+            cd "$release_dir"
+            sha256sum release-manifest.json release-manifest.sha256 bom.cdx.json > SHA256SUMS
+          )
+          archive="dist/releases/edgesentinel-visionops-$version-provenance.tar.gz"
+          tar -czf "$archive" -C dist/releases "$release_id"
+          sha256sum "$archive" > "$archive.sha256"
+
+      - name: Upload workflow evidence
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-${{ github.ref_name }}
+          path: dist/releases/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_id="${{ steps.provenance.outputs.release_id }}"
+          version="${{ steps.version.outputs.version }}"
+          release_dir="dist/releases/$release_id"
+          archive="dist/releases/edgesentinel-visionops-$version-provenance.tar.gz"
+          prerelease=()
+          if [[ "$version" == *-* ]]; then
+            prerelease+=(--prerelease)
+          fi
+          gh release create "$GITHUB_REF_NAME" \
+            "$release_dir/release-manifest.json" \
+            "$release_dir/release-manifest.sha256" \
+            "$release_dir/bom.cdx.json" \
+            "$release_dir/SHA256SUMS" \
+            "$archive" \
+            "$archive.sha256" \
+            --verify-tag \
+            --title "EdgeSentinel VisionOps $GITHUB_REF_NAME" \
+            --generate-notes \
+            "${prerelease[@]}"

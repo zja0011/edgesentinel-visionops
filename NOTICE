@@ -1,0 +1,9 @@
+EdgeSentinel VisionOps
+Copyright 2026 EdgeSentinel VisionOps contributors
+
+This product includes third-party Python distributions. Their licenses remain
+the licenses of their respective copyright holders. See THIRD_PARTY_NOTICES.md
+and the CycloneDX SBOM generated for each release.
+
+NVIDIA, Jetson, TensorRT, and related marks are trademarks of NVIDIA
+Corporation. This project is not endorsed by or affiliated with NVIDIA.

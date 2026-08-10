@@ -1,0 +1,41 @@
+name: Bug report
+description: Report a reproducible EdgeSentinel defect without sensitive data.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: Do not submit credentials, camera images, evidence, or private paths.
+  - type: input
+    id: release
+    attributes:
+      label: Release ID
+      description: The esv_... release ID from the verified manifest.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Observed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Redact secrets, evidence paths, and operational data.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed credentials, images, evidence, and private paths.
+          required: true

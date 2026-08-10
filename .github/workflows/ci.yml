@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+
+      - name: Set up compatible Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.8"
+          cache: pip
+          cache-dependency-path: requirements-api-py36.txt
+
+      - name: Check publication boundary before dependency execution
+        run: python -m apps.repository_publication_gate
+
+      - name: Install pinned runtime dependencies
+        run: python -m pip install -r requirements-api-py36.txt
+
+      - name: Run full unit suite
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python -m unittest discover -s tests -q
+
+      - name: Verify deterministic release provenance
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: bash scripts/run_release_provenance_test.sh
+
+      - name: Build and verify release metadata
+        run: |
+          bash scripts/build_release_artifacts.sh
+          bash scripts/check_release_integrity.sh
+
+      - name: Upload verified provenance
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-provenance-${{ github.sha }}
+          path: dist/releases/
+          if-no-files-found: error
+          retention-days: 14

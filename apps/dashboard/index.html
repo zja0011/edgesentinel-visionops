@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="EdgeSentinel VisionOps 本地只读监控总览"
+    >
+    <title>EdgeSentinel VisionOps</title>
+    <link
+      rel="stylesheet"
+      href="/dashboard/assets/dashboard.css"
+    >
+    <script
+      src="/dashboard/assets/dashboard.js"
+      defer
+    ></script>
+  </head>
+  <body>
+    <div class="auth-backdrop" id="auth-backdrop" role="dialog" aria-modal="true">
+      <form class="auth-card" id="auth-login-form">
+        <p class="section-kicker">SECURE OPERATOR ACCESS</p>
+        <h2>登录 EdgeSentinel</h2>
+        <p class="auth-copy">
+          使用 Jetson 上由 root 管理的账户。密码不会写入浏览器存储或 Docker 配置。
+        </p>
+        <label>
+          <span>用户名</span>
+          <input id="auth-username" name="username" autocomplete="username" required maxlength="32">
+        </label>
+        <label>
+          <span>密码</span>
+          <input id="auth-password" name="password" type="password" autocomplete="current-password" required maxlength="256">
+        </label>
+        <button id="auth-login-submit" type="submit">安全登录</button>
+        <p class="auth-error" id="auth-error" aria-live="polite"></p>
+      </form>
+    </div>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">JETSON NANO · EDGE VISION</p>
+          <h1>EdgeSentinel <span>VisionOps</span></h1>
+          <p class="subtitle">
+            本地视觉状态、物品变化与事件证据的只读总览
+          </p>
+        </div>
+        <div class="topbar-actions">
+          <div class="auth-identity hidden" id="auth-identity">
+            <span id="auth-current-user"></span>
+            <button id="auth-logout" type="button">退出</button>
+          </div>
+          <div class="connection" aria-live="polite">
+            <span class="status-dot" id="status-dot"></span>
+            <span id="connection-label">正在连接</span>
+          </div>
+          <button id="refresh-button" type="button">立即刷新</button>
+        </div>
+      </header>
+
+      <section class="notice hidden" id="notice" role="status"></section>
+
+      <section class="panel live-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="section-kicker">ANNOTATED LIVE VIEW</p>
+            <h2>摄像头最新标注画面</h2>
+          </div>
+          <span class="live-frame-status" id="live-frame-status">
+            等待推理画面
+          </span>
+        </div>
+        <div class="live-frame-shell">
+          <img
+            id="live-frame"
+            alt="摄像头最新目标检测与区域标注画面"
+          >
+          <canvas
+            class="zone-canvas"
+            id="zone-canvas"
+            width="640"
+            height="480"
+            aria-label="区域多边形与绘图草稿"
+          ></canvas>
+          <div class="frame-placeholder" id="frame-placeholder">
+            <span class="frame-reticle"></span>
+            <strong>NO LIVE FRAME</strong>
+            <small>启动 Dashboard 实时视觉脚本后显示</small>
+          </div>
+          <div class="frame-overlay">
+            <span id="frame-camera-label">CAMERA —</span>
+            <span id="frame-freshness-label">STATE UNKNOWN</span>
+          </div>
+        </div>
+        <div class="zone-editor">
+          <div class="zone-editor-summary">
+            <div>
+              <p class="section-kicker">ZONE DRAFT</p>
+              <h3>区域叠加与草稿绘制</h3>
+            </div>
+            <div class="zone-status-stack">
+              <span id="zone-status">正在读取区域…</span>
+              <span id="zone-runtime-status">
+                正在读取推理区域版本…
+              </span>
+            </div>
+          </div>
+          <div class="zone-legend" id="zone-legend"></div>
+          <div class="zone-editor-actions">
+            <button id="zone-draw-toggle" type="button">开始绘制</button>
+            <button id="zone-undo-point" type="button">撤销一点</button>
+            <button id="zone-clear-draft" type="button">清空草稿</button>
+            <span id="zone-draft-count">草稿点数：0</span>
+          </div>
+          <div class="zone-config-workspace">
+            <label>
+              <span>要修改的区域</span>
+              <select id="zone-edit-target"></select>
+            </label>
+            <button id="zone-apply-draft" type="button" disabled>
+              将草稿应用到所选区域
+            </button>
+            <button id="zone-snap-bottom" type="button" disabled>
+              底边吸附到 y=1.0
+            </button>
+            <button id="zone-restore-default" type="button" disabled>
+              恢复所选区域默认值
+            </button>
+            <button id="zone-discard-changes" type="button" disabled>
+              放弃未保存修改
+            </button>
+            <span id="zone-dirty-status">没有未保存修改</span>
+          </div>
+          <p
+            class="zone-anchor-guidance"
+            id="zone-anchor-guidance"
+            aria-live="polite"
+          >
+            人员区域使用脚底中心判断；绘制草稿后会在这里检查底边。
+          </p>
+          <pre
+            class="zone-draft-json"
+            id="zone-draft-json"
+          >点击“开始绘制”，然后在画面中依次点击多边形顶点。</pre>
+          <form class="zone-save-form" id="zone-save-form">
+            <div class="zone-save-heading">
+              <div>
+                <strong>安全保存到 Jetson</strong>
+                <small>
+                  保存前会验证配置、检查版本并自动备份旧文件；口令不会保存在浏览器中。
+                </small>
+              </div>
+              <span id="zone-save-mode">正在检查保存权限…</span>
+            </div>
+            <div class="zone-save-fields">
+              <label>
+                <span>管理员口令</span>
+                <input
+                  id="zone-admin-token"
+                  type="password"
+                  minlength="16"
+                  maxlength="128"
+                  autocomplete="off"
+                  placeholder="启动实时服务时输入的口令"
+                >
+              </label>
+              <label>
+                <span>确认短语</span>
+                <input
+                  id="zone-save-confirmation"
+                  type="text"
+                  maxlength="32"
+                  autocomplete="off"
+                  placeholder="SAVE_ZONE_CONFIG"
+                >
+              </label>
+              <button id="zone-save-submit" type="submit" disabled>
+                备份并保存配置
+              </button>
+            </div>
+            <p id="zone-save-result" aria-live="polite">
+              先绘制至少3个点，并应用到所选区域。
+            </p>
+          </form>
+        </div>
+      </section>
+
+      <section class="metrics" aria-label="实时指标">
+        <article class="metric-card accent-cyan">
+          <p>当前人员</p>
+          <strong id="people-count">—</strong>
+          <span id="people-detail">等待视觉状态</span>
+        </article>
+        <article class="metric-card accent-lime">
+          <p>当前物品</p>
+          <strong id="object-count">—</strong>
+          <span id="object-detail">等待库存状态</span>
+        </article>
+        <article class="metric-card accent-amber">
+          <p>历史事件</p>
+          <strong id="event-count">—</strong>
+          <span>SQLite 已保存记录</span>
+        </article>
+        <article class="metric-card accent-violet">
+          <p>视觉状态</p>
+          <strong class="word-value" id="vision-status">等待中</strong>
+          <span id="vision-age">尚未读取</span>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel inventory-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-kicker">CURRENT INVENTORY</p>
+              <h2>画面中的稳定物品</h2>
+            </div>
+            <span class="camera-tag" id="camera-id">camera —</span>
+          </div>
+          <div class="object-list" id="object-list">
+            <p class="empty">正在读取物品状态…</p>
+          </div>
+        </article>
+
+        <article class="panel system-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-kicker">EDGE RUNTIME</p>
+              <h2>服务运行状态</h2>
+            </div>
+          </div>
+          <dl class="system-list">
+            <div>
+              <dt>API 服务</dt>
+              <dd id="api-status">检测中</dd>
+            </div>
+            <div>
+              <dt>事件数据库</dt>
+              <dd id="database-status">检测中</dd>
+            </div>
+            <div>
+              <dt>Agent 模型</dt>
+              <dd id="agent-model">检测中</dd>
+            </div>
+            <div>
+              <dt>模型韧性</dt>
+              <dd id="agent-model-resilience">检测中</dd>
+            </div>
+            <div>
+              <dt>视觉推理模型</dt>
+              <dd id="vision-model-runtime">检测中</dd>
+            </div>
+            <div>
+              <dt>视觉处理性能</dt>
+              <dd id="vision-performance-runtime">检测中</dd>
+            </div>
+            <div>
+              <dt>最近运行基准</dt>
+              <dd id="runtime-benchmark-status">检测中</dd>
+            </div>
+            <div>
+              <dt>项目数据占用</dt>
+              <dd id="storage-usage">检测中</dd>
+            </div>
+            <div>
+              <dt>旧数据清理预览</dt>
+              <dd id="retention-preview-status">检测中</dd>
+            </div>
+            <div>
+              <dt>旧日志清理审计</dt>
+              <dd id="retention-cleanup-history-status">检测中</dd>
+            </div>
+            <div>
+              <dt>近期事件证据</dt>
+              <dd id="evidence-integrity-status">检测中</dd>
+            </div>
+            <div>
+              <dt>MCP 工具协议</dt>
+              <dd id="mcp-runtime-status">按需启动 · 25工具 · 5资源 · 3提示</dd>
+            </div>
+            <div>
+              <dt>摄像头监督器</dt>
+              <dd id="camera-runtime-status">检测中</dd>
+            </div>
+            <div>
+              <dt>1分钟负载</dt>
+              <dd id="system-load">检测中</dd>
+            </div>
+            <div>
+              <dt>内存使用</dt>
+              <dd id="system-memory">检测中</dd>
+            </div>
+            <div>
+              <dt>设备温度</dt>
+              <dd id="system-temperature">检测中</dd>
+            </div>
+            <div>
+              <dt>项目磁盘</dt>
+              <dd id="system-disk">检测中</dd>
+            </div>
+            <div>
+              <dt>系统运行时间</dt>
+              <dd id="system-uptime">检测中</dd>
+            </div>
+            <div>
+              <dt>最后刷新</dt>
+              <dd id="last-refresh">—</dd>
+            </div>
+          </dl>
+          <div class="mcp-catalog">
+            <button id="mcp-tools-toggle" type="button">
+              查看 MCP 工具
+            </button>
+            <div
+              class="mcp-tools-panel hidden"
+              id="mcp-tools-panel"
+            >
+              <p id="mcp-tools-summary">
+                尚未读取 MCP 工具目录
+              </p>
+              <div
+                class="mcp-tools-list"
+                id="mcp-tools-list"
+              ></div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel events-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="section-kicker">EVENT TIMELINE</p>
+            <h2>事件中心</h2>
+          </div>
+          <span class="read-only-tag" id="event-result-count">读取中</span>
+        </div>
+        <form class="event-filters" id="event-filter-form">
+          <label>
+            <span>事件类型</span>
+            <select id="event-type-filter" name="type">
+              <option value="">全部类型</option>
+              <option value="ZONE_ENTER">进入区域</option>
+              <option value="ZONE_EXIT">离开区域</option>
+              <option value="ZONE_DWELL">长时间停留</option>
+              <option value="OBJECT_APPEARED">物品出现</option>
+              <option value="OBJECT_REMOVED">物品移除</option>
+              <option value="OBJECT_LEFT_BEHIND">物品遗留</option>
+              <option value="CAMERA_OFFLINE">摄像头离线</option>
+              <option value="CAMERA_RECOVERED">摄像头恢复</option>
+            </select>
+          </label>
+          <label>
+            <span>处置状态</span>
+            <select id="event-status-filter" name="status">
+              <option value="">全部状态</option>
+              <option value="OPEN">待处理</option>
+              <option value="ACKNOWLEDGED">已处理</option>
+            </select>
+          </label>
+          <label>
+            <span>严重级别</span>
+            <select id="event-severity-filter" name="severity">
+              <option value="">全部级别</option>
+              <option value="INFO">INFO</option>
+              <option value="MEDIUM">MEDIUM</option>
+              <option value="HIGH">HIGH</option>
+              <option value="CRITICAL">CRITICAL</option>
+            </select>
+          </label>
+          <label>
+            <span>目标类别</span>
+            <input
+              id="event-object-filter"
+              name="object_class"
+              maxlength="64"
+              placeholder="例如 bottle"
+            >
+          </label>
+          <label>
+            <span>摄像头</span>
+            <input
+              id="event-camera-filter"
+              name="camera_id"
+              maxlength="64"
+              placeholder="例如 camera_01"
+            >
+          </label>
+          <label>
+            <span>显示数量</span>
+            <select id="event-limit-filter" name="limit">
+              <option value="6">6条</option>
+              <option value="10">10条</option>
+              <option value="20">20条</option>
+              <option value="50">50条</option>
+            </select>
+          </label>
+          <label>
+            <span>时间范围</span>
+            <select id="event-minutes-filter" name="minutes">
+              <option value="">全部历史</option>
+              <option value="10">最近10分钟</option>
+              <option value="60">最近1小时</option>
+              <option value="360">最近6小时</option>
+              <option value="1440">最近24小时</option>
+            </select>
+          </label>
+          <div class="event-filter-actions">
+            <button type="submit">应用筛选</button>
+            <button id="event-filter-reset" type="button">重置</button>
+          </div>
+        </form>
+        <div
+          class="event-summary"
+          id="event-summary"
+          aria-live="polite"
+        >
+          正在汇总最近事件…
+        </div>
+        <div
+          class="event-trend"
+          id="event-trend"
+          aria-label="事件时间趋势"
+        ></div>
+        <div class="event-list" id="event-list">
+          <p class="empty">正在读取事件记录…</p>
+        </div>
+        <div class="event-pagination-actions">
+          <button
+            class="event-load-more hidden"
+            id="event-load-more"
+            type="button"
+          >
+            加载更早事件
+          </button>
+          <button
+            class="event-collapse hidden"
+            id="event-collapse"
+            type="button"
+          >
+            收起并回到最新事件
+          </button>
+        </div>
+      </section>
+
+      <div
+        class="event-detail-backdrop hidden"
+        id="event-detail-backdrop"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="event-detail-title"
+      >
+        <article class="event-detail-panel">
+          <div class="event-detail-header">
+            <div>
+              <p class="section-kicker">EVENT DETAIL</p>
+              <h2 id="event-detail-title">事件详情</h2>
+            </div>
+            <button
+              class="event-detail-close"
+              id="event-detail-close"
+              type="button"
+              aria-label="关闭事件详情"
+            >关闭</button>
+          </div>
+          <dl class="event-detail-fields" id="event-detail-fields"></dl>
+          <div class="event-disposition">
+            <div>
+              <span>事件处置状态</span>
+              <strong id="event-disposition-status">等待读取</strong>
+            </div>
+            <button id="event-acknowledge" type="button">
+              通过 Agent 确认已处理
+            </button>
+          </div>
+          <div class="event-disposition">
+            <div>
+              <span>证据完整性</span>
+              <strong id="event-evidence-integrity">
+                等待校验
+              </strong>
+            </div>
+          </div>
+          <div
+            class="event-evidence-grid"
+            id="event-evidence-grid"
+          ></div>
+          <div class="event-json-block">
+            <h3>结构化详情</h3>
+            <pre id="event-detail-json"></pre>
+          </div>
+        </article>
+      </div>
+
+      <section class="panel agent-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="section-kicker">VISION COPILOT</p>
+            <h2>询问 EdgeSentinel</h2>
+          </div>
+          <span class="agent-mode" id="agent-mode">正在检测模型</span>
+        </div>
+        <p class="agent-intro">
+          只读查询可自动执行；保存快照、生成报告和确认事件等 L1
+          动作，以及重启推理等 L2 动作，都必须由你明确确认。
+          回答中的实时信息会标明数据是否陈旧。
+        </p>
+        <div
+          class="agent-model-switch"
+          id="agent-model-switch"
+          aria-label="Agent 回答模型"
+        >
+          <div>
+            <strong>回答模型</strong>
+            <span id="agent-model-switch-status">
+              正在读取运行模式
+            </span>
+          </div>
+          <div class="agent-model-switch-actions">
+            <button
+              id="agent-mode-online"
+              type="button"
+              data-mode="online"
+            >在线 DeepSeek</button>
+            <button
+              id="agent-mode-offline"
+              type="button"
+              data-mode="offline"
+            >离线规则</button>
+          </div>
+        </div>
+        <div
+          class="agent-session-memory"
+          id="agent-session-memory"
+          aria-label="Agent 短期会话记忆"
+        >
+          <div>
+            <strong>短期会话记忆</strong>
+            <span id="agent-session-status">
+              尚未建立会话 · 首次提问时自动创建
+            </span>
+          </div>
+          <button
+            id="agent-session-clear"
+            type="button"
+            disabled
+          >清空并新建会话</button>
+          <p id="agent-session-privacy">
+            最多保留12轮、7天后过期；不保存工具原始结果、图片、
+            证据路径或凭据。
+          </p>
+        </div>
+        <div
+          class="agent-long-term-memory"
+          id="agent-long-term-memory"
+          aria-label="Agent 长期确认记忆"
+        >
+          <div class="agent-long-term-heading">
+            <div>
+              <strong>长期确认记忆</strong>
+              <span id="agent-long-term-status">正在读取</span>
+            </div>
+            <button id="agent-long-term-refresh" type="button">
+              刷新记忆
+            </button>
+          </div>
+          <ul id="agent-long-term-list" aria-live="polite"></ul>
+          <p id="agent-long-term-privacy">
+            仅保存你明确要求并确认的事实或偏好；新增、修改和删除均需确认，
+            不保存凭据、图片、证据路径或工具原始结果。
+          </p>
+        </div>
+        <div
+          class="agent-evaluation-baseline"
+          id="agent-evaluation-baseline"
+          aria-label="Agent 评测基线"
+        >
+          <div class="agent-evaluation-heading">
+            <div>
+              <strong>Harness 评测基线</strong>
+              <span id="agent-evaluation-status">尚未运行评测</span>
+            </div>
+            <span
+              class="agent-evaluation-badge pending"
+              id="agent-evaluation-badge"
+            >NO REPORT</span>
+          </div>
+          <p id="agent-evaluation-meta">
+            使用隔离工具桩验证路由、参数、确认门和默认拒绝；
+            不访问摄像头、生产数据库或外网。
+          </p>
+        </div>
+        <div class="prompt-list" aria-label="示例问题">
+          <button
+            class="prompt-chip"
+            id="memory-remember-prompt"
+            type="button"
+            data-prompt="请记住我的偏好语言是中文"
+          >记住一项偏好</button>
+          <button
+            class="prompt-chip"
+            id="memory-search-prompt"
+            type="button"
+            data-prompt="你记得我的哪些长期事实或偏好？"
+          >查询长期记忆</button>
+          <button
+            class="prompt-chip"
+            id="weather-prompt"
+            type="button"
+            data-prompt="今天天气怎样？如果没有默认城市，请先询问我所在的城市。"
+          >查询城市天气</button>
+          <button
+            class="prompt-chip"
+            type="button"
+            data-prompt="当前有几个人？"
+          >当前有几个人？</button>
+          <button
+            class="prompt-chip"
+            type="button"
+            data-prompt="当前画面中有哪些物品？"
+          >当前有哪些物品？</button>
+          <button
+            class="prompt-chip"
+            id="object-count-prompt"
+            type="button"
+            data-prompt="当前画面有几个瓶子？"
+          >当前瓶子数量</button>
+          <button
+            class="prompt-chip"
+            id="track-history-prompt"
+            type="button"
+            data-prompt="查询当前人员轨迹"
+          >当前人员轨迹</button>
+          <button
+            class="prompt-chip"
+            id="inventory-status-prompt"
+            type="button"
+            data-prompt="瓶子当前稳定库存是多少？"
+          >瓶子库存状态</button>
+          <button
+            class="prompt-chip"
+            id="removed-items-prompt"
+            type="button"
+            data-prompt="最近10分钟移走了哪些瓶子？"
+          >最近移走的瓶子</button>
+          <button
+            class="prompt-chip"
+            id="inventory-compare-prompt"
+            type="button"
+            data-prompt="对比瓶子库存，期望2个。"
+          >核对瓶子库存</button>
+          <button
+            class="prompt-chip"
+            id="zone-status-prompt"
+            type="button"
+            data-prompt="左侧区域现在有几个人？"
+          >左侧区域人数</button>
+          <button
+            class="prompt-chip"
+            type="button"
+            data-prompt="查询最近的瓶子事件"
+          >最近的瓶子事件</button>
+          <button
+            class="prompt-chip"
+            type="button"
+            data-prompt="拍摄当前画面快照"
+          >拍摄当前快照</button>
+          <button
+            class="prompt-chip"
+            type="button"
+            data-prompt="生成今日事件报告"
+          >生成今日报告</button>
+          <button
+            class="prompt-chip"
+            id="system-health-prompt"
+            type="button"
+            data-prompt="Jetson运行状态是否正常？"
+          >检查 Jetson 状态</button>
+          <button
+            class="prompt-chip"
+            id="camera-status-prompt"
+            type="button"
+            data-prompt="摄像头状态正常吗？"
+          >检查摄像头状态</button>
+          <button
+            class="prompt-chip"
+            id="model-info-prompt"
+            type="button"
+            data-prompt="当前视觉模型版本和Engine完整性是什么？"
+          >检查视觉模型版本</button>
+          <button
+            class="prompt-chip"
+            id="vision-performance-prompt"
+            type="button"
+            data-prompt="当前视觉性能、处理帧率和P95延迟是多少？"
+          >检查视觉性能</button>
+          <button
+            class="prompt-chip"
+            id="runtime-benchmark-prompt"
+            type="button"
+            data-prompt="最近一次连续运行基准是否通过？"
+          >检查运行基准</button>
+          <button
+            class="prompt-chip"
+            id="storage-usage-prompt"
+            type="button"
+            data-prompt="项目数据占用了多少空间？"
+          >检查数据占用</button>
+          <button
+            class="prompt-chip"
+            id="retention-preview-prompt"
+            type="button"
+            data-prompt="安全清理预览：有多少旧数据可以清理？"
+          >预览旧数据清理</button>
+          <button
+            class="prompt-chip"
+            id="retention-cleanup-prompt"
+            type="button"
+            data-prompt="清理已预览旧日志"
+          >清理已预览旧日志</button>
+          <button
+            class="prompt-chip"
+            id="retention-cleanup-history-prompt"
+            type="button"
+            data-prompt="查询旧日志清理审计记录"
+          >查询清理审计记录</button>
+          <button
+            class="prompt-chip"
+            id="evidence-integrity-prompt"
+            type="button"
+            data-prompt="检查近期事件证据完整性"
+          >检查事件证据完整性</button>
+          <button
+            class="prompt-chip"
+            id="camera-restart-prompt"
+            type="button"
+            data-prompt="重启摄像头推理"
+          >重启摄像头推理</button>
+          <button
+            class="prompt-chip"
+            id="recovery-status-prompt"
+            type="button"
+            data-prompt="&#x67E5;&#x770B;&#x707E;&#x96BE;&#x6062;&#x590D;&#x5907;&#x4EFD;"
+          >&#x67E5;&#x770B;&#x6062;&#x590D;&#x5907;&#x4EFD;</button>
+          <button
+            class="prompt-chip"
+            id="recovery-create-prompt"
+            type="button"
+            data-prompt="&#x521B;&#x5EFA;&#x707E;&#x96BE;&#x6062;&#x590D;&#x5907;&#x4EFD;"
+          >&#x521B;&#x5EFA;&#x6062;&#x590D;&#x5907;&#x4EFD;</button>
+        </div>
+        <form class="agent-form" id="agent-form">
+          <label for="agent-message">自然语言问题</label>
+          <textarea
+            id="agent-message"
+            name="message"
+            rows="3"
+            maxlength="1000"
+            placeholder="例如：查询最近的瓶子事件"
+            required
+          ></textarea>
+          <div class="agent-form-footer">
+            <span id="message-count">0 / 1000</span>
+            <div class="agent-form-actions">
+              <button
+                class="agent-job-cancel hidden"
+                id="agent-job-cancel"
+                type="button"
+              >取消排队</button>
+              <button id="agent-submit" type="submit">发送问题</button>
+            </div>
+          </div>
+        </form>
+        <div
+          class="agent-response hidden"
+          id="agent-response"
+          aria-live="polite"
+        >
+          <div class="agent-response-heading">
+            <span id="agent-task-status">等待回答</span>
+            <span id="agent-task-meta"></span>
+          </div>
+          <p id="agent-answer"></p>
+          <div class="tool-result-list" id="agent-tool-results"></div>
+          <details
+            class="agent-workbench hidden"
+            id="agent-workbench"
+            open
+          >
+            <summary>
+              <span>HARNESS RUN</span>
+              <span id="agent-workbench-summary">等待任务</span>
+            </summary>
+            <dl class="agent-run-metadata">
+              <div>
+                <dt>Task ID</dt>
+                <dd id="agent-run-task-id">—</dd>
+              </div>
+              <div>
+                <dt>模型</dt>
+                <dd id="agent-run-model">—</dd>
+              </div>
+              <div>
+                <dt>Skill</dt>
+                <dd id="agent-run-skill">—</dd>
+              </div>
+              <div>
+                <dt>工具路由</dt>
+                <dd id="agent-run-tool-route">—</dd>
+              </div>
+              <div>
+                <dt>模型服务路径</dt>
+                <dd id="agent-run-model-resilience">—</dd>
+              </div>
+              <div>
+                <dt>步骤</dt>
+                <dd id="agent-run-steps">—</dd>
+              </div>
+              <div>
+                <dt>耗时</dt>
+                <dd id="agent-run-duration">—</dd>
+              </div>
+              <div>
+                <dt>执行预算</dt>
+                <dd id="agent-run-budget">—</dd>
+              </div>
+            </dl>
+            <div
+              class="agent-run-timeline"
+              id="agent-run-timeline"
+            ></div>
+            <p class="agent-run-safety">
+              仅显示按 task_id 过滤的脱敏 Trace；不暴露模型正文、
+              凭据或原始日志。
+            </p>
+          </details>
+          <div
+            class="agent-confirmation hidden"
+            id="agent-confirmation"
+          >
+            <div class="agent-confirmation-heading">
+              <div>
+                <span class="risk-badge" id="agent-confirmation-risk">
+                  L1
+                </span>
+                <strong>需要你的明确确认</strong>
+              </div>
+              <code id="agent-confirmation-tool"></code>
+            </div>
+            <p id="agent-confirmation-description"></p>
+            <pre id="agent-confirmation-arguments"></pre>
+            <div class="agent-confirmation-actions">
+              <button id="agent-confirm" type="button">
+                确认拍摄并保存
+              </button>
+              <button
+                class="agent-cancel-button"
+                id="agent-cancel"
+                type="button"
+              >取消，不执行</button>
+            </div>
+          </div>
+          <div class="agent-snapshot hidden" id="agent-snapshot">
+            <img
+              id="agent-snapshot-image"
+              alt="Agent 已确认保存的摄像头快照"
+            >
+            <div class="agent-snapshot-details">
+              <div>
+                <span>已验证的本地证据</span>
+                <strong id="agent-snapshot-meta"></strong>
+              </div>
+              <a
+                id="agent-snapshot-link"
+                target="_blank"
+                rel="noopener"
+              >在新窗口查看原图</a>
+            </div>
+          </div>
+          <div class="agent-report hidden" id="agent-report">
+            <div>
+              <span>已验证的本地 Markdown 报告</span>
+              <strong id="agent-report-meta"></strong>
+            </div>
+            <a
+              id="agent-report-link"
+              target="_blank"
+              rel="noopener"
+              download
+            >下载事件报告</a>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <span>视觉数据保留在 Jetson 本地</span>
+        <span>天气数据：Open-Meteo</span>
+        <span>自动刷新间隔：5秒</span>
+      </footer>
+    </main>
+  </body>
+</html>
