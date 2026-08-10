@@ -88,6 +88,27 @@ class GitHubRepositoryAssetTests(unittest.TestCase):
         self.assertIn("branch protection", runbook)
         self.assertIn("Git Credential Manager", runbook)
 
+    def test_readme_is_a_navigable_project_homepage(self):
+        readme = self.read("README.md")
+
+        self.assertIn("EdgeSentinel「边缘智哨」", readme)
+        self.assertIn("## 目录", readme)
+        self.assertIn("## 系统架构", readme)
+        self.assertIn("```mermaid", readme)
+        self.assertIn("docs/media-capture-guide.md", readme)
+        self.assertIn("docs/implementation-journal.md", readme)
+        self.assertLess(len(readme.splitlines()), 500)
+
+    def test_media_capture_plan_requires_real_redacted_evidence(self):
+        guide = self.read("docs/media-capture-guide.md")
+        media_readme = self.read("docs/media/README.md")
+
+        self.assertIn("P0：发布首页前必须有", guide)
+        self.assertIn("一镜到底视频脚本", guide)
+        self.assertIn("不要使用生成图片替代实拍", guide)
+        self.assertIn("API Key", guide)
+        self.assertIn("GitHub Release", media_readme)
+
 
 if __name__ == "__main__":
     unittest.main()
