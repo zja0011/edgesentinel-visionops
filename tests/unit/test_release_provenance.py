@@ -139,6 +139,48 @@ class ReleaseProvenanceTests(unittest.TestCase):
             with self.assertRaises(ReleaseProvenanceError):
                 service.build()
 
+    def test_sbom_retains_bounded_python_version_marker(self):
+        with tempfile.TemporaryDirectory() as directory:
+            service = self.build_fixture(directory)
+            with open(
+                os.path.join(directory, "requirements-api-py36.txt"),
+                "a",
+                encoding="utf-8",
+            ) as requirement_file:
+                requirement_file.write(
+                    'dataclasses==0.8; python_version < "3.7"\n'
+                )
+
+            unused_manifest, sbom = service.build()
+            component = next(
+                item for item in sbom["components"]
+                if item.get("name") == "dataclasses"
+            )
+            properties = {
+                item["name"]: item["value"]
+                for item in component["properties"]
+            }
+
+            self.assertEqual(
+                properties["edgesentinel:requirement:marker"],
+                'python_version < "3.7"',
+            )
+
+    def test_rejects_unbounded_requirement_marker(self):
+        with tempfile.TemporaryDirectory() as directory:
+            service = self.build_fixture(directory)
+            with open(
+                os.path.join(directory, "requirements-api-py36.txt"),
+                "a",
+                encoding="utf-8",
+            ) as requirement_file:
+                requirement_file.write(
+                    'dataclasses==0.8; os_name == "posix"\n'
+                )
+
+            with self.assertRaises(ReleaseProvenanceError):
+                service.build()
+
     @unittest.skipUnless(hasattr(os, "symlink"), "symlink unavailable")
     def test_rejects_symlinked_release_source(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -59,7 +59,9 @@ class ReleaseProvenance(object):
         r"^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$"
     )
     REQUIREMENT_PATTERN = re.compile(
-        r"^([A-Za-z0-9][A-Za-z0-9._-]*)==([^\s;]+)$"
+        r"^([A-Za-z0-9][A-Za-z0-9._-]*)==([^\s;]+)"
+        r"(?:;\s*(python_version\s*(?:<=|>=|==|!=|<|>)\s*"
+        r"[\"'][0-9]+(?:\.[0-9]+){1,2}[\"']))?$"
     )
     HASH_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 
@@ -378,6 +380,7 @@ class ReleaseProvenance(object):
                     "name": name,
                     "normalized_name": normalized,
                     "version": match.group(2),
+                    "marker": match.group(3),
                 })
         if not requirements:
             raise ReleaseProvenanceError("runtime requirements are empty")
@@ -416,6 +419,15 @@ class ReleaseProvenance(object):
                 ):
                     package_artifacts.append(artifact["bom_ref"])
                     matched_artifacts.add(artifact["path"])
+            properties = [{
+                "name": "edgesentinel:requirement:pinned",
+                "value": "true",
+            }]
+            if requirement["marker"] is not None:
+                properties.append({
+                    "name": "edgesentinel:requirement:marker",
+                    "value": requirement["marker"],
+                })
             components.append({
                 "type": "library",
                 "bom-ref": package_ref,
@@ -423,10 +435,7 @@ class ReleaseProvenance(object):
                 "version": package_version,
                 "scope": "required",
                 "purl": package_ref,
-                "properties": [{
-                    "name": "edgesentinel:requirement:pinned",
-                    "value": "true",
-                }],
+                "properties": properties,
             })
             dependency_rows.append({
                 "ref": package_ref,
