@@ -2,6 +2,8 @@
 
 本清单用于制作 GitHub README、作品集、答辩演示和发布视频所需的真实性素材。目标不仅是证明“能运行”，还要证明硬件、视觉流水线、Agent Harness、MCP、安全治理、运维恢复和发布工程均真实可用。
 
+执行约定：每次开始一个拍摄项前，都应先给出与 H10 相同粒度的“详细拍摄卡”，至少包括目标、准备、构图、操作步骤、文件名、禁拍内容和验收标准。表格只是总目录，不能代替逐项指导。
+
 ## 1. 原片与公开素材分开存放
 
 原片不要直接放入 Git 仓库。请在 Windows 建立：
@@ -89,14 +91,78 @@ edgesentinel-demo-<序号>-<主题>-zh-cn-1080p.mp4
 
 ## 5. 硬件实物照片
 
-硬件不是项目展示重点，一张清晰的系统总览即可完成真实性证明。现有 H01 已满足最低发布要求；如果以后想升级封面，只需补拍一张同时包含 PC Dashboard 和 Jetson 实物的 H10，不需要逐个拍摄所有模块。
+硬件不是项目展示重点，保留两张照片即可：现有 H01 证明完整实机，新增 H10 用一个画面证明“PC 远程 Dashboard + Jetson 边缘运行”的真实关系。不需要逐个拍摄其他硬件模块。
 
 | 编号 | 公开文件名 | 必须拍到 | 验收标准 |
 |---|---|---|---|
 | H01 | `hardware/rig-overview.jpg` | Jetson、风扇、摄像头、Wi‑Fi、显示器 | **必需，已有**；README 首图 |
-| H10 | `hardware/pc-jetson-workstation.jpg` | PC Dashboard、Jetson、显示器、摄像头完整工作台 | **可选升级**；一张图解释 PC 远程运维 + Jetson 边缘推理 |
+| H10 | `hardware/pc-jetson-workstation.jpg` | PC Dashboard、Jetson、显示器、摄像头完整工作台 | **必拍**；一张图解释 PC 远程运维 + Jetson 边缘推理 |
 
 不再要求 Jetson、摄像头、网卡、键鼠、电源和存储介质的独立近照。录制 V01 或 V20 时，可顺手拍一段 5–10 秒横向硬件 B-roll，无需单独组织硬件拍摄批次。
+
+### H10 详细拍摄卡：PC Dashboard 与 Jetson 同框
+
+**目标**
+
+让第一次看到项目的人无需阅读说明，就能理解：摄像头和视觉服务运行在 Jetson Nano 上，PC 通过局域网访问 Dashboard 进行查看与操作。
+
+**拍摄前准备**
+
+1. Jetson Nano、USB 摄像头、USB Wi‑Fi 和 HDMI 显示器正常连接并运行。
+2. PC 浏览器登录 Dashboard，停留在总览页；不要停在登录页或终端页面。
+3. Dashboard 中应能看到实时摄像头画面、运行状态和检测结果；让一只瓶子进入画面即可，不必安排人员出镜。
+4. 浏览器只保留 Dashboard 标签页，关闭书签栏、通知、邮箱和聊天软件。
+5. 如果地址栏显示真实 LAN IP，可以保留原片，公开版由 Codex 统一模糊；不要在照片中出现密码或 API Key。
+6. 擦拭 PC 屏幕和摄像头镜头，整理桌面线缆，但不要为了整齐改变真实连接关系。
+
+**机位和构图**
+
+1. 使用手机或相机横向拍摄，优先使用主摄 1×，不要使用超广角。
+2. 站在工作台正前方稍偏左或偏右约 30°，镜头高度与 PC 屏幕中心大致一致。
+3. PC 屏幕占画面约 45%–55%，保证 Dashboard 中的实时画面和状态能辨认。
+4. Jetson Nano、USB 摄像头和 HDMI 显示器放在 PC 屏幕旁边或下方，占画面约 30%–40%。
+5. PC 屏幕与 Jetson 之间不要被手臂、线缆卷或其他物品遮挡。
+6. 画面边缘留出约 5% 空间，方便后续裁剪成 16:9 或 3:2。
+
+**实际拍摄步骤**
+
+1. 先确认 Dashboard 最新帧仍在更新，Vision stale 为 False。
+2. 降低 PC 屏幕亮度到环境光可兼顾的程度，避免屏幕一片白；手机点击屏幕区域测光。
+3. 拍一张全景 `take01`，完整包含 PC 屏幕、Jetson、摄像头和 HDMI 显示器。
+4. 向前移动半步拍 `take02`，优先保证 Dashboard 文字可读，同时不裁掉 Jetson。
+5. 改变左右角度拍 `take03`，选择屏幕反光最小的一张。
+6. 放大检查照片：Dashboard 不能糊、Jetson 不能被裁掉、屏幕不能出现摩尔纹或严重反光。
+
+**原片文件名**
+
+```text
+YYYYMMDD_HHMMSS_H10_pc-jetson-workstation_take01.jpg
+YYYYMMDD_HHMMSS_H10_pc-jetson-workstation_take02.jpg
+YYYYMMDD_HHMMSS_H10_pc-jetson-workstation_take03.jpg
+```
+
+原片保存到：
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\01_raw_photos\YYYY-MM-DD\
+```
+
+**不要这样拍**
+
+- 不要竖屏拍摄。
+- 不要只拍 PC 屏幕而看不到 Jetson。
+- 不要只拍硬件而无法辨认 Dashboard。
+- 不要用手机拍得距离过远，导致页面文字完全不可读。
+- 不要显示密码框内容、Token、恢复口令、私人通知或浏览器账户头像菜单。
+- 不要让屏幕反光暴露拍摄者面部或房间私人信息。
+
+**验收标准**
+
+- [ ] 一张照片中同时看到 PC Dashboard、Jetson Nano 和 USB 摄像头。
+- [ ] Dashboard 实时画面、运行状态至少能辨认。
+- [ ] 能从物理位置关系理解 PC 是远程操作端、Jetson 是边缘运行端。
+- [ ] 没有密码、Token、Cookie、私人消息或清晰设备序列号。
+- [ ] 横向构图清晰，公开版可裁成 16:9。
 
 ## 6. Dashboard 核心截图
 
@@ -264,7 +330,7 @@ edgesentinel-demo-<序号>-<主题>-zh-cn-1080p.mp4
 
 | 批次 | 内容 | 预计时间 |
 |---|---|---:|
-| Batch 1 | D02、D03、D06、D09、D10、D11 核心 Dashboard | 30 分钟 |
+| Batch 1 | H10 工作台同框照 + D02、D03、D06、D09、D10、D11 核心 Dashboard | 40 分钟 |
 | Batch 2 | E01–E13 视觉事件闭环 | 60–90 分钟 |
 | Batch 3 | D14–D30、A01–A12、M01–M04、S01–S05 | 60–90 分钟 |
 | Batch 4 | O01–O08、R01–R09、P01–P05 | 60–90 分钟 |
@@ -272,7 +338,7 @@ edgesentinel-demo-<序号>-<主题>-zh-cn-1080p.mp4
 | Batch 6 | 其余专项视频 | 1–2 天 |
 | Batch 7 | V20 宣传片 | 1–2 小时 |
 
-现有 H01 已完成硬件证明。下一批最值得拍的是 D02/D03/D06/D09/D10/D11、E09、V01/V06/V18；如有合适机会再补 H10，不必专门安排。
+现有 H01 已完成硬件总览。下一批拍 H10 和 D02/D03/D06/D09/D10/D11，然后再拍 E09、V01/V06/V18。
 
 ## 12. 公开前脱敏检查
 
@@ -299,6 +365,7 @@ Codex 会检查清晰度、隐私、重复镜头与命名，再挑选、裁剪�
 ## 14. 最小可发布组合
 
 - [x] H01 整机总览（已有）
+- [ ] H10 PC Dashboard 与 Jetson 同框
 - [ ] D02 Dashboard 总览
 - [ ] D03 人员检测
 - [ ] D06 事件中心
