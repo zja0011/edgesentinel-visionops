@@ -14,7 +14,7 @@ EdgeSentinel VisionOps 不是“摄像头接一个大模型”的演示脚本。
 项目在真实 Jetson Nano、摄像头、Docker 与 systemd 环境中持续验收；在线模式可连接 DeepSeek，断网或模型不可用时可明确降级到确定性离线规则模型。
 
 > [!IMPORTANT]
-> 仓库中的实机照片与演示视频仍在补充。项目不会使用生成图片冒充硬件实拍。完整拍摄计划见[实机素材拍摄与录屏清单](docs/media-capture-guide.md)。
+> 仓库中的实机照片与演示视频仍在补充。项目不会使用生成图片冒充硬件实拍。拍摄原则见[实机素材拍摄与录屏清单](docs/media-capture-guide.md)，逐项文件名和镜头动作见[全功能素材清单](docs/media/shot-checklist.md)。
 
 ![EdgeSentinel VisionOps 实机系统总览：Jetson Nano、USB 摄像头、USB Wi-Fi 与 HDMI 显示器](docs/media/hardware/rig-overview.jpg)
 
@@ -195,6 +195,7 @@ flowchart LR
 优先拍摄顺序、每段视频的镜头脚本、隐私检查和文件规格见：
 
 - [实机素材拍摄与录屏清单](docs/media-capture-guide.md)
+- [全功能素材拍摄清单](docs/media/shot-checklist.md)
 - [媒体目录说明](docs/media/README.md)
 
 素材补齐后，本节会升级为封面实机图、Dashboard 三联图和 90–150 秒完整演示入口。
@@ -341,6 +342,7 @@ model engines  evidence  recovery backups  absolute host paths
 | 文档 | 内容 |
 | --- | --- |
 | [实机素材拍摄与录屏清单](docs/media-capture-guide.md) | 照片、截图、视频的优先级与执行脚本 |
+| [全功能素材拍摄清单](docs/media/shot-checklist.md) | 每张照片、截图与视频的编号、命名、动作和验收标准 |
 | [实现演进日志](docs/implementation-journal.md) | 从视觉 Demo 到生产级 Harness 的完整阶段记录 |
 | [灾难恢复](docs/disaster-recovery.md) | 备份、恢复预览、加密异机导出与演练 |
 | [TLS 运维](docs/tls-operations.md) | HTTPS、证书固定、轮换与恢复 |

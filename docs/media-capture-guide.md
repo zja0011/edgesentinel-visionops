@@ -2,6 +2,8 @@
 
 这份清单用于补齐 GitHub 项目的真实性证据。素材必须来自实际 Jetson Nano、摄像头、Dashboard 和运行日志；不要使用生成图片替代实拍，也不要为了画面效果伪造检测结果。
 
+逐项执行时请使用[全功能素材拍摄清单](media/shot-checklist.md)。它给出了每张照片、截图和视频的编号、稳定文件名、触发动作、风险等级与验收标准。
+
 当前已经入库一张实机系统总览：[`media/hardware/rig-overview.jpg`](media/hardware/rig-overview.jpg)。照片包含 Jetson Nano、USB 摄像头、USB Wi‑Fi 适配器与 HDMI 显示器；PC 和键鼠未入镜，PC 实际通过局域网 Wi‑Fi 使用 SSH/HTTPS 连接开发板。
 
 ## 1. 交付目标
@@ -134,8 +136,22 @@
 
 ## 8. 目录与命名
 
+原始照片、截图和视频统一保存在 Git 仓库外：
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\
+├─ 01_raw_photos\YYYY-MM-DD\
+├─ 02_raw_screens\YYYY-MM-DD\
+├─ 03_raw_videos\YYYY-MM-DD\
+├─ 05_editing_projects\
+└─ 06_final_exports\
+```
+
+只有完成筛选和脱敏的公开素材进入以下目录：
+
 ```text
 docs/media/
+├─ shot-checklist.md
 ├─ hardware/
 │  ├─ rig-overview.jpg
 │  └─ module-closeup.jpg
@@ -146,10 +162,13 @@ docs/media/
 │  └─ confirmation-gate.png
 ├─ events/
 │  └─ evidence-chain.png
-└─ operations/
-   ├─ systemd-health.png
-   ├─ github-ci.png
-   └─ recovery-drill.png
+├─ agent/
+├─ mcp/
+├─ security/
+├─ operations/
+├─ recovery/
+├─ release/
+└─ video-thumbnails/
 ```
 
 文件名使用小写英文和连字符，不写日期、用户名、IP 或随机事件 ID。原始素材可以在仓库外按日期归档，仓库只提交经过筛选和脱敏的版本。
