@@ -10,7 +10,7 @@
 
 最终 README 建议包含：
 
-1. 一张能同时看见 Jetson、摄像头和实验场景的封面实拍；
+1. 一张能同时看见 Jetson、摄像头和实验场景的封面实拍（现有总览已满足，不要求逐个拍硬件模块）；
 2. 三张 Dashboard 核心截图；
 3. 一组“物品出现 → 移除/遗留 → 事件证据”的闭环截图；
 4. 一段 90–150 秒的一镜到底实机演示；
@@ -23,7 +23,7 @@
 | 编号 | 素材 | 拍摄内容 | 建议文件名 |
 | --- | --- | --- | --- |
 | P0-1 | 实验装置总览照 | **已入库**；包含 Jetson Nano、USB 摄像头、USB Wi‑Fi 与 HDMI 显示器 | `hardware/rig-overview.jpg` |
-| P0-2 | 模块近景照 | 已拍摄的实验模块，保证接口与连接线清晰 | `hardware/module-closeup.jpg` |
+| P0-2 | 硬件升级照（可选） | PC Dashboard 与 Jetson 实物同框；现有总览已满足最低要求 | `hardware/pc-jetson-workstation.jpg` |
 | P0-3 | Dashboard 总览 | 实时画面、检测结果、设备状态、事件列表同屏 | `dashboard/overview.png` |
 | P0-4 | Agent Workbench | 用户问题、工具选择、风险等级、执行步骤和脱敏 Trace | `dashboard/agent-workbench.png` |
 | P0-5 | 事件证据闭环 | 事件详情、before/after 证据和 SHA-256 校验结果 | `events/evidence-chain.png` |

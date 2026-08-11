@@ -10,6 +10,6 @@
 docs/media/hardware/rig-overview.jpg
 ```
 
-它包含 Jetson Nano、USB 摄像头、USB Wi‑Fi 适配器和 HDMI 显示器。PC 与键鼠未入镜；PC 通过局域网 Wi‑Fi 使用 SSH/HTTPS 连接开发板。开发板近景、完整工作台和 Dashboard 与实物同框照片仍待补拍。
+它包含 Jetson Nano、USB 摄像头、USB Wi‑Fi 适配器和 HDMI 显示器，已经满足硬件真实性证明。PC 通过局域网 Wi‑Fi 使用 SSH/HTTPS 连接开发板；以后可选补拍一张 PC Dashboard 与实物同框的工作台总览，但不要求逐个拍摄硬件模块。
 
 禁止提交 API Key、PAT、Cookie、TLS/SSH 私钥、备份口令、清晰设备序列号或未经授权的人员画面。

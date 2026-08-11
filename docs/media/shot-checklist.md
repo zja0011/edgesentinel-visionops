@@ -89,24 +89,14 @@ edgesentinel-demo-<序号>-<主题>-zh-cn-1080p.mp4
 
 ## 5. 硬件实物照片
 
-已有 H01，其余建议全部补齐。
+硬件不是项目展示重点，一张清晰的系统总览即可完成真实性证明。现有 H01 已满足最低发布要求；如果以后想升级封面，只需补拍一张同时包含 PC Dashboard 和 Jetson 实物的 H10，不需要逐个拍摄所有模块。
 
 | 编号 | 公开文件名 | 必须拍到 | 验收标准 |
 |---|---|---|---|
-| H01 | `hardware/rig-overview.jpg` | Jetson、风扇、摄像头、Wi‑Fi、显示器 | 已有，README 首图 |
-| H02 | `hardware/jetson-nano-closeup.jpg` | Jetson Nano、散热器、风扇 | 45° 近景，遮住序列号/二维码 |
-| H03 | `hardware/jetson-connections.jpg` | HDMI、USB、网卡、摄像头、电源连接 | 插口和线缆清晰 |
-| H04 | `hardware/usb-camera.jpg` | USB 摄像头、支架、USB 线 | 能看出真实固定方式 |
-| H05 | `hardware/usb-wifi.jpg` | USB Wi‑Fi 插在开发板上 | 开发板与网卡同框 |
-| H06 | `hardware/hdmi-local-desktop.jpg` | HDMI 显示器上的 Jetson 桌面 | 屏幕不过曝，无私人文件 |
-| H07 | `hardware/local-input-devices.jpg` | USB 键盘、鼠标与开发板 | 证明本地维护能力 |
-| H08 | `hardware/power-supply.jpg` | 已确认正常的适配器与电源线 | 不展示敏感序列号 |
-| H09 | `hardware/storage-media.jpg` | microSD/系统存储介质 | 不要求为拍照冒险拆机 |
-| H10 | `hardware/pc-jetson-workstation.jpg` | PC、Jetson、显示器、摄像头完整工作台 | 解释 PC 远程运维 + Jetson 边缘推理 |
-| H11 | `hardware/pc-remote-dashboard.jpg` | PC Dashboard，背景中能看到 Jetson 实物 | 页面可读，密码/IP 脱敏 |
-| H12 | `hardware/rig-authenticity-card.jpg` | 整套装置与项目名/日期纸卡 | 用作真实性佐证 |
+| H01 | `hardware/rig-overview.jpg` | Jetson、风扇、摄像头、Wi‑Fi、显示器 | **必需，已有**；README 首图 |
+| H10 | `hardware/pc-jetson-workstation.jpg` | PC Dashboard、Jetson、显示器、摄像头完整工作台 | **可选升级**；一张图解释 PC 远程运维 + Jetson 边缘推理 |
 
-另拍 5–10 秒横向 B-roll：风扇、摄像头、网卡、显示器和 PC，缓慢从左向右移动。
+不再要求 Jetson、摄像头、网卡、键鼠、电源和存储介质的独立近照。录制 V01 或 V20 时，可顺手拍一段 5–10 秒横向硬件 B-roll，无需单独组织硬件拍摄批次。
 
 ## 6. Dashboard 核心截图
 
@@ -274,16 +264,15 @@ edgesentinel-demo-<序号>-<主题>-zh-cn-1080p.mp4
 
 | 批次 | 内容 | 预计时间 |
 |---|---|---:|
-| Batch 1 | H02–H12 硬件照片 | 30–45 分钟 |
-| Batch 2 | D01–D13 核心 Dashboard | 30 分钟 |
-| Batch 3 | E01–E13 视觉事件 | 60–90 分钟 |
-| Batch 4 | D14–D30、A01–A12、M01–M04、S01–S05 | 60–90 分钟 |
-| Batch 5 | O01–O08、R01–R09、P01–P05 | 60–90 分钟 |
-| Batch 6 | V01、V02、V03、V06、V08、V18 | 半天 |
-| Batch 7 | 其余专项视频 | 1–2 天 |
-| Batch 8 | V20 宣传片 | 1–2 小时 |
+| Batch 1 | D02、D03、D06、D09、D10、D11 核心 Dashboard | 30 分钟 |
+| Batch 2 | E01–E13 视觉事件闭环 | 60–90 分钟 |
+| Batch 3 | D14–D30、A01–A12、M01–M04、S01–S05 | 60–90 分钟 |
+| Batch 4 | O01–O08、R01–R09、P01–P05 | 60–90 分钟 |
+| Batch 5 | V01、V02、V03、V06、V08、V18 | 半天 |
+| Batch 6 | 其余专项视频 | 1–2 天 |
+| Batch 7 | V20 宣传片 | 1–2 小时 |
 
-首批最值得拍的是 H10/H11/H12、D02/D03/D06/D09/D10/D11、E09、V01/V06/V18。
+现有 H01 已完成硬件证明。下一批最值得拍的是 D02/D03/D06/D09/D10/D11、E09、V01/V06/V18；如有合适机会再补 H10，不必专门安排。
 
 ## 12. 公开前脱敏检查
 
@@ -310,9 +299,6 @@ Codex 会检查清晰度、隐私、重复镜头与命名，再挑选、裁剪�
 ## 14. 最小可发布组合
 
 - [x] H01 整机总览（已有）
-- [ ] H02 Jetson 近景
-- [ ] H10 PC + Jetson 工作台
-- [ ] H11 PC Dashboard 与实物同框
 - [ ] D02 Dashboard 总览
 - [ ] D03 人员检测
 - [ ] D06 事件中心
@@ -322,4 +308,4 @@ Codex 会检查清晰度、隐私、重复镜头与命名，再挑选、裁剪�
 - [ ] E09 物品移走事件与证据
 - [ ] V01 端到端演示
 
-先完成这 12 项即可显著提升 GitHub 首页可信度，再按批次补齐全功能证明矩阵。
+现有硬件总览加上这些核心界面、事件和视频，就能显著提升 GitHub 首页可信度；无需用大量器材特写稀释项目重点。
