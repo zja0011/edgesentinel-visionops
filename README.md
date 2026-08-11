@@ -16,10 +16,15 @@ EdgeSentinel VisionOps 不是“摄像头接一个大模型”的演示脚本。
 > [!IMPORTANT]
 > 仓库中的实机照片与演示视频仍在补充。项目不会使用生成图片冒充硬件实拍。完整拍摄计划见[实机素材拍摄与录屏清单](docs/media-capture-guide.md)。
 
+![EdgeSentinel VisionOps 实机系统总览：Jetson Nano、USB 摄像头、USB Wi-Fi 与 HDMI 显示器](docs/media/hardware/rig-overview.jpg)
+
+*真实实验装置：Jetson Nano、USB 摄像头、USB Wi‑Fi 适配器与 HDMI 显示器。PC 和 USB 键盘鼠标未进入画面；PC 通过局域网 Wi‑Fi 使用 SSH/HTTPS 管理开发板。*
+
 ## 目录
 
 - [为什么是 EdgeSentinel](#为什么是-edgesentinel)
 - [核心能力](#核心能力)
+- [硬件与器材](#硬件与器材)
 - [系统架构](#系统架构)
 - [安全与治理](#安全与治理)
 - [实机证据与演示素材](#实机证据与演示素材)
@@ -79,6 +84,38 @@ EdgeSentinel VisionOps 不是“摄像头接一个大模型”的演示脚本。
 - 本地认证、RBAC、CSRF、HTTPS、证书固定与 TLS 轮换；
 - 加密异机备份、容量预览、恢复演练和 Windows 定时同步；
 - 发布内容清单、CycloneDX 1.7 SBOM 与 GitHub Actions 验证。
+
+## 硬件与器材
+
+| 器材 | 连接方式 | 在项目中的作用 |
+| --- | --- | --- |
+| NVIDIA Jetson Nano 开发板 | 核心设备 | 运行视觉推理、Agent Harness、API、Dashboard 与本地数据服务 |
+| USB 摄像头 | USB 接入 Jetson | 提供实时视频流和事件证据画面 |
+| USB Wi‑Fi 适配器 | USB 接入 Jetson | 接入局域网，供 PC 通过 SSH/HTTPS 管理，也用于受控访问 DeepSeek 与天气服务 |
+| HDMI 显示器 | HDMI 接入 Jetson | 本地桌面调试、启动排障与实时视觉观察 |
+| USB 键盘、鼠标 | USB 接入 Jetson | 首次配置、本地维护和网络异常时的应急操作 |
+| PC 电脑 | Wi‑Fi 局域网 | 编写和同步代码、PowerShell 验收、浏览 Dashboard、SSH/SCP 运维及异机备份 |
+| 稳定电源适配器 | DC 供电 | 为开发板、摄像头及 USB 外设提供稳定电源，避免欠压导致启动或推理异常 |
+| microSD / 系统存储 | Jetson 本地存储 | 保存系统、项目代码和受保留策略约束的运行数据 |
+
+```mermaid
+flowchart LR
+    PC["PC 电脑\n开发 / 验收 / 浏览器 / 异机备份"]
+    WIFI["Wi-Fi 局域网\nSSH / HTTPS / SCP"]
+    JETSON["Jetson Nano\nVision + Agent Harness"]
+    CAMERA["USB 摄像头"]
+    DISPLAY["HDMI 显示器"]
+    INPUT["USB 键盘 / 鼠标"]
+    POWER["稳定电源适配器"]
+
+    PC <--> WIFI <--> JETSON
+    CAMERA --> JETSON
+    JETSON --> DISPLAY
+    INPUT --> JETSON
+    POWER --> JETSON
+```
+
+PC 不参与边缘推理：即使 PC 关闭，Jetson 上由 systemd 托管的视觉与 Agent 服务仍可独立运行。PC 主要承担开发、远程管理、Dashboard 操作和异机恢复副本保存。
 
 ## 系统架构
 
@@ -148,8 +185,8 @@ flowchart LR
 
 | 素材 | 状态 | 计划位置 |
 | --- | --- | --- |
-| 实验模块实物图 | 已拍摄，待导入仓库 | `docs/media/hardware/module-closeup.jpg` |
-| Jetson + 摄像头 + 场景全景 | 待拍摄 | `docs/media/hardware/rig-overview.jpg` |
+| Jetson + 摄像头 + Wi‑Fi + HDMI 实机总览 | 已公开 | `docs/media/hardware/rig-overview.jpg` |
+| 开发板接口与模块近景 | 待补拍 | `docs/media/hardware/module-closeup.jpg` |
 | Dashboard 总览与实时检测 | 待截图 | `docs/media/dashboard/overview.png` |
 | Agent 工具调用与 Workbench Trace | 待截图 | `docs/media/dashboard/agent-workbench.png` |
 | 物品移除/遗留事件证据 | 待截图 | `docs/media/events/evidence-chain.png` |

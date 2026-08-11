@@ -2,6 +2,8 @@
 
 这份清单用于补齐 GitHub 项目的真实性证据。素材必须来自实际 Jetson Nano、摄像头、Dashboard 和运行日志；不要使用生成图片替代实拍，也不要为了画面效果伪造检测结果。
 
+当前已经入库一张实机系统总览：[`media/hardware/rig-overview.jpg`](media/hardware/rig-overview.jpg)。照片包含 Jetson Nano、USB 摄像头、USB Wi‑Fi 适配器与 HDMI 显示器；PC 和键鼠未入镜，PC 实际通过局域网 Wi‑Fi 使用 SSH/HTTPS 连接开发板。
+
 ## 1. 交付目标
 
 最终 README 建议包含：
@@ -18,7 +20,7 @@
 
 | 编号 | 素材 | 拍摄内容 | 建议文件名 |
 | --- | --- | --- | --- |
-| P0-1 | 实验装置全景照 | Jetson Nano、摄像头、电源、网络连接和被观察区域同时入镜 | `hardware/rig-overview.jpg` |
+| P0-1 | 实验装置总览照 | **已入库**；包含 Jetson Nano、USB 摄像头、USB Wi‑Fi 与 HDMI 显示器 | `hardware/rig-overview.jpg` |
 | P0-2 | 模块近景照 | 已拍摄的实验模块，保证接口与连接线清晰 | `hardware/module-closeup.jpg` |
 | P0-3 | Dashboard 总览 | 实时画面、检测结果、设备状态、事件列表同屏 | `dashboard/overview.png` |
 | P0-4 | Agent Workbench | 用户问题、工具选择、风险等级、执行步骤和脱敏 Trace | `dashboard/agent-workbench.png` |

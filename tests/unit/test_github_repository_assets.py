@@ -102,12 +102,26 @@ class GitHubRepositoryAssetTests(unittest.TestCase):
     def test_media_capture_plan_requires_real_redacted_evidence(self):
         guide = self.read("docs/media-capture-guide.md")
         media_readme = self.read("docs/media/README.md")
+        readme = self.read("README.md")
+        overview = os.path.join(
+            PROJECT_DIR,
+            "docs",
+            "media",
+            "hardware",
+            "rig-overview.jpg",
+        )
 
         self.assertIn("P0：发布首页前必须有", guide)
         self.assertIn("一镜到底视频脚本", guide)
         self.assertIn("不要使用生成图片替代实拍", guide)
         self.assertIn("API Key", guide)
         self.assertIn("GitHub Release", media_readme)
+        self.assertIn("docs/media/hardware/rig-overview.jpg", readme)
+        self.assertIn("## 硬件与器材", readme)
+        self.assertIn("USB Wi‑Fi 适配器", readme)
+        self.assertIn("PC 电脑", readme)
+        self.assertTrue(os.path.isfile(overview))
+        self.assertGreater(os.path.getsize(overview), 100000)
 
 
 if __name__ == "__main__":

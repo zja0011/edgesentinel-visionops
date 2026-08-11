@@ -4,10 +4,12 @@
 
 提交素材前请阅读 [`../media-capture-guide.md`](../media-capture-guide.md)。大体积原始视频不要直接写入 Git 历史；建议作为 GitHub Release 附件发布，并在项目首页用封面图链接。
 
-当前已有一张实验模块实物图待导入。推荐保存为：
+当前已公开一张未经生成式修改的实机系统总览：
 
 ```text
-docs/media/hardware/module-closeup.jpg
+docs/media/hardware/rig-overview.jpg
 ```
+
+它包含 Jetson Nano、USB 摄像头、USB Wi‑Fi 适配器和 HDMI 显示器。PC 与键鼠未入镜；PC 通过局域网 Wi‑Fi 使用 SSH/HTTPS 连接开发板。开发板接口近景仍待补拍，建议保存为 `docs/media/hardware/module-closeup.jpg`。
 
 禁止提交 API Key、PAT、Cookie、TLS/SSH 私钥、备份口令、清晰设备序列号或未经授权的人员画面。
