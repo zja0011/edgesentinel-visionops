@@ -1172,6 +1172,159 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 - [ ] 未确认事件、未写长期记忆、未执行重启或清理。
 - [ ] 视频无私人通知、秘密、绝对路径或其他页面干扰。
 
+### V06 原片验收记录：中文多步调查与脱敏 Trace
+
+原片：
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-12\20260812_V06_agent-harness-skill-hooks-trace_take01.mp4
+```
+
+实际规格与结果：
+
+- 时长 `50.2` 秒，画面 `1920×1080`，约 `23.6 FPS`，文件约 `5.3 MiB`；节奏紧凑，无需为达到预估时长而重录。
+- 中文问题“调查最近一次瓶子移除事件，核验证据并判断是谁拿走了瓶子。”成功命中 `vision.investigate_removed_item@1.0.0`。
+- 任务 `COMPLETED · 3 steps`，路由为 `SKILL_PINNED · 3/33 · -87.7%`，无 retry、无 fallback，Circuit 为 CLOSED。
+- `event.query`、`event.get_detail`、`evidence.verify_event` 三个限定 L0 本地工具全部 `SUCCEEDED`。
+- 回答核验出 bottle 数量 `1 → 0`、3/3 证据有效、SHA-256 通过、前后证据完整，同时明确拒绝在无 track_id/身份信息时猜测拿走者。
+- Workbench 清楚覆盖 Skill 选择、工具路由、模型韧性、模型用量、模型决策、before/after model Hooks、before/after tool Hooks、工具结果、Checkpoint、任务结束、on_task_complete 和会话记忆保存。
+- 执行预算为 `3/5M · 3/8T · 0/2E · 14457/16384 tok`，步骤、耗时与预算均可辨认。
+- 原片可验收，无需重录。发布前遮挡 LAN IP、完整 Task ID 和 Event ID；开头一句英文过渡可保留，也可剪掉以保持中文一致。
+
+### V18 详细录制卡：测试、发布门禁、SBOM 与 GitHub CI
+
+**目标**
+
+证明该项目不仅能在 Jetson 上运行，还具备可复现的软件发布工程：全量测试通过、公开仓库边界扫描通过、确定性来源清单与 CycloneDX SBOM 通过、Release 产物完整性匹配，以及 GitHub Actions 对同一提交给出绿色 CI。该视频只执行只读测试和本地可再生发布元数据构建，不修改运行中的摄像头服务。
+
+**推荐录成两段**
+
+V18-A 在 Jetson 终端录制真实兼容环境下的测试与发布门禁；V18-B 在 PC 浏览器录制 GitHub Actions 的同一提交绿色结果。后期合并成一个 60–120 秒成片。不要为了“一镜到底”用手机在两台设备间晃动。
+
+**V18-A：Jetson 终端录制参数**
+
+```text
+画面：1920×1080
+帧率：24 或 30 FPS
+终端：最大化，深色主题
+字号：18–22 px，至少 120 列
+麦克风/系统声音：关闭
+预计录制：45–90 秒（测试运行过程可后期加速）
+```
+
+**V18-A 录制前准备**
+
+1. 在 Jetson 项目目录执行 `git status --short`，确认没有不明改动；本步骤可在录制前完成，不必出现在视频中。
+2. 确认容器 `edgesentinel-visionops` 正在运行，Dashboard 不需要保持在前台。
+3. 终端中不要显示 shell history、环境变量、`/etc/edgesentinel-visionops/*.env`、API Key、密码或恢复口令。
+4. 将终端清屏，确保提示符位于左上方；不要伪造输出，不要复制旧验收摘要。
+
+**V18-A 精确命令与镜头**
+
+1. **全量测试，约 20–40 秒**
+
+   在 Jetson 宿主机输入一整条命令：
+
+   ```bash
+   sudo docker exec edgesentinel-visionops bash -lc 'cd /workspace/edgesentinel && PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -q'
+   ```
+
+   - `sudo` 密码必须在开始录制前缓存，或输入时暂停/剪掉；视频中不能出现密码输入过程。
+   - 等待测试结束，必须录到 `Ran ... tests` 和 `OK`。
+   - Vision supervisor 的 STARTING/RUNNING/RESTARTING 测试日志是预期测试输出，不代表生产服务发生重启。
+
+2. **发布边界门禁，约 8–15 秒**
+
+   ```bash
+   sudo docker exec edgesentinel-visionops bash -lc 'cd /workspace/edgesentinel && bash scripts/run_repository_publication_gate.sh'
+   ```
+
+   必须录到最终的 `Repository Publication Gate passed.`，并让凭据、运行数据、私钥或超大文件未进入公开边界的摘要清楚可辨认。
+
+3. **来源与 SBOM 验证，约 10–20 秒**
+
+   ```bash
+   sudo docker exec edgesentinel-visionops bash -lc 'cd /workspace/edgesentinel && bash scripts/run_release_provenance_test.sh'
+   ```
+
+   必须录到：
+
+   ```text
+   Status: PASS
+   SBOM: CycloneDX 1.7 VERIFIED
+   Source integrity: MATCH
+   Credentials included: False
+   Absolute paths included: False
+   Release Provenance smoke test passed.
+   ```
+
+4. **构建并校验可再生产物，约 10–20 秒**
+
+   ```bash
+   sudo docker exec edgesentinel-visionops bash -lc 'cd /workspace/edgesentinel && bash scripts/build_release_artifacts.sh && bash scripts/check_release_integrity.sh'
+   ```
+
+   必须录到 `status: CREATED`、Release ID、manifest/SBOM SHA-256，以及校验结果 `status: PASS`、`source_integrity: MATCH`、`sbom_verified: true`、`credentials_included: false`。
+
+5. **V18-A 结尾，约 4 秒**
+
+   - 停在完整性校验的 PASS 摘要上，不再输入命令。
+   - 鼠标或光标静止 3–4 秒后停止录制。
+
+**V18-A 原始文件名**
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-12\20260812_V18A_release-tests-provenance-sbom_take01.mp4
+```
+
+**V18-B：GitHub Actions 浏览器录制**
+
+1. 在 PC 浏览器打开：
+
+   ```text
+   https://github.com/zja0011/edgesentinel-visionops/actions
+   ```
+
+2. 打开最新的 `CI` 工作流，确认它对应 `main` 上当前最新提交，而不是较早提交。
+3. 如果工作流仍在运行，等待完成后再开始录制；不要把失败后重跑但尚未成功的中间状态作为最终素材。
+4. 开始录制后先停留在工作流摘要 4–6 秒，让绿色勾、分支 `main`、提交短 SHA 和完成时间可见。
+5. 展开 `validate` Job，缓慢展示以下绿色步骤：
+
+   ```text
+   Check publication boundary before dependency execution
+   Install pinned runtime dependencies
+   Run full unit suite
+   Verify deterministic release provenance
+   Build and verify release metadata
+   Upload verified provenance
+   ```
+
+6. 每组步骤停留 2–3 秒，不必打开完整日志；如果打开日志，只展示 PASS/OK 摘要，不展示用户邮箱、令牌或仓库管理设置。
+7. 最后回到工作流摘要绿色勾，静止 4 秒后结束。
+
+**V18-B 原始文件名**
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-12\20260812_V18B_github-actions-ci-green_take01.mp4
+```
+
+**立即停止并报告的情况**
+
+- 任一测试失败、publication gate 不通过、source integrity 不是 MATCH 或 SBOM 未验证。
+- 输出显示 `credentials_included: true`、`absolute_paths_included: true` 或任何 secret finding。
+- 构建与校验使用的 Release ID 不一致。
+- GitHub Actions 不是当前 main 提交、存在红叉/取消，或绿色结果来自无关分支。
+- 终端意外显示 sudo 密码、API Key、私钥、认证环境文件内容或私人 shell history。
+
+**验收标准**
+
+- [ ] Jetson 全量测试 `OK`，测试数量和耗时清楚可辨认。
+- [ ] Repository Publication Gate 明确 passed。
+- [ ] Release provenance 为 PASS，CycloneDX 1.7 VERIFIED，Source integrity MATCH。
+- [ ] 构建和完整性校验均通过，凭据及绝对路径均未包含。
+- [ ] GitHub CI 对当前 main 提交全部绿色，关键六个步骤可辨认。
+- [ ] 两段视频没有密码、令牌、私钥、邮箱或本地绝对秘密路径。
+
 ## 11. 推荐分批执行
 
 | 批次 | 内容 | 预计时间 |
@@ -1184,7 +1337,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 | Batch 6 | 其余专项视频 | 1–2 天 |
 | Batch 7 | V20 宣传片 | 1–2 小时 |
 
-H10、D02、D03、D06、D09、D10、D11、V01 和 V04 已完成原片验收。V04 已同时覆盖 E09 的事件详情与前后证据；下一项优先录制 V06，再录 V18。
+H10、D02、D03、D06、D09、D10、D11、V01、V04 和 V06 已完成原片验收。V04 已同时覆盖 E09 的事件详情与前后证据；下一项优先录制 V18。
 
 ## 12. 公开前脱敏检查
 
@@ -1221,6 +1374,7 @@ Codex 会检查清晰度、隐私、重复镜头与命名，再挑选、裁剪�
 - [x] E09 物品移走事件与证据（V04 清晰帧已覆盖，直接截图可选）
 - [x] V04 瓶子生命周期视频（89.8 秒、1080p，完整闭环已验收）
 - [x] V01 端到端演示（209.4 秒、1080p，待剪至约 150–180 秒）
-- [ ] V06 Agent Harness 多步 Skill 与 Trace
+- [x] V06 Agent Harness 多步 Skill 与 Trace（50.2 秒、1080p，固定 Skill 与 3 工具已验收）
+- [ ] V18 发布工程：Jetson 测试/来源/SBOM + GitHub CI
 
 现有硬件总览加上这些核心界面、事件和视频，就能显著提升 GitHub 首页可信度；无需用大量器材特写稀释项目重点。
