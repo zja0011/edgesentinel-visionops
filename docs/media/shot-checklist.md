@@ -749,12 +749,12 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 
 ## 7. 视觉与事件闭环截图
 
-最终文件放 `docs/media/vision/` 或 `docs/media/events/`。E05–E10 各保存一张发生前原图和一张发生后原图，最后制作拼图。
+最终文件放 `docs/media/vision/` 或 `docs/media/events/`。动态功能优先录制连续视频，再从已验收原片无损提取关键帧作为 README 静态图；不要为了同一结论同时重复录制和截图。E01–E04 由 V02 覆盖，E05–E07 由 V03 覆盖，E08–E09 由 V04 覆盖，E10 由 V05 覆盖，E11 由 V12 覆盖；E12–E13 是稳定的完整性/哈希结论，使用单独截图。
 
 | 编号 | 公开文件名 | 触发动作 | 验收点 |
 |---|---|---|---|
 | E01 | `vision/01-people-count.png` | 0、1、2 人各停留 3 秒 | 人数与实际一致 |
-| E02 | `vision/02-object-count.png` | 两瓶一盒入画 | 类别和数量清晰 |
+| E02 | `vision/02-object-count.png` | 两瓶加一本书入画 | 使用模型支持的 `bottle`/`book`，类别和数量清晰 |
 | E03 | `vision/03-bottle-inventory.png` | 两瓶稳定放置 | 稳定对象与库存状态 |
 | E04 | `vision/04-person-track.png` | 人从左向右走 | Track ID/轨迹连续 |
 | E05 | `events/01-zone-enter.png` | 人进入左侧区域 | ZONE_ENTER、区域、时间 |
@@ -840,7 +840,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 | 编号 | 最终文件名 | 时长 | 演示顺序 | 标记 |
 |---|---|---:|---|---|
 | V01 | `edgesentinel-demo-01-end-to-end-zh-cn-1080p.mp4` | 2–3 分钟 | 实物 → HTTPS → 检测 → 事件 → Agent → Workbench | L0/PHY |
-| V02 | `edgesentinel-demo-02-live-vision-zh-cn-1080p.mp4` | 60–90 秒 | 0/1/2 人 → 两瓶一盒 → 轨迹 | PHY |
+| V02 | `edgesentinel-demo-02-live-vision-zh-cn-1080p.mp4` | 90–120 秒 | 0/1/2 人 → 跨区域轨迹 → 两瓶加一本书 → 稳定库存 | PHY |
 | V03 | `edgesentinel-demo-03-zone-events-zh-cn-1080p.mp4` | 60–90 秒 | 进入 → 停留 → 离开 → 三类证据 | PHY |
 | V04 | `edgesentinel-demo-04-object-lifecycle-zh-cn-1080p.mp4` | 90 秒 | 放瓶 → 稳定库存 → 拿走 → 前后证据 | PHY |
 | V05 | `edgesentinel-demo-05-left-behind-zh-cn-1080p.mp4` | 60–90 秒 | 人携物进入 → 放下 → 离开 → 遗留事件 | PHY |
@@ -859,6 +859,14 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 | V18 | `edgesentinel-demo-18-release-engineering-zh-cn-1080p.mp4` | 可选 | 发布工程以 P01–P04 静态截图为主；宣传片需要时再做动态蒙太奇 | L0 |
 | V19 | `edgesentinel-demo-19-full-uncut-proof-zh-cn-1080p.mp4` | 5–8 分钟 | 实物、浏览器、关键终端连续无剪辑 | L0/PHY |
 | V20 | `edgesentinel-demo-20-project-trailer-zh-cn-1080p.mp4` | 45–60 秒 | 硬件、检测、事件、Agent、MCP、安全、恢复、CI | 发布片 |
+
+### 截图与视频的选择规则
+
+- **必须录视频**：状态随时间变化、物理动作触发、轨迹连续性、自动恢复或多步 Agent 执行。视频保留动作发生前、发生时和发生后的连续因果链。
+- **优先截图**：哈希、SBOM、测试 PASS、配置摘要、工具 Schema、审计/恢复最终状态等稳定结论。截图信息密度高，也便于读者放大核对文字。
+- **视频派生截图**：人数 0→1→2、物品出现/稳定/移除、区域进入/停留/离开等动态功能先录视频；README 所需静态图从验收视频关键帧提取，不要求再次摆拍。
+- **不重复拍摄**：一个已验收视频若完整覆盖某个 E 编号，只补缺失的关键帧，不重新执行物理动作。
+- **危险或扰动操作**：摄像头拔插、重启、清理、长期记忆写入等只在明确的维护窗口录制一次；静态证明优先使用已有 acceptance summary。
 
 ### V04 原片验收记录：瓶子生命周期与移除证据
 
