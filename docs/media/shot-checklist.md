@@ -1272,10 +1272,10 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 
 **验收标准**
 
-- [ ] P01 同时证明全量测试 OK 和 publication gate passed。
-- [ ] P02 明确证明 CycloneDX VERIFIED、Source integrity MATCH、无凭据和绝对路径。
-- [ ] P03 的构建与校验 Release ID 一致且校验 PASS。
-- [ ] P04 对应当前 main 提交，关键 CI 步骤全部绿色。
+- [x] P01 同时证明全量测试 OK 和 publication gate passed。已验收原片：`20260812_P01_full-tests-publication-gate_take02.png`（656 项测试通过，publication gate PASS，未显示密码提示）。
+- [x] P02 明确证明 CycloneDX VERIFIED、Source integrity MATCH、无凭据和绝对路径。已验收原片：`20260812_P02_release-provenance-cyclonedx_take01.png`（Release ID `esv_0_1_0_dev_1_fae092fe8e7b8d12`）。
+- [x] P03 的构建与校验 Release ID 一致且校验 PASS。已验收原片：`20260812_P03_release-artifacts-integrity_take01.png`（Release ID `esv_0_1_0_dev_1_fae092fe8e7b8d12`）。
+- [x] P04 对应当前 main 提交，关键 CI 步骤全部绿色。已验收主图：`20260812_P04_github-actions-ci-green_take01.png`（Run #20、validate succeeded、关键步骤全绿）；辅助历史图：`20260812_P04b_github-actions-history_take01.png`（提交 `64fe038` 与连续 CI 记录）。
 - [ ] 四张图文字清晰，没有密码、令牌、私钥、邮箱或秘密路径。
 
 ## 11. 推荐分批执行
@@ -1290,7 +1290,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 | Batch 6 | 其余专项视频 | 1–2 天 |
 | Batch 7 | V20 宣传片 | 1–2 小时 |
 
-H10、D02、D03、D06、D09、D10、D11、V01、V04 和 V06 已完成原片验收。V04 已同时覆盖 E09 的事件详情与前后证据；下一项拍摄 P01–P04 发布工程截图。
+H10、D02、D03、D06、D09、D10、D11、V01、V04、V06 和 P01–P04 已完成原片验收。V04 已同时覆盖 E09 的事件详情与前后证据；发布工程核心证明截图已经齐备。
 
 ## 12. 公开前脱敏检查
 
