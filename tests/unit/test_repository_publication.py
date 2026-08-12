@@ -89,6 +89,34 @@ class RepositoryPublicationGateTests(unittest.TestCase):
 
             self.assertIn("FILE_TOO_LARGE:apps/large.py", result["issues"])
 
+    def test_invalid_path_fails_closed_without_crashing_or_exposing_it(self):
+        with tempfile.TemporaryDirectory() as directory:
+            self.write(directory, "apps/main.py", "VALUE = 'safe'\n")
+            invalid_path = "private\\\\..\\\\secret"
+            gate = RepositoryPublicationGate(directory)
+
+            result = gate.check(
+                paths=("apps/main.py", invalid_path),
+                require_governance=False,
+            )
+
+            self.assertEqual(result["status"], "FAIL")
+            self.assertIn("INVALID_REPOSITORY_PATH", result["issues"])
+            self.assertNotIn(invalid_path, str(result))
+
+    def test_fallback_ignores_gitignored_deployment_dependencies(self):
+        with tempfile.TemporaryDirectory() as directory:
+            self.write(directory, "apps/main.py", "VALUE = 'safe'\n")
+            self.write(directory, "vendor/pip/launcher.exe", b"MZ\x00binary")
+            self.write(directory, "vendor/python/runtime.so", b"\x7fELF\x00binary")
+            gate = RepositoryPublicationGate(directory)
+
+            result = gate.check(require_governance=False)
+
+            self.assertEqual(result["status"], "PASS")
+            self.assertEqual(result["scanned_files"], 1)
+            self.assertEqual(result["binary_files"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()

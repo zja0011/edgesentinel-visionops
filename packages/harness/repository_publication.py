@@ -95,10 +95,18 @@ class RepositoryPublicationGate(object):
                 tracked_files_only = True
             else:
                 paths = self._fallback_files()
-        normalized_paths = sorted(set(
-            self._normalize_relative_path(path) for path in paths
-        ))
         issues = []
+        normalized_paths = []
+        for path in paths:
+            try:
+                normalized_paths.append(self._normalize_relative_path(path))
+            except (TypeError, ValueError):
+                # A deployment copy can contain filenames that Git would never
+                # track (for example, a literal backslash on Linux).  Keep the
+                # publication boundary fail-closed without crashing or echoing
+                # a potentially sensitive filename.
+                issues.append("INVALID_REPOSITORY_PATH")
+        normalized_paths = sorted(set(normalized_paths))
         if len(normalized_paths) > self.MAX_FILES:
             issues.append("FILE_COUNT_LIMIT_EXCEEDED")
         total_bytes = 0
@@ -219,13 +227,19 @@ class RepositoryPublicationGate(object):
             directories[:] = sorted(
                 directory
                 for directory in directories
-                if directory not in (
-                    ".git",
-                    ".venv",
-                    "__pycache__",
-                    ".pytest_cache",
-                    "data",
-                    "dist",
+                if not (
+                    directory in (
+                        ".git",
+                        ".venv",
+                        "__pycache__",
+                        ".pytest_cache",
+                        "data",
+                        "dist",
+                    )
+                    or (
+                        relative_root == "vendor"
+                        and directory in ("pip", "python")
+                    )
                 )
             )
             for filename in sorted(filenames):
