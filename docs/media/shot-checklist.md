@@ -860,6 +860,24 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 | V19 | `edgesentinel-demo-19-full-uncut-proof-zh-cn-1080p.mp4` | 5–8 分钟 | 实物、浏览器、关键终端连续无剪辑 | L0/PHY |
 | V20 | `edgesentinel-demo-20-project-trailer-zh-cn-1080p.mp4` | 45–60 秒 | 硬件、检测、事件、Agent、MCP、安全、恢复、CI | 发布片 |
 
+### V04 原片验收记录：瓶子生命周期与移除证据
+
+原片：
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-12\20260812_V04_object-lifecycle-bottle-removal_take01.mp4
+```
+
+实际规格与结果：
+
+- 时长 `89.8` 秒，画面 `1920×1080`，约 `23.6 FPS`，文件约 `4.7 MiB`。
+- 连续录到了登录、实时瓶子检测、稳定库存、拿走瓶子、库存归零、事件筛选和事件详情。
+- 最新事件为“物品移除”，目标类别为 `bottle`，处置状态仍为“待处理”。
+- 证据完整性为 `PASS · 3/3有效 · primary=VALID · before=VALID · after=VALID`。
+- “变化前”清楚显示瓶子，“变化后”清楚显示瓶子已消失，物理变化闭环成立。
+- 原片可验收，无需重录；E09 公开静态图可从事件详情清晰帧无损截取，直接截图仅作为可选补拍。
+- 发布前应裁去或遮挡浏览器地址中的 LAN IP、右上角用户名、完整 Event ID，并删除或静音原始音轨（如存在）。
+
 ### V01 一镜到底旁白
 
 1. “这是运行在 Jetson Nano 上的 EdgeSentinel 边缘视觉系统。”
@@ -871,6 +889,142 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 7. 展开 Workbench，展示决策、工具、Trace、预算和 Hook。
 8. 展开 MCP Catalog，说明 Schema、风险和默认拒绝。
 9. 用 systemd 验收与 GitHub Actions 通过页面收尾。
+
+### V01 详细录制卡：端到端核心演示
+
+**目标**
+
+用一段连续的 PC 屏幕录像，证明“认证进入 → Jetson 实时视觉 → 人数变化 → Agent 自动选择工具 → Harness Workbench 可观测 → 事件证据可追溯 → MCP 工具 Schema 可见”的核心链路。硬件真实性由 H01/H10 和 V04 补充，V01 不需要再用手机拍开发板。
+
+**录制参数**
+
+```text
+画面：1920×1080
+帧率：30 FPS（录制软件若只能稳定到 24 FPS 也可）
+预计时长：2–3 分钟
+录制范围：浏览器窗口或 1920×1080 显示器
+麦克风：关闭
+系统声音：关闭
+鼠标指针：保留
+浏览器缩放：90% 或 100%，全程不变
+```
+
+不要使用长截图录制模式，不要在录像过程中切换分辨率。Chrome 地址栏和 Dashboard 用户名允许留在原片中，发布版会统一裁剪或遮挡。
+
+**录制前准备**
+
+1. 确认 `https://192.168.1.101:8443/dashboard` 可以打开，证书仍为当前已验证证书。
+2. 退出 Dashboard 回到登录页，但不要在录像中展示或输入真实密码。可在开始录制前让浏览器已记住表单，或只展示登录页 2 秒后暂停录制、登录、再继续；最终会剪辑转场。
+3. 确认 Dashboard 启动模式为远程 DeepSeek，API 在线，视觉状态为 `LIVE/实时`。
+4. 让摄像头初始画面无人，当前人员为 0；移走桌面上会干扰识别的其他物品。
+5. 准备让一名人员进入摄像头画面并停留 5–8 秒。人脸可以进入原片，公开版默认打码。
+6. 事件中心应能找到 V04 刚生成的“物品移除 / bottle”事件；如超过最近 10 分钟，将时间范围改为“最近 24 小时”或“全部历史”。
+7. 清空 Vision Copilot 输入框，不要清除本次已有事件或修改处置状态。
+
+**连续镜头顺序**
+
+1. **登录入口，约 3 秒**
+
+   - 从 EdgeSentinel 登录页开始。
+   - 页面标题和登录卡必须完整可见。
+   - 不在录像中敲真实密码；使用已填充的圆点密码并点击登录，或后期在此处使用切镜。
+
+2. **系统总览，约 8 秒**
+
+   - 登录后停在 Dashboard 顶部。
+   - 让项目标题、`API 在线`、摄像头最新标注画面、当前人员和视觉状态同时可见。
+   - 初始画面保持无人，展示“当前人员 0 / 可见 0 / 实时”。
+
+3. **真实人员检测，约 15 秒**
+
+   - 人员进入摄像头画面中央或左侧区域，站定 5–8 秒。
+   - 等待画面出现 `person XX.X%` 检测框，当前人员和可见人员变为 1。
+   - 鼠标不要遮住检测框或人数数字。
+   - 人员离开画面后再等 3–5 秒，让画面回到无人状态；不要求在这一段打开事件。
+
+4. **Agent 工具调用，约 25–40 秒**
+
+   - 在 Vision Copilot 输入：
+
+     ```text
+     请只回答当前摄像头里有几个人，并调用视觉人数工具。
+     ```
+
+   - 点击“发送问题”后不要重复点击。
+   - 等待任务显示 `TASK COMPLETED`、`1 step`，并显示 `vision.get_people_count · SUCCEEDED`。
+   - 答案人数必须与此时实时画面一致；如人员已离开，应为 0。不要为了得到 1 人而让操作人员在键盘和摄像头之间来回奔跑。
+
+5. **Agent Harness Workbench，约 25–35 秒**
+
+   - 展开刚才任务的 Workbench/执行详情。
+   - 缓慢滚动，至少依次停留在以下内容各 2–3 秒：
+
+     ```text
+     Task COMPLETED
+     TOOL_ROUTE / DETERMINISTIC
+     MODEL_DECISION
+     vision.get_people_count / SUCCEEDED
+     Policy / L0
+     Trace 或生命周期时间线
+     模型调用、工具调用与 Token/执行预算
+     ```
+
+   - 不展开原始模型内容、完整 Task ID、会话原文或任何内部证据路径。
+
+6. **真实事件证据，约 20–30 秒**
+
+   - 滚动至事件中心，筛选：物品移除、待处理、全部级别、`bottle`，时间选择能覆盖 V04 事件。
+   - 打开最新一条与 V04 时间一致的事件详情。
+   - 停留到清楚显示：`PASS`、`3/3有效`、`before=VALID`、`after=VALID`，以及变化前有瓶子、变化后无瓶子的三张图。
+   - 不点击“通过 Agent 确认已处理”，不展开结构化 JSON。
+
+7. **MCP Catalog，约 20–30 秒**
+
+   - 关闭事件详情，滚动到 MCP Catalog。
+   - 显示工具总数、资源数、Prompt 数和只读工具摘要。
+   - 展开 `weather.get_current` 或 `vision.get_people_count`，让工具说明、L0/只读标记及 JSON Schema 同时可见。
+   - 不实际调用外部天气，不产生额外网络结果；本段只证明 Schema 和注册目录。
+
+8. **结尾，约 5 秒**
+
+   - 回到 Dashboard 顶部或停在 Workbench 总览。
+   - 让 `API 在线`、`实时` 或 `TASK COMPLETED` 中至少两个状态可见。
+   - 鼠标移到空白处，静止 3–5 秒后停止录制。
+
+**原始文件名与位置**
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-12\20260812_V01_end-to-end-dashboard-agent-mcp_take01.mp4
+```
+
+如果因登录剪切必须录成两段，第二段命名：
+
+```text
+20260812_V01_end-to-end-dashboard-agent-mcp_take02.mp4
+```
+
+不要覆盖 take01；后期可以合并。
+
+**立即停止并报告的情况**
+
+- API 不在线、视觉状态为 STALE、摄像头画面不刷新。
+- 人员进入 15 秒仍无 person 框，或人数与实际不一致。
+- Agent 未调用 `vision.get_people_count`，工具失败，或答案人数与实时状态冲突。
+- Workbench 显示 Task FAILED、Policy denied、预算超限或 Trace 缺失。
+- 事件证据不是 PASS，before/after 缺失或图片内容相反。
+- MCP Catalog 加载失败、工具计数为空或 Schema 不可见。
+- 页面出现 API Key、密码、恢复口令、完整本机目录或其他秘密。
+
+**验收标准**
+
+- [ ] 1080p，画面清晰，无系统弹窗、通知、私人标签页或桌面文件泄露。
+- [ ] 登录入口、API 在线、实时视觉、0→1 人变化均被录到。
+- [ ] Agent 任务完成，人数工具调用成功，回答与实时画面一致。
+- [ ] Workbench 的路由、模型决策、工具结果、L0 策略、Trace 和预算可辨认。
+- [ ] V04 的 bottle 移除事件、PASS 和 before/after 证据可辨认。
+- [ ] MCP Catalog 的计数、风险/只读标记和至少一个 JSON Schema 可辨认。
+- [ ] 没有执行确认事件、重启、清理、记忆写入或其他 L1/L2 写操作。
+- [ ] 原片时长尽量控制在 180 秒内；操作等待过长可后期剪掉，但关键状态不能跳过。
 
 ## 11. 推荐分批执行
 
@@ -884,7 +1038,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 | Batch 6 | 其余专项视频 | 1–2 天 |
 | Batch 7 | V20 宣传片 | 1–2 小时 |
 
-现有 H01 已完成硬件总览。下一批拍 H10 和 D02/D03/D06/D09/D10/D11，然后再拍 E09、V01/V06/V18。
+H10、D02、D03、D06、D09、D10、D11 和 V04 已完成原片验收。V04 已同时覆盖 E09 的事件详情与前后证据；下一项优先录制 V01，再录 V06/V18。
 
 ## 12. 公开前脱敏检查
 
@@ -918,7 +1072,8 @@ Codex 会检查清晰度、隐私、重复镜头与命名，再挑选、裁剪�
 - [x] D09 Agent 工具调用（0 人/1 人整页原片已验收，待制作对照裁图）
 - [x] D10 Agent Workbench（整页原片已覆盖完整 Workbench，待安全裁图）
 - [x] D11 MCP Catalog（局部截图已验收）
-- [ ] E09 物品移走事件与证据
+- [x] E09 物品移走事件与证据（V04 清晰帧已覆盖，直接截图可选）
+- [x] V04 瓶子生命周期视频（89.8 秒、1080p，完整闭环已验收）
 - [ ] V01 端到端演示
 
 现有硬件总览加上这些核心界面、事件和视频，就能显著提升 GitHub 首页可信度；无需用大量器材特写稀释项目重点。
