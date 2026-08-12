@@ -878,6 +878,25 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 - 原片可验收，无需重录；E09 公开静态图可从事件详情清晰帧无损截取，直接截图仅作为可选补拍。
 - 发布前应裁去或遮挡浏览器地址中的 LAN IP、右上角用户名、完整 Event ID，并删除或静音原始音轨（如存在）。
 
+### V01 原片验收记录：Dashboard、Agent、事件与 MCP 端到端
+
+原片：
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-12\20260812_V01_end-to-end-dashboard-agent-mcp_take01.mp4
+```
+
+实际规格与结果：
+
+- 时长 `209.4` 秒，画面 `1920×1080`，约 `23.6 FPS`，文件约 `16.5 MiB`。
+- 登录入口、Dashboard 实时画面、人员从 0 变为 1、左侧区域人数 1 和实时状态均清楚可见。
+- Agent 对“请只回答当前摄像头有几个人，并调用视觉人数工具”的任务返回当前 1 人，`vision.get_people_count · SUCCEEDED`。
+- Workbench 清楚显示 `DETERMINISTIC` 路由、`COMPLETED · 2 steps`、模型调用、L0 工具、Hooks、工具结果、Token/执行预算与任务结束。
+- 事件段展示的是本次人员入画产生的“长时间停留 / person / Left Zone / MEDIUM / 待处理”，证据完整性 `PASS · 1/1有效 · primary=VALID`；它与 V04 的 bottle before/after 形成互补，不视为缺陷。
+- MCP Catalog 显示 `25个只读MCP工具`，并展开 `vision.get_people_count` 的 L0/只读/本地标记、说明和 JSON Schema。
+- 原片可验收，无需重录。发布剪辑应删除前半段无关的 `who are you` 请求、排队等待、重复滚动和事件加载等待，将成片压缩到约 150–180 秒。
+- 发布前应遮挡 LAN IP、右上角用户名、完整 Task/Event/Session ID，并默认打码人员面部；原始音轨如存在应删除或静音。
+
 ### V01 一镜到底旁白
 
 1. “这是运行在 Jetson Nano 上的 EdgeSentinel 边缘视觉系统。”
@@ -1026,6 +1045,133 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 - [ ] 没有执行确认事件、重启、清理、记忆写入或其他 L1/L2 写操作。
 - [ ] 原片时长尽量控制在 180 秒内；操作等待过长可后期剪掉，但关键状态不能跳过。
 
+### V06 详细录制卡：Agent Harness 多步 Skill 与全生命周期 Trace
+
+**目标**
+
+用一个真实只读调查任务，证明 Agent 不只是“一问一答”，而是能先选择版本固定的 Skill，再按限定工具集合执行多步调查，并把工具路由、模型决策、Hooks、工具结果、预算和终态记录在 Workbench 中。V06 不重复人员计数，也不需要人员再次入画。
+
+**录制参数**
+
+```text
+画面：1920×1080
+帧率：30 FPS（稳定 24 FPS 也可）
+预计时长：90–150 秒
+录制范围：浏览器窗口或 1920×1080 显示器
+麦克风：关闭
+系统声音：关闭
+浏览器缩放：90% 或 100%，全程固定
+```
+
+**录制前准备**
+
+1. 登录 Dashboard，确认 API 在线、模型为“在线 DeepSeek”、视觉状态为实时。
+2. 确认 V04 产生的 `物品移除 / bottle` 事件仍存在；它不必是事件列表第一条，但必须是最近的 bottle 移除事件。
+3. 滚动到 Vision Copilot，关闭上一任务的 Workbench 展开项，清空输入框。
+4. 不清除短期会话、不写长期记忆、不确认任何事件；本次只执行 L0 调查。
+5. 关闭私人浏览器标签页和通知；录制期间不要切换到终端。
+
+**精确操作步骤**
+
+1. **起始状态，约 5 秒**
+
+   - 让 Vision Copilot 标题、在线 DeepSeek、Harness 评测基线 `PASS` 和空输入框同时可见。
+   - 鼠标停在空白区域 2–3 秒后开始输入。
+
+2. **输入固定调查问题，约 5 秒**
+
+   为确保命中已经验收的版本固定 Skill，原样输入英文：
+
+   ```text
+   Who took the bottle in the most recent removal event?
+   ```
+
+   这是功能验收用自然语言，不是脚本命令。只点击一次“发送问题”。
+
+3. **等待多步执行，约 10–30 秒**
+
+   - 录到任务进入 QUEUED/RUNNING 的过程即可，不要重复提交。
+   - 等待最终状态 `TASK COMPLETED`。
+   - 如果回答如实说明证据无法确定具体人员，也属于正确结果；不要要求模型猜测身份。
+
+4. **最终回答与工具链，约 12–20 秒**
+
+   保持页面静止，确保能读到：
+
+   ```text
+   TASK COMPLETED
+   vision.investigate_removed_item@1.0.0
+   event.query · SUCCEEDED
+   event.get_detail · SUCCEEDED
+   evidence.verify_event · SUCCEEDED
+   ```
+
+   实际工具数量可能因当前事件上下文略有差异，但只允许上述三类 L0 工具，且所有已调用工具必须为 SUCCEEDED。
+
+5. **Workbench 摘要，约 15 秒**
+
+   - 展开该任务的 `HARNESS RUN`。
+   - 在摘要区停留，使以下字段清楚可见：Task COMPLETED、Skill 名称及版本、工具路由、模型服务路径、步骤数、耗时、模型/工具/外部调用预算和 Token 使用量。
+   - 完整 Task ID 可留在原片，最终发布版会截断；不要主动选中或复制它。
+
+6. **生命周期 Trace，约 35–60 秒**
+
+   缓慢向下滚动，每个关键节点停留约 2 秒，依次让观众看到：
+
+   ```text
+   SKILL_SELECTED / Skill 选择
+   TOOL_ROUTE / 工具路由
+   before_model Hook（FAIL_CLOSED）
+   MODEL_RESILIENCE / 模型韧性
+   MODEL_USAGE / 模型用量
+   MODEL_DECISION / 模型决策
+   before_tool Hook
+   event.query 工具结果 / SUCCEEDED
+   event.get_detail 工具结果 / SUCCEEDED
+   evidence.verify_event 工具结果 / SUCCEEDED
+   after_tool / on_checkpoint Hook
+   TASK_RESULT 或任务结束 / COMPLETED
+   on_task_complete Hook
+   ```
+
+   某些节点顺序会因模型的多步决定交错出现，以实际 Trace 为准；不要为了凑顺序重新提交任务。
+
+7. **结尾，约 5 秒**
+
+   - 回到 Workbench 摘要，或停在最后的 `COMPLETED`/`on_task_complete` 节点。
+   - 鼠标移到空白处，静止 3–5 秒后停止录制。
+
+**原始文件名与位置**
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-12\20260812_V06_agent-harness-skill-hooks-trace_take01.mp4
+```
+
+如第一次任务因远端网络短暂失败需要重拍，不覆盖原文件，使用：
+
+```text
+20260812_V06_agent-harness-skill-hooks-trace_take02.mp4
+```
+
+**立即停止并报告的情况**
+
+- 任务状态为 FAILED、CANCELLED 或 AWAITING_CONFIRMATION。
+- 未选择 `vision.investigate_removed_item@1.0.0`，或 Skill 字段显示未触发。
+- 调用了允许集合之外的工具，或者任何工具状态不是 SUCCEEDED。
+- 任务要求确认、发生 L1/L2 写操作，或事件处置状态被改变。
+- Workbench 没有 Skill、Hooks、Trace、预算或任务终态。
+- 页面暴露 API Key、密码、恢复口令、证据绝对路径或模型原始隐藏内容。
+
+**验收标准**
+
+- [ ] 任务 `COMPLETED`，固定 Skill 名称、版本和多步执行可辨认。
+- [ ] 至少一个、最好三个调查工具执行成功，且全部为 L0 只读。
+- [ ] Workbench 摘要显示路由、步骤、耗时和执行/Token 预算。
+- [ ] Trace 中可看到 Skill 选择、模型决策、工具结果、Hooks、Checkpoint 和终态。
+- [ ] 回答不凭空识别具体人员，证据不足时明确说明不确定性。
+- [ ] 未确认事件、未写长期记忆、未执行重启或清理。
+- [ ] 视频无私人通知、秘密、绝对路径或其他页面干扰。
+
 ## 11. 推荐分批执行
 
 | 批次 | 内容 | 预计时间 |
@@ -1038,7 +1184,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 | Batch 6 | 其余专项视频 | 1–2 天 |
 | Batch 7 | V20 宣传片 | 1–2 小时 |
 
-H10、D02、D03、D06、D09、D10、D11 和 V04 已完成原片验收。V04 已同时覆盖 E09 的事件详情与前后证据；下一项优先录制 V01，再录 V06/V18。
+H10、D02、D03、D06、D09、D10、D11、V01 和 V04 已完成原片验收。V04 已同时覆盖 E09 的事件详情与前后证据；下一项优先录制 V06，再录 V18。
 
 ## 12. 公开前脱敏检查
 
@@ -1074,6 +1220,7 @@ Codex 会检查清晰度、隐私、重复镜头与命名，再挑选、裁剪�
 - [x] D11 MCP Catalog（局部截图已验收）
 - [x] E09 物品移走事件与证据（V04 清晰帧已覆盖，直接截图可选）
 - [x] V04 瓶子生命周期视频（89.8 秒、1080p，完整闭环已验收）
-- [ ] V01 端到端演示
+- [x] V01 端到端演示（209.4 秒、1080p，待剪至约 150–180 秒）
+- [ ] V06 Agent Harness 多步 Skill 与 Trace
 
 现有硬件总览加上这些核心界面、事件和视频，就能显著提升 GitHub 首页可信度；无需用大量器材特写稀释项目重点。
