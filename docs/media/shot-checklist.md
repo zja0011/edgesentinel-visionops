@@ -178,8 +178,8 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\01_raw_pho
 | D06 | `dashboard/06-event-center.png` | 事件中心局部截图 | **原片已完成**；七项筛选、107 条汇总、趋势、6 条事件和分页 | L0 |
 | D07 | `dashboard/07-event-evidence.png` | 打开带证据事件 | 详情、证据图、校验状态 | L0/SEC |
 | D08 | `dashboard/08-zone-editor.png` | 打开区域配置 | 多边形、保存状态、只读/可写提示 | L0/L1 |
-| D09 | `dashboard/09-agent-chat-tool-call.png` | 问“摄像头里面现在站着几位？” | 自然语言、工具名、结果、step | L0 |
-| D10 | `dashboard/10-agent-workbench.png` | 展开 Workbench | MODEL_DECISION → TOOL_RESULT → TASK_RESULT | L0 |
+| D09 | `dashboard/09-agent-chat-tool-call.png` | 0 人/1 人两次自然语言查询 | **原片已完成**；视觉状态、回答与 `vision.get_people_count` 相互印证 | L0 |
+| D10 | `dashboard/10-agent-workbench.png` | 展开 Workbench | **原片已完成**；元数据、预算和完整脱敏生命周期 Trace | L0 |
 | D11 | `dashboard/11-mcp-catalog.png` | 展开 MCP 目录 | 工具数、风险、Schema、external 标记 | L0 |
 | D12 | `dashboard/12-model-switch.png` | 打开模型切换 | remote/offline 和当前选择 | L0 |
 | D13 | `dashboard/13-weather-tool.png` | 问“武汉今天天气怎样？” | DeepSeek、weather.get_current、外部请求 | L0 |
@@ -522,6 +522,100 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 - [ ] HARNESS RUN 已收起，截图主题集中在自然语言和工具结果。
 - [ ] 没有 Task/Session ID、私人记忆、凭据、IP 或用户名。
 
+### D09/D10 原片验收说明
+
+已保存 `no_people.png` 和 `one_people.png` 两张 1205×8754 整页原图。两张图分别记录 0 人与 1 人场景，顶部实时视觉画面/指标与底部 Agent 回答一致，并显示 `vision.get_people_count · SUCCEEDED`。最终 D09 制作为双场景对照图，不需要重拍。
+
+两张原图中的 HARNESS RUN 已展开，虽然不符合 D09 单图的最简构图，但提供了 D10 所需的完整来源：模型、Skill、工具路由、韧性、步骤、耗时、执行预算及脱敏 Trace。最终从 `one_people.png` 单独裁出 D10；公开版截断 Task ID，并检查 Session/用户信息。因此 D09 与 D10 均标记为原片完成。
+
+### D11 详细截图卡：MCP 工具目录与 Schema
+
+**目标**
+
+证明 EdgeSentinel 不只是内部函数集合，而是向 Agent 暴露了结构化、带风险注解和 JSON Schema 的 MCP 工具目录。截图需同时展示工具总数、多个工具名称、L0/只读/本地或外部网络标记，以及至少一个已展开工具的参数 Schema。
+
+**截图前准备**
+
+1. 保持 Dashboard 已登录、`API 在线`。
+2. 滚动到 `EDGE RUNTIME / 服务运行状态` 面板。
+3. Agent 任务、事件详情和确认窗口无需出现在截图中。
+4. 不调用任何 MCP 工具；D11 只查看目录，属于 L0 只读操作。
+
+**具体操作步骤**
+
+1. 在“服务运行状态”中确认 `MCP 工具协议` 一行显示类似：
+
+   ```text
+   按需启动 · 25工具 · 5资源 · 3提示
+   ```
+
+   实际数字可随版本增长，以当前页面为准，不要手工修改。
+2. 点击面板底部“查看 MCP 工具”。
+3. 等待摘要变为“XX 个只读 MCP 工具 · 点击名称查看参数 Schema”，不能停留在“正在读取”。
+4. 在工具列表中找到并展开 `vision.get_people_count`；如果它的输入 Schema 过短，可改为展开参数更丰富且仍为 L0 的 `event.query`。
+5. 只展开一个工具，其余工具保持收起，以便同图展示至少 5 个不同工具名称。
+6. 截图范围从 `EDGE RUNTIME / 服务运行状态` 标题开始，必须包含：
+
+   - `MCP 工具协议` 状态行；
+   - “XX 个只读 MCP 工具”摘要；
+   - 至少 5 个工具名称；
+   - 每个名称旁的 `L0 · 只读 · 本地` 或 `L0 · 只读 · 外部网络`；
+   - 一个工具的说明文字和 JSON Schema。
+
+7. 如果列表在右侧窄栏中导致 Schema 太窄，可只对右侧 Edge Runtime 面板做区域长截图；不要把左侧大面积空库存面板纳入最终图。
+8. 使用系统截图或 Edge 区域长截图，不使用手机拍屏。
+
+**推荐展开顺序**
+
+首选：
+
+```text
+vision.get_people_count
+```
+
+备选：
+
+```text
+event.query
+weather.get_current
+```
+
+如果展示 `weather.get_current`，必须让“外部网络”标记可见，但不需要实际发起天气请求。
+
+**原始文件名**
+
+```text
+20260812_D11_mcp-catalog-schema_take01.png
+```
+
+若另拍外部网络工具：
+
+```text
+20260812_D11_mcp-catalog-external-weather_take02.png
+```
+
+保存到：
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_screens\2026-08-12\
+```
+
+**不要这样截**
+
+- 不要只截工具名称而没有摘要、风险标记或 Schema。
+- 不要一次展开多个工具，导致截图过长且难读。
+- 不要停留在“正在读取 MCP 工具目录”或读取失败状态。
+- 不要把 Agent Task ID、长期记忆、事件详情或用户/IP 纳入图中。
+- 不要打开浏览器开发者工具来展示原始 API Payload；Dashboard 的脱敏目录就是公开证据。
+
+**验收标准**
+
+- [ ] MCP 协议状态行与只读工具总数可见。
+- [ ] 至少 5 个不同 MCP 工具名可读。
+- [ ] L0、只读、本地/外部网络注解可读。
+- [ ] 一个工具的描述与 JSON Schema 完整可见。
+- [ ] 没有调用写工具，也没有凭据、Task ID、IP 或用户名。
+
 ## 7. 视觉与事件闭环截图
 
 最终文件放 `docs/media/vision/` 或 `docs/media/events/`。E05–E10 各保存一张发生前原图和一张发生后原图，最后制作拼图。
@@ -690,8 +784,8 @@ Codex 会检查清晰度、隐私、重复镜头与命名，再挑选、裁剪�
 - [x] D02 Dashboard 总览（原始长截图已验收）
 - [x] D03 人员检测（原片已验收；公开前默认打码人脸）
 - [x] D06 事件中心（局部截图已验收）
-- [ ] D09 Agent 工具调用
-- [ ] D10 Agent Workbench
+- [x] D09 Agent 工具调用（0 人/1 人整页原片已验收，待制作对照裁图）
+- [x] D10 Agent Workbench（整页原片已覆盖完整 Workbench，待安全裁图）
 - [ ] D11 MCP Catalog
 - [ ] E09 物品移走事件与证据
 - [ ] V01 端到端演示
