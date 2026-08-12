@@ -175,7 +175,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\01_raw_pho
 | D03 | `dashboard/03-live-person-detection.png` | 一人进入 Left Zone | **原片已完成，公开前默认打码人脸**；person 82.1%、Left=1、当前人员=1、LIVE | PHY/L0 |
 | D04 | `dashboard/04-live-object-detection.png` | 放两个瓶子和一个盒子 | 类别、检测框、对象计数 | PHY/L0 |
 | D05 | `dashboard/05-device-health.png` | 打开设备状态 | 负载、温度、内存、磁盘、摄像头 | L0 |
-| D06 | `dashboard/06-event-center.png` | 打开事件中心 | 类型、严重度、处置状态、筛选 | L0 |
+| D06 | `dashboard/06-event-center.png` | 事件中心局部截图 | **原片已完成**；七项筛选、107 条汇总、趋势、6 条事件和分页 | L0 |
 | D07 | `dashboard/07-event-evidence.png` | 打开带证据事件 | 详情、证据图、校验状态 | L0/SEC |
 | D08 | `dashboard/08-zone-editor.png` | 打开区域配置 | 多边形、保存状态、只读/可写提示 | L0/L1 |
 | D09 | `dashboard/09-agent-chat-tool-call.png` | 问“摄像头里面现在站着几位？” | 自然语言、工具名、结果、step | L0 |
@@ -431,6 +431,97 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 - [ ] 没有展开事件详情或执行写操作。
 - [ ] 没有绝对路径、凭据、用户/IP 或未授权人员画面。
 
+### D09 详细截图卡：自然语言工具调用
+
+**目标**
+
+证明用户不需要点击固定问题按钮，也不需要完整输入“当前有几个人？”。手动输入一种自然口语表达后，在线 Agent 能理解意图、自动选择 `vision.get_people_count`、读取实时视觉状态并返回答案。D09 只展示问题、回答和工具结果，HARNESS RUN 的详细元数据与 Trace 留给 D10。
+
+**截图前准备**
+
+1. 摄像头画面保持无人，或者安排一人稳定站在左区；截图答案必须与真实现场一致。
+2. 右上角确认 `API 在线`，视觉状态为实时。
+3. 滚动到 `VISION COPILOT / 询问 EdgeSentinel`。
+4. “回答模型”选择 `在线 DeepSeek`，等待状态稳定显示在线/remote；不要在离线模式拍 D09。
+5. 不点击“当前有几个人？”预设按钮；必须在文本框里手动输入。
+6. 长期记忆列表如包含私人内容，先保持收起/移出截图范围，不要为了截图删除真实记忆。
+
+**本次必须输入的问题**
+
+```text
+现在摄像头画面里站着几位？
+```
+
+这句话有意不同于预设按钮的“当前有几个人？”，用于证明 Agent 能处理自然语言改写，而不是精确模板匹配。
+
+**具体操作步骤**
+
+1. 在“自然语言问题”文本框中手动输入上述问题。
+2. 点击“发送问题”，等待 `AGENT RUNNING/JOB RUNNING` 结束。
+3. 只有出现 `TASK COMPLETED` 后再截图。
+4. 核对回答中的人数与真实画面一致，并明确说明数据是否实时/陈旧。
+5. 核对绿色工具结果标签必须包含：
+
+   ```text
+   vision.get_people_count · SUCCEEDED
+   ```
+
+6. 核对任务元信息显示正常模型名和 step 数，不能是 `undefined step`。
+7. 结果返回后，点击自动展开的 `HARNESS RUN` 标题将其收起；D09 不展示 Task ID、路由、预算或 Trace。
+8. 保留输入框中的原始问题，不要清空，因为它是“用户确实输入了自然语言”的证据。
+9. 使用 Edge 区域截图或 `Win+Shift+S` 矩形截图，只截 Vision Copilot 模块：从 `VISION COPILOT` 标题开始，到工具成功标签及收起的 `HARNESS RUN` 行结束。
+10. 如果回答较长导致一屏放不下，使用“区域长截图”，仍然只捕获 Vision Copilot 模块，不截事件中心或整站。
+
+**截图中必须出现**
+
+- `VISION COPILOT / 询问 EdgeSentinel`。
+- 当前回答模型为在线 DeepSeek/remote。
+- 文本框中的“现在摄像头画面里站着几位？”。
+- `TASK COMPLETED`。
+- 正常模型名和明确 step 数。
+- 完整中文回答，人数与现场一致。
+- `vision.get_people_count · SUCCEEDED`。
+- 收起状态的 `HARNESS RUN` 标题可以保留，但不能展开详细信息。
+
+**原始文件名**
+
+无人场景：
+
+```text
+20260812_D09_agent-natural-language-people-count_zero_take01.png
+```
+
+一人场景：
+
+```text
+20260812_D09_agent-natural-language-people-count_one_take01.png
+```
+
+保存到：
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_screens\2026-08-12\
+```
+
+**不要这样截**
+
+- 不要点击预设的“当前有几个人？”按钮代替手动输入。
+- 不要在 TASK RUNNING、JOB QUEUED、REQUEST FAILED 或工具 FAILED 时截图。
+- 不要出现 `undefined step`。
+- 不要让回答人数与当前画面/指标矛盾。
+- 不要展开 HARNESS RUN；D10 会单独展示。
+- 不要把 Task ID、Session ID、长期私人记忆、用户名或 IP 纳入 D09。
+- 不要为了获得特定答案修改数据库或伪造工具结果。
+
+**验收标准**
+
+- [ ] 手动输入的口语化问题完整可见。
+- [ ] 任务状态为 `TASK COMPLETED`，模型名和 step 数正常。
+- [ ] 回答人数与摄像头真实现场一致，并标明数据新鲜度。
+- [ ] `vision.get_people_count · SUCCEEDED` 清晰可见。
+- [ ] HARNESS RUN 已收起，截图主题集中在自然语言和工具结果。
+- [ ] 没有 Task/Session ID、私人记忆、凭据、IP 或用户名。
+
 ## 7. 视觉与事件闭环截图
 
 最终文件放 `docs/media/vision/` 或 `docs/media/events/`。E05–E10 各保存一张发生前原图和一张发生后原图，最后制作拼图。
@@ -598,7 +689,7 @@ Codex 会检查清晰度、隐私、重复镜头与命名，再挑选、裁剪�
 - [x] H10 PC Dashboard 与 Jetson 同框（原片已验收；公开前遮挡 IP、用户名和二维码）
 - [x] D02 Dashboard 总览（原始长截图已验收）
 - [x] D03 人员检测（原片已验收；公开前默认打码人脸）
-- [ ] D06 事件中心
+- [x] D06 事件中心（局部截图已验收）
 - [ ] D09 Agent 工具调用
 - [ ] D10 Agent Workbench
 - [ ] D11 MCP Catalog
