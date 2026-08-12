@@ -91,12 +91,12 @@ edgesentinel-demo-<序号>-<主题>-zh-cn-1080p.mp4
 
 ## 5. 硬件实物照片
 
-硬件不是项目展示重点，保留两张照片即可：现有 H01 证明完整实机，新增 H10 用一个画面证明“PC 远程 Dashboard + Jetson 边缘运行”的真实关系。不需要逐个拍摄其他硬件模块。
+硬件不是项目展示重点，保留两张照片即可：现有 H01 证明完整实机，新增 H10 用一个画面证明“PC 远程 Dashboard 访问入口 + Jetson 边缘运行”的真实关系。不需要逐个拍摄其他硬件模块。
 
 | 编号 | 公开文件名 | 必须拍到 | 验收标准 |
 |---|---|---|---|
 | H01 | `hardware/rig-overview.jpg` | Jetson、风扇、摄像头、Wi‑Fi、显示器 | **必需，已有**；README 首图 |
-| H10 | `hardware/pc-jetson-workstation.jpg` | PC Dashboard、Jetson、显示器、摄像头完整工作台 | **必拍**；一张图解释 PC 远程运维 + Jetson 边缘推理 |
+| H10 | `hardware/pc-jetson-workstation.jpg` | PC Dashboard 登录页、Jetson 和本地 HDMI 显示器同框 | **必拍，原片已完成**；一张图解释 PC 远程访问 + Jetson 边缘运行 |
 
 不再要求 Jetson、摄像头、网卡、键鼠、电源和存储介质的独立近照。录制 V01 或 V20 时，可顺手拍一段 5–10 秒横向硬件 B-roll，无需单独组织硬件拍摄批次。
 
@@ -104,13 +104,13 @@ edgesentinel-demo-<序号>-<主题>-zh-cn-1080p.mp4
 
 **目标**
 
-让第一次看到项目的人无需阅读说明，就能理解：摄像头和视觉服务运行在 Jetson Nano 上，PC 通过局域网访问 Dashboard 进行查看与操作。
+让第一次看到项目的人无需阅读说明，就能理解：视觉服务运行在 Jetson Nano 上，PC 通过局域网进入 Dashboard。登录页适合这张实物关系图；登录后的功能由后续高清系统截图展示，不必在 H10 重复。
 
 **拍摄前准备**
 
 1. Jetson Nano、USB 摄像头、USB Wi‑Fi 和 HDMI 显示器正常连接并运行。
-2. PC 浏览器登录 Dashboard，停留在总览页；不要停在登录页或终端页面。
-3. Dashboard 中应能看到实时摄像头画面、运行状态和检测结果；让一只瓶子进入画面即可，不必安排人员出镜。
+2. PC 浏览器打开 Dashboard 登录页，用户名和密码框保持空白，不执行登录。
+3. 登录后的实时画面、运行状态和检测结果留给 D02–D11 的系统截图展示。
 4. 浏览器只保留 Dashboard 标签页，关闭书签栏、通知、邮箱和聊天软件。
 5. 如果地址栏显示真实 LAN IP，可以保留原片，公开版由 Codex 统一模糊；不要在照片中出现密码或 API Key。
 6. 擦拭 PC 屏幕和摄像头镜头，整理桌面线缆，但不要为了整齐改变真实连接关系。
@@ -119,14 +119,14 @@ edgesentinel-demo-<序号>-<主题>-zh-cn-1080p.mp4
 
 1. 使用手机或相机横向拍摄，优先使用主摄 1×，不要使用超广角。
 2. 站在工作台正前方稍偏左或偏右约 30°，镜头高度与 PC 屏幕中心大致一致。
-3. PC 屏幕占画面约 45%–55%，保证 Dashboard 中的实时画面和状态能辨认。
-4. Jetson Nano、USB 摄像头和 HDMI 显示器放在 PC 屏幕旁边或下方，占画面约 30%–40%。
+3. PC 屏幕占画面约 45%–55%，保证 EdgeSentinel 登录卡片能够辨认。
+4. Jetson Nano和 HDMI 显示器放在 PC 屏幕旁边或下方，占画面约 30%–40%；USB 摄像头已经由 H01 证明，在 H10 中可以不入镜。
 5. PC 屏幕与 Jetson 之间不要被手臂、线缆卷或其他物品遮挡。
 6. 画面边缘留出约 5% 空间，方便后续裁剪成 16:9 或 3:2。
 
 **实际拍摄步骤**
 
-1. 先确认 Dashboard 最新帧仍在更新，Vision stale 为 False。
+1. 先确认服务正常，再让浏览器停在空白凭据的 Dashboard 登录页。
 2. 降低 PC 屏幕亮度到环境光可兼顾的程度，避免屏幕一片白；手机点击屏幕区域测光。
 3. 拍一张全景 `take01`，完整包含 PC 屏幕、Jetson、摄像头和 HDMI 显示器。
 4. 向前移动半步拍 `take02`，优先保证 Dashboard 文字可读，同时不裁掉 Jetson。
@@ -158,8 +158,8 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\01_raw_pho
 
 **验收标准**
 
-- [ ] 一张照片中同时看到 PC Dashboard、Jetson Nano 和 USB 摄像头。
-- [ ] Dashboard 实时画面、运行状态至少能辨认。
+- [x] 一张照片中同时看到 PC Dashboard 登录页、Jetson Nano 和本地 HDMI 显示器。
+- [x] EdgeSentinel 登录卡片能够辨认，用户名和密码框没有内容。
 - [ ] 能从物理位置关系理解 PC 是远程操作端、Jetson 是边缘运行端。
 - [ ] 没有密码、Token、Cookie、私人消息或清晰设备序列号。
 - [ ] 横向构图清晰，公开版可裁成 16:9。

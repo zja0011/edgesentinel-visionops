@@ -23,7 +23,7 @@
 | 编号 | 素材 | 拍摄内容 | 建议文件名 |
 | --- | --- | --- | --- |
 | P0-1 | 实验装置总览照 | **已入库**；包含 Jetson Nano、USB 摄像头、USB Wi‑Fi 与 HDMI 显示器 | `hardware/rig-overview.jpg` |
-| P0-2 | PC 与 Jetson 同框照 | PC Dashboard 与 Jetson、USB 摄像头、HDMI 显示器同框，证明远程运维与边缘运行关系 | `hardware/pc-jetson-workstation.jpg` |
+| P0-2 | PC 与 Jetson 同框照 | PC Dashboard 登录页与 Jetson、HDMI 显示器同框，证明远程访问与边缘运行关系；登录后功能由高清系统截图展示 | `hardware/pc-jetson-workstation.jpg` |
 | P0-3 | Dashboard 总览 | 实时画面、检测结果、设备状态、事件列表同屏 | `dashboard/overview.png` |
 | P0-4 | Agent Workbench | 用户问题、工具选择、风险等级、执行步骤和脱敏 Trace | `dashboard/agent-workbench.png` |
 | P0-5 | 事件证据闭环 | 事件详情、before/after 证据和 SHA-256 校验结果 | `events/evidence-chain.png` |
