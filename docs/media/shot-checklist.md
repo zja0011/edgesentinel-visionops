@@ -1208,8 +1208,8 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 依次运行：
 
 ```bash
-sudo docker exec edgesentinel-visionops bash -lc 'cd /workspace/edgesentinel && PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -q'
-sudo docker exec edgesentinel-visionops bash -lc 'cd /workspace/edgesentinel && bash scripts/run_repository_publication_gate.sh'
+sudo docker exec edgesentinel-visionops bash -c 'cd /workspace/edgesentinel && PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -q'
+sudo docker exec edgesentinel-visionops bash -c 'cd /workspace/edgesentinel && bash scripts/run_repository_publication_gate.sh'
 ```
 
 第二条执行结束后，调整终端窗口，使上一条测试的 `Ran ... tests / OK` 与本条 `Repository Publication Gate passed.` 同屏。如果两段不能同屏，不要缩小到看不清，拆为 `take01` 和 `take02` 两张。
@@ -1225,7 +1225,7 @@ sudo docker exec edgesentinel-visionops bash -lc 'cd /workspace/edgesentinel && 
 运行：
 
 ```bash
-sudo docker exec edgesentinel-visionops bash -lc 'cd /workspace/edgesentinel && bash scripts/run_release_provenance_test.sh'
+sudo docker exec edgesentinel-visionops bash -c 'cd /workspace/edgesentinel && bash scripts/run_release_provenance_test.sh'
 ```
 
 截图必须完整包含 acceptance summary 中的：`Status: PASS`、Release ID、文件数、Manifest SHA-256、`SBOM: CycloneDX 1.7 VERIFIED`、`Source integrity: MATCH`、两个 `False` 以及最后的 smoke test passed。
@@ -1241,7 +1241,7 @@ sudo docker exec edgesentinel-visionops bash -lc 'cd /workspace/edgesentinel && 
 运行：
 
 ```bash
-sudo docker exec edgesentinel-visionops bash -lc 'cd /workspace/edgesentinel && bash scripts/build_release_artifacts.sh && bash scripts/check_release_integrity.sh'
+sudo docker exec edgesentinel-visionops bash -c 'cd /workspace/edgesentinel && bash scripts/build_release_artifacts.sh && bash scripts/check_release_integrity.sh'
 ```
 
 截图必须包含构建 `status: CREATED`、Release ID、manifest/SBOM SHA-256，以及校验 `status: PASS`、`source_integrity: MATCH`、`sbom_verified: true`、`credentials_included: false`。内容超过一屏时使用两张普通截图，不使用超长图。
