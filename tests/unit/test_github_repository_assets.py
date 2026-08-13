@@ -99,7 +99,7 @@ class GitHubRepositoryAssetTests(unittest.TestCase):
         self.assertIn("docs/implementation-journal.md", readme)
         self.assertLess(len(readme.splitlines()), 500)
 
-    def test_media_capture_plan_requires_real_redacted_evidence(self):
+    def test_media_capture_plan_requires_real_evidence(self):
         guide = self.read("docs/media-capture-guide.md")
         checklist = self.read("docs/media/shot-checklist.md")
         media_readme = self.read("docs/media/README.md")
@@ -117,6 +117,8 @@ class GitHubRepositoryAssetTests(unittest.TestCase):
         self.assertIn("不要使用生成图片替代实拍", guide)
         self.assertIn("API Key", guide)
         self.assertIn("GitHub Release", media_readme)
+        self.assertIn("保持原貌", media_readme)
+        self.assertIn("video-gallery.html", media_readme)
         self.assertIn("全功能素材拍摄清单", guide)
         for token in (
             "硬件实物照片",
@@ -131,6 +133,10 @@ class GitHubRepositoryAssetTests(unittest.TestCase):
         ):
             self.assertIn(token, checklist)
         self.assertIn("docs/media/hardware/rig-overview.jpg", readme)
+        self.assertIn("docs/media/dashboard/overview.png", readme)
+        self.assertIn("在线播放 8 段原始演示", readme)
+        self.assertIn("video-original-manifest.json", readme)
+        self.assertNotIn("统一处理为 H.264 720p", readme)
         self.assertIn("## 硬件与器材", readme)
         self.assertIn("USB Wi‑Fi 适配器", readme)
         self.assertIn("PC 电脑", readme)

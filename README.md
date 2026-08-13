@@ -1,24 +1,36 @@
+<div align="center">
+
 # EdgeSentinel「边缘智哨」
 
-> **运行在 Jetson Nano 上的可信视觉 Agent Harness**
-> 让边缘设备看得见、会调用、能治理、可恢复。
+### 运行在 Jetson Nano 上的可信视觉 Agent Harness
+
+让边缘设备不止“看见”，还能调用工具、核验证据、约束风险并在故障后恢复。
 
 [![CI](https://github.com/zja0011/edgesentinel-visionops/actions/workflows/ci.yml/badge.svg)](https://github.com/zja0011/edgesentinel-visionops/actions/workflows/ci.yml)
 [![Jetson Nano](https://img.shields.io/badge/edge-Jetson%20Nano-76B900?logo=nvidia&logoColor=white)](https://developer.nvidia.com/embedded/jetson-nano)
 [![Python 3.6+](https://img.shields.io/badge/python-3.6%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![MCP](https://img.shields.io/badge/MCP-stdio-6E56CF)](https://modelcontextprotocol.io/)
+[![Tests](https://img.shields.io/badge/tests-650%2B%20passing-19C37D)](#快速验证)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-EdgeSentinel VisionOps 不是“摄像头接一个大模型”的演示脚本。它把实时视觉、事件证据、工具调用、权限策略、模型降级、任务记忆、可观测性与灾难恢复组织成一套可验证的边缘智能体工程。
+[▶ 在线播放 8 段原始演示](https://zja0011.github.io/edgesentinel-visionops/video-gallery.html) · [⚡ 5 分钟快速验证](#快速验证) · [📦 Release 与 SBOM](https://github.com/zja0011/edgesentinel-visionops/releases/tag/v0.1.0-dev.1) · [📚 文档导航](#文档导航)
 
-项目在真实 Jetson Nano、摄像头、Docker 与 systemd 环境中持续验收；在线模式可连接 DeepSeek，断网或模型不可用时可明确降级到确定性离线规则模型。
+</div>
 
-> [!IMPORTANT]
-> 本页照片和界面均来自真实 Jetson Nano 运行环境；公开版本只做裁剪、像素化脱敏与 Web 压缩，不使用生成图片替代实验结果。原始视频保存在仓库外，验收记录与发布剪辑要求见[全功能素材清单](docs/media/shot-checklist.md)。
+![EdgeSentinel Dashboard 全局总览：实时视觉、双区域、库存、事件、Agent 与系统状态](docs/media/dashboard/overview.png)
 
-![EdgeSentinel VisionOps 实机系统总览：Jetson Nano、USB 摄像头、USB Wi-Fi 与 HDMI 显示器](docs/media/hardware/rig-overview.jpg)
+EdgeSentinel VisionOps 不是“摄像头接一个大模型”的一次性脚本。它把**实时视觉、结构化事件、证据链、Agent 工具调用、MCP、权限策略、模型降级、可观测性与灾难恢复**组织成一套可验证的边缘智能体工程。
 
-*真实实验装置：Jetson Nano、USB 摄像头、USB Wi‑Fi 适配器与 HDMI 显示器。PC 和 USB 键盘鼠标未进入画面；PC 通过局域网 Wi‑Fi 使用 SSH/HTTPS 管理开发板。*
+项目在真实 Jetson Nano、USB 摄像头、Docker 与 systemd 环境中持续验收；在线模式连接 DeepSeek，网络或模型不可用时可明确降级到确定性离线规则，同时继续读取本地实时视觉结果。
+
+> [!NOTE]
+> 本页照片、截图和视频均来自真实实验环境。当前 Demo 按原貌公开：图片不额外打码，Release 视频保留原始分辨率、音轨和文件内容，不做裁剪、压缩或转码；请勿在生产项目中照搬这一公开策略。
+
+### 30 秒看懂
+
+| 看得见 | 会行动 | 可治理 | 能恢复 |
+| --- | --- | --- | --- |
+| Jetson 实时检测、跟踪、区域与库存 | Agent 按需选择 Tool / Skill / MCP | L0–L3、RBAC、确认门与脱敏 Trace | systemd、熔断降级、加密备份与恢复演练 |
 
 ## 目录
 
@@ -181,23 +193,25 @@ flowchart LR
 
 ## 实机证据与演示素材
 
-以下图片来自真实装置、Dashboard、Agent Workbench 和 Jetson 验收终端。人物画面已匿名化；LAN IP、账户标记、Session/Task ID、SSH 用户与主机名等非必要信息均已裁剪或像素化。
+以下图片来自真实装置、Dashboard、Agent Workbench 和 Jetson 验收终端。当前 Demo 使用原始照片和截图，没有额外裁剪、像素化或生成式修改。
 
 ### 实机工作台
 
 ![EdgeSentinel 实机工作台：PC、Dashboard、Jetson Nano、摄像头与显示器](docs/media/hardware/lab-workbench.jpg)
 
-*PC 通过局域网管理 Jetson，Jetson 独立运行 Dashboard、视觉流水线和本地数据服务。PC 屏幕与浏览器标识已做数字遮挡。*
+*PC 通过局域网管理 Jetson，Jetson 独立运行 Dashboard、视觉流水线和本地数据服务。*
 
 ### 实时视觉与事件闭环
 
 ![EdgeSentinel Dashboard 总览：实时画面、双区域、人数库存与运行状态](docs/media/dashboard/overview.png)
 
+*该图与原始文件 `界面全局截图.png` 字节一致，完整展示从实时视觉到 Agent Copilot 的长页面。*
+
 <table>
   <tr>
     <td width="50%">
       <img src="docs/media/dashboard/live-person.png" alt="实时人员检测与 Left Zone 计数">
-      <br><sub>实时人员检测、区域覆盖与汇总计数（人脸已强匿名化）</sub>
+      <br><sub>实时人员检测、区域覆盖与汇总计数</sub>
     </td>
     <td width="50%">
       <img src="docs/media/dashboard/event-center.png" alt="事件中心、趋势与待处置事件">
@@ -210,7 +224,7 @@ flowchart LR
 
 ![EdgeSentinel Agent Workbench：Skill、工具路由、模型韧性、预算与 Hooks](docs/media/dashboard/agent-workbench.jpg)
 
-*一次三步调查同时显示版本固定 Skill、限定工具、`remote → remote`、执行预算、Hooks 与脱敏 Trace；完整 Task ID 已遮挡。*
+*一次三步调查同时显示版本固定 Skill、限定工具、`remote → remote`、执行预算、Hooks 与脱敏 Trace。*
 
 <table>
   <tr>
@@ -242,28 +256,30 @@ flowchart LR
 
 ### 功能演示视频
 
-8 段实录均已统一处理为 H.264 720p：移除音轨与原始元数据，裁掉浏览器地址栏，并对人员、账户、Session/Task ID、SSH 身份和本地路径做动态遮挡。视频作为 [`v0.1.0-dev.1`](https://github.com/zja0011/edgesentinel-visionops/releases/tag/v0.1.0-dev.1) Release 附件发布，不写入 Git 历史。
+8 段实录以**原始 MP4**发布：不压缩、不转码、不裁剪、不移除音轨，也不添加遮挡。原文件由 [`v0.1.0-dev.1`](https://github.com/zja0011/edgesentinel-visionops/releases/tag/v0.1.0-dev.1) Release 承载，不写入 Git 历史；GitHub Pages 仅提供播放器界面。
+
+> **点击卡片即可在线播放**：进入 [EdgeSentinel 原始演示视频展厅](https://zja0011.github.io/edgesentinel-visionops/video-gallery.html)。如果浏览器不支持某段原始视频的编码，展厅仍提供原文件下载入口。
 
 <table>
   <tr>
-    <td width="50%"><a href="https://github.com/zja0011/edgesentinel-visionops/releases/download/v0.1.0-dev.1/edgesentinel-demo-01-end-to-end-zh-cn-720p.mp4"><img src="docs/media/covers/demo-01-end-to-end.jpg" alt="端到端演示"><br><b>01 · 端到端</b></a><br><sub>实时视觉 → Agent → Workbench → 事件证据 → MCP</sub></td>
-    <td width="50%"><a href="https://github.com/zja0011/edgesentinel-visionops/releases/download/v0.1.0-dev.1/edgesentinel-demo-02-live-vision-zh-cn-720p.mp4"><img src="docs/media/covers/demo-02-live-vision.jpg" alt="实时视觉演示"><br><b>02 · 实时视觉</b></a><br><sub>人数变化、区域移动、物体检测与稳定库存</sub></td>
+    <td width="50%"><a href="https://zja0011.github.io/edgesentinel-visionops/video-gallery.html#demo-01"><img src="docs/media/covers/demo-01-end-to-end.jpg" alt="端到端演示"><br><b>▶ 01 · 端到端</b></a><br><sub>实时视觉 → Agent → Workbench → 事件证据 → MCP</sub></td>
+    <td width="50%"><a href="https://zja0011.github.io/edgesentinel-visionops/video-gallery.html#demo-02"><img src="docs/media/covers/demo-02-live-vision.jpg" alt="实时视觉演示"><br><b>▶ 02 · 实时视觉</b></a><br><sub>人数变化、区域移动、物体检测与稳定库存</sub></td>
   </tr>
   <tr>
-    <td><a href="https://github.com/zja0011/edgesentinel-visionops/releases/download/v0.1.0-dev.1/edgesentinel-demo-03-zone-events-zh-cn-720p.mp4"><img src="docs/media/covers/demo-03-zone-events.jpg" alt="区域事件演示"><br><b>03 · 区域事件</b></a><br><sub>进入 → 停留 → 离开及匿名 Track ID 核对</sub></td>
-    <td><a href="https://github.com/zja0011/edgesentinel-visionops/releases/download/v0.1.0-dev.1/edgesentinel-demo-04-object-lifecycle-zh-cn-720p.mp4"><img src="docs/media/covers/demo-04-object-lifecycle.jpg" alt="物品生命周期演示"><br><b>04 · 物品生命周期</b></a><br><sub>放入瓶子、稳定库存、移除与前后证据</sub></td>
+    <td><a href="https://zja0011.github.io/edgesentinel-visionops/video-gallery.html#demo-03"><img src="docs/media/covers/demo-03-zone-events.jpg" alt="区域事件演示"><br><b>▶ 03 · 区域事件</b></a><br><sub>进入 → 停留 → 离开及匿名 Track ID 核对</sub></td>
+    <td><a href="https://zja0011.github.io/edgesentinel-visionops/video-gallery.html#demo-04"><img src="docs/media/covers/demo-04-object-lifecycle.jpg" alt="物品生命周期演示"><br><b>▶ 04 · 物品生命周期</b></a><br><sub>放入瓶子、稳定库存、移除与前后证据</sub></td>
   </tr>
   <tr>
-    <td><a href="https://github.com/zja0011/edgesentinel-visionops/releases/download/v0.1.0-dev.1/edgesentinel-demo-05-left-behind-zh-cn-720p.mp4"><img src="docs/media/covers/demo-05-left-behind.jpg" alt="物品遗留演示"><br><b>05 · 物品遗留</b></a><br><sub>人员离开、连续无人确认与遗留事件</sub></td>
-    <td><a href="https://github.com/zja0011/edgesentinel-visionops/releases/download/v0.1.0-dev.1/edgesentinel-demo-06-agent-harness-zh-cn-720p.mp4"><img src="docs/media/covers/demo-06-agent-harness.jpg" alt="Agent Harness 演示"><br><b>06 · Agent Harness</b></a><br><sub>Skill、工具路由、Hooks、预算和脱敏 Trace</sub></td>
+    <td><a href="https://zja0011.github.io/edgesentinel-visionops/video-gallery.html#demo-05"><img src="docs/media/covers/demo-05-left-behind.jpg" alt="物品遗留演示"><br><b>▶ 05 · 物品遗留</b></a><br><sub>人员离开、连续无人确认与遗留事件</sub></td>
+    <td><a href="https://zja0011.github.io/edgesentinel-visionops/video-gallery.html#demo-06"><img src="docs/media/covers/demo-06-agent-harness.jpg" alt="Agent Harness 演示"><br><b>▶ 06 · Agent Harness</b></a><br><sub>Skill、工具路由、Hooks、预算和脱敏 Trace</sub></td>
   </tr>
   <tr>
-    <td><a href="https://github.com/zja0011/edgesentinel-visionops/releases/download/v0.1.0-dev.1/edgesentinel-demo-07-online-offline-tools-zh-cn-720p.mp4"><img src="docs/media/covers/demo-07-online-offline-tools.jpg" alt="在线离线切换演示"><br><b>07 · 在线 / 离线工具</b></a><br><sub>DeepSeek、Open‑Meteo、离线本地视觉与恢复在线</sub></td>
-    <td><a href="https://github.com/zja0011/edgesentinel-visionops/releases/download/v0.1.0-dev.1/edgesentinel-demo-08-mcp-server-zh-cn-720p.mp4"><img src="docs/media/covers/demo-08-mcp-server.jpg" alt="MCP Server 演示"><br><b>08 · MCP Server</b></a><br><sub>Catalog、Schema、stdio、Resources 与默认拒绝</sub></td>
+    <td><a href="https://zja0011.github.io/edgesentinel-visionops/video-gallery.html#demo-07"><img src="docs/media/covers/demo-07-online-offline-tools.jpg" alt="在线离线切换演示"><br><b>▶ 07 · 在线 / 离线工具</b></a><br><sub>DeepSeek、Open‑Meteo、离线本地视觉与恢复在线</sub></td>
+    <td><a href="https://zja0011.github.io/edgesentinel-visionops/video-gallery.html#demo-08"><img src="docs/media/covers/demo-08-mcp-server.jpg" alt="MCP Server 演示"><br><b>▶ 08 · MCP Server</b></a><br><sub>Catalog、Schema、stdio、Resources 与默认拒绝</sub></td>
   </tr>
 </table>
 
-[查看视频校验清单（SHA‑256、时长、编码与隐私处理）](https://github.com/zja0011/edgesentinel-visionops/releases/download/v0.1.0-dev.1/video-release-manifest.json)
+[查看原始视频校验清单（SHA‑256、字节数、时长与编码）](https://github.com/zja0011/edgesentinel-visionops/releases/download/v0.1.0-dev.1/video-original-manifest.json)
 
 当前素材状态：
 
@@ -275,7 +291,7 @@ flowchart LR
 | Agent Workbench、模型切换与天气工具 | 已公开 | `docs/media/dashboard/` |
 | MCP Catalog 与 JSON Schema | 已公开 | `docs/media/dashboard/mcp-catalog.png` |
 | 测试与仓库发布边界 | 已公开 | `docs/media/release/quality-gates.png` |
-| 一镜到底及专项演示视频 | 8 段公开版已完成 | [`v0.1.0-dev.1` Release](https://github.com/zja0011/edgesentinel-visionops/releases/tag/v0.1.0-dev.1) |
+| 一镜到底及专项演示视频 | 8 段原始视频已完成 | [在线播放展厅](https://zja0011.github.io/edgesentinel-visionops/video-gallery.html) · [`v0.1.0-dev.1` Release](https://github.com/zja0011/edgesentinel-visionops/releases/tag/v0.1.0-dev.1) |
 
 优先拍摄顺序、每段视频的镜头脚本、隐私检查和文件规格见：
 
@@ -283,7 +299,7 @@ flowchart LR
 - [全功能素材拍摄清单](docs/media/shot-checklist.md)
 - [媒体目录说明](docs/media/README.md)
 
-原始大视频未写入 Git 历史；Release 公开版已移除音轨和元数据，并统一遮挡 IP、账户和运行标识。
+原始大视频未写入 Git 历史；Release 附件与拍摄原片保持相同 SHA‑256。GitHub Pages 只负责在线播放，不生成第二份压缩视频。
 
 ## 快速验证
 
