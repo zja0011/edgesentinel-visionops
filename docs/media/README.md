@@ -13,6 +13,19 @@ python scripts/build_public_media.py `
 
 构建脚本不会修改原片，也不会调用生成式图像模型。公开前仍需人工检查人脸、LAN IP、账户标记、Task/Session ID、SSH 用户/主机名和本地路径是否已经去除。
 
+发布视频由同样的确定性流程生成，最终 MP4 保存在仓库外：
+
+```powershell
+$env:PYTHONPATH="H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\98_tools\imageio_ffmpeg"
+$ffmpeg = python -c "import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())"
+python scripts/build_public_videos.py `
+  --ffmpeg $ffmpeg `
+  --source-root "H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos" `
+  --output-root "H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\06_final_exports\videos\v0.1.0-dev.1"
+```
+
+脚本统一输出 H.264 720p、移除音轨和元数据、生成 SHA‑256 Manifest，并将轻量封面写入 `docs/media/covers/`。公开视频只上传到 GitHub Release。
+
 当前公开媒体结构：
 
 ```text
