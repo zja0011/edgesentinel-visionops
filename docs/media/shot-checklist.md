@@ -1460,6 +1460,53 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 - 全程未触发 L1/L2 工具、未写长期记忆、无模型 fallback；视频包含音轨，最终发布版必须移除音轨。
 - 原片可验收，无需重录。发布前裁掉或遮挡地址栏 LAN IP、“不安全”提示、浏览器账户标记、完整 Task/Session ID；D12 从模式按钮与状态同屏帧提取，D13 从天气回答和成功工具标签同屏帧提取。
 
+### V08 详细录制卡：MCP Catalog、Schema 与本地 stdio 边界
+
+**为什么录视频**
+
+本项要把 Dashboard 中可发现的工具目录与真正运行的 MCP stdio Server 串成一条证据链：先展示工具和参数 Schema，再由 Jetson 本地验收程序完成协议协商、工具调用、资源读取和默认拒绝。不要手工调用危险工具；验收程序只验证拒绝结果。
+
+**原始文件名与保存位置**
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-13\20260813_V08_mcp-server-catalog-stdio-resources-deny_take01.mp4
+```
+
+**录制前准备**
+
+1. Dashboard 保持登录并打开“系统状态”区域，浏览器缩放 100%。状态中应显示 `MCP 工具协议 · 按需启动 · 25工具 · 5资源 · 3提示`。
+2. 另开一个已 SSH 登录 Jetson 的终端，执行 `cd ~/projects/edgesentinel-visionops` 和 `sudo -v`，在开始录像前完成密码输入。
+3. 终端最大化，深色主题，字号约 18–22 px；先执行 `clear`。不要显示 shell history、密码、私钥、Token 或环境变量。
+4. 确认容器名为 `edgesentinel-visionops`，且 `scripts/run_mcp_server_test.sh` 已存在。录制期间不要运行其他验收任务。
+5. 录制 `1920×1080`、30 FPS（实际 23–30 FPS 均可）；原片可有音轨，但发布版必须静音。
+
+**一镜到底时间线**
+
+1. **0–8 秒：MCP 运行摘要。** 从 Dashboard“系统状态”开始，停留在 `MCP 工具协议` 行，使 25 工具、5 资源、3 提示清晰可读。
+2. **8–25 秒：Catalog 与 Schema。** 点击“查看 MCP 工具”，等待目录加载完成。缓慢展开 `vision.get_people_count` 或 `camera.get_status`，停留 4–6 秒显示参数 JSON Schema；再展开 `event.query`，展示其有界查询参数。不要快速滚动完整 25 项。
+3. **25–32 秒：连续切换到 Jetson。** 使用 `Alt+Tab` 切到已准备好的 SSH 终端；不要停止录像，也不要重新登录。
+4. **32–70 秒：运行本地 stdio 验收。** 在终端输入并执行一整条命令：
+
+   ```bash
+   sudo docker exec edgesentinel-visionops bash -c 'cd /workspace/edgesentinel && bash scripts/run_mcp_server_test.sh'
+   ```
+
+   使用 `bash -c`，不要使用 `bash -lc`，这样不会产生无关的 `mesg: ttyname failed` 提示。等待程序自然完成，不要按 `Ctrl+C`。
+5. **70–95 秒：保留验收摘要。** 终端停在 `MCP Server acceptance summary`，使以下信息尽量同屏：协议 `2025-11-25`、传输 `stdio`、只读工具数、5 个有界资源、3 个用户控制提示、`camera.get_status SUCCEEDED`、`camera.restart POLICY_DENIED`、未知 `system.shell` 为 JSON-RPC `-32601`、任意文件 URI 为 `-32002`、`Stderr empty: True` 和最终 `MCP Server smoke test passed.`。鼠标移到空白处，静止 6–8 秒后结束。
+
+**验收标准**
+
+- [ ] Dashboard Catalog、至少两个工具名和一个完整参数 Schema 清晰可读。
+- [ ] 同一连续视频切换到 Jetson SSH，没有剪断 Catalog 与 Server 的对应关系。
+- [ ] 协议为 `2025-11-25`、传输为 `stdio`，Server 为 `edgesentinel-visionops`。
+- [ ] 只暴露只读 MCP 工具，并显示 5 个有界资源、3 个用户控制提示。
+- [ ] `camera.get_status` 成功，资源读取成功；`camera.restart`、`system.shell` 和任意文件 URI 均被拒绝。
+- [ ] `Stderr empty: True`，最终 smoke test 通过；没有凭据、私钥或原始敏感日志出镜。
+
+**发布剪辑要求**
+
+裁掉浏览器地址栏 LAN IP、“不安全”提示、账户标记，以及 SSH 提示符中的用户名和主机名；保留命令正文和完整验收摘要。结果文件与审计日志路径可以裁掉，避免公开本机目录。移除音轨，字幕可写“本地 MCP stdio：发现、调用、资源与默认拒绝”。
+
 ### P01–P04 详细截图卡：发布工程证明
 
 发布工程展示的是终态、哈希和独立 CI 结论，静态截图比视频信息密度更高。V18 从核心必录项降为可选，README 与项目文档使用以下四张局部截图即可。
