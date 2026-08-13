@@ -14,7 +14,7 @@ EdgeSentinel VisionOps 不是“摄像头接一个大模型”的演示脚本。
 项目在真实 Jetson Nano、摄像头、Docker 与 systemd 环境中持续验收；在线模式可连接 DeepSeek，断网或模型不可用时可明确降级到确定性离线规则模型。
 
 > [!IMPORTANT]
-> 仓库中的实机照片与演示视频仍在补充。项目不会使用生成图片冒充硬件实拍。拍摄原则见[实机素材拍摄与录屏清单](docs/media-capture-guide.md)，逐项文件名和镜头动作见[全功能素材清单](docs/media/shot-checklist.md)。
+> 本页照片和界面均来自真实 Jetson Nano 运行环境；公开版本只做裁剪、像素化脱敏与 Web 压缩，不使用生成图片替代实验结果。原始视频保存在仓库外，验收记录与发布剪辑要求见[全功能素材清单](docs/media/shot-checklist.md)。
 
 ![EdgeSentinel VisionOps 实机系统总览：Jetson Nano、USB 摄像头、USB Wi-Fi 与 HDMI 显示器](docs/media/hardware/rig-overview.jpg)
 
@@ -181,16 +181,76 @@ flowchart LR
 
 ## 实机证据与演示素材
 
+以下图片来自真实装置、Dashboard、Agent Workbench 和 Jetson 验收终端。人物画面已匿名化；LAN IP、账户标记、Session/Task ID、SSH 用户与主机名等非必要信息均已裁剪或像素化。
+
+### 实机工作台
+
+![EdgeSentinel 实机工作台：PC、Dashboard、Jetson Nano、摄像头与显示器](docs/media/hardware/lab-workbench.jpg)
+
+*PC 通过局域网管理 Jetson，Jetson 独立运行 Dashboard、视觉流水线和本地数据服务。PC 屏幕与浏览器标识已做数字遮挡。*
+
+### 实时视觉与事件闭环
+
+![EdgeSentinel Dashboard 总览：实时画面、双区域、人数库存与运行状态](docs/media/dashboard/overview.png)
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/media/dashboard/live-person.png" alt="实时人员检测与 Left Zone 计数">
+      <br><sub>实时人员检测、区域覆盖与汇总计数（人脸已强匿名化）</sub>
+    </td>
+    <td width="50%">
+      <img src="docs/media/dashboard/event-center.png" alt="事件中心、趋势与待处置事件">
+      <br><sub>事件中心、筛选、趋势及可核验证据入口</sub>
+    </td>
+  </tr>
+</table>
+
+### Agent Harness：不是只有最终回答
+
+![EdgeSentinel Agent Workbench：Skill、工具路由、模型韧性、预算与 Hooks](docs/media/dashboard/agent-workbench.jpg)
+
+*一次三步调查同时显示版本固定 Skill、限定工具、`remote → remote`、执行预算、Hooks 与脱敏 Trace；完整 Task ID 已遮挡。*
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/media/dashboard/model-switch.png" alt="在线 DeepSeek 与离线规则受控切换">
+      <br><sub>在线 DeepSeek / 离线规则受控切换，重启默认仍为在线</sub>
+    </td>
+    <td width="50%">
+      <img src="docs/media/dashboard/weather-tool.png" alt="通过 weather.get_current 查询 Open-Meteo 实时天气">
+      <br><sub>外部只读工具：Open‑Meteo 实时天气与成功工具标签</sub>
+    </td>
+  </tr>
+</table>
+
+### MCP 与可验证发布
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/media/dashboard/mcp-catalog.png" alt="MCP 只读工具目录与 JSON Schema">
+      <br><sub>MCP Catalog：25 个只读工具、5 Resources、3 Prompts 与参数 Schema</sub>
+    </td>
+    <td width="50%">
+      <img src="docs/media/release/quality-gates.png" alt="656 个测试与仓库发布边界门禁通过">
+      <br><sub>656 个测试通过；发布边界确认无凭据、秘密值与绝对路径</sub>
+    </td>
+  </tr>
+</table>
+
 当前素材状态：
 
 | 素材 | 状态 | 计划位置 |
 | --- | --- | --- |
 | Jetson + 摄像头 + Wi‑Fi + HDMI 实机总览 | 已公开 | `docs/media/hardware/rig-overview.jpg` |
-| 开发板接口与模块近景 | 待补拍 | `docs/media/hardware/module-closeup.jpg` |
-| Dashboard 总览与实时检测 | 待截图 | `docs/media/dashboard/overview.png` |
-| Agent 工具调用与 Workbench Trace | 待截图 | `docs/media/dashboard/agent-workbench.png` |
-| 物品移除/遗留事件证据 | 待截图 | `docs/media/events/evidence-chain.png` |
-| 一镜到底实机演示 | 待录制 | GitHub Release 视频附件 |
+| PC Dashboard 与 Jetson 同框 | 已公开 | `docs/media/hardware/lab-workbench.jpg` |
+| Dashboard 总览、实时检测与事件中心 | 已公开 | `docs/media/dashboard/` |
+| Agent Workbench、模型切换与天气工具 | 已公开 | `docs/media/dashboard/` |
+| MCP Catalog 与 JSON Schema | 已公开 | `docs/media/dashboard/mcp-catalog.png` |
+| 测试与仓库发布边界 | 已公开 | `docs/media/release/quality-gates.png` |
+| 一镜到底及专项演示视频 | 原片已验收，待发布剪辑 | GitHub Release 视频附件 |
 
 优先拍摄顺序、每段视频的镜头脚本、隐私检查和文件规格见：
 
@@ -198,7 +258,7 @@ flowchart LR
 - [全功能素材拍摄清单](docs/media/shot-checklist.md)
 - [媒体目录说明](docs/media/README.md)
 
-素材补齐后，本节会升级为封面实机图、Dashboard 三联图和 90–150 秒完整演示入口。
+原始大视频不会写入 Git 历史；发布版将移除音轨并统一遮挡 IP、账户和运行标识后，以 GitHub Release 附件提供。
 
 ## 快速验证
 

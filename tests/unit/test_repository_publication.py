@@ -40,6 +40,47 @@ class RepositoryPublicationGateTests(unittest.TestCase):
             self.assertFalse(result["secret_values_exposed"])
             self.assertFalse(result["absolute_paths_included"])
 
+    def test_allows_reviewed_public_documentation_images(self):
+        with tempfile.TemporaryDirectory() as directory:
+            self.write(
+                directory,
+                "docs/media/dashboard/overview.png",
+                b"\x89PNG\r\n\x1a\n\x00public-media",
+            )
+            self.write(
+                directory,
+                "docs/media/hardware/rig-overview.jpg",
+                b"\xff\xd8\xff\x00public-media",
+            )
+            gate = RepositoryPublicationGate(directory)
+
+            result = gate.check(
+                paths=(
+                    "docs/media/dashboard/overview.png",
+                    "docs/media/hardware/rig-overview.jpg",
+                ),
+                require_governance=False,
+            )
+
+            self.assertEqual(result["status"], "PASS")
+            self.assertEqual(result["binary_files"], 2)
+
+    def test_rejects_binary_images_outside_public_media_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            self.write(directory, "private/capture.png", b"\x89PNG\x00private")
+            gate = RepositoryPublicationGate(directory)
+
+            result = gate.check(
+                paths=("private/capture.png",),
+                require_governance=False,
+            )
+
+            self.assertEqual(result["status"], "FAIL")
+            self.assertIn(
+                "UNEXPECTED_BINARY:private/capture.png",
+                result["issues"],
+            )
+
     def test_detects_secret_pattern_without_returning_secret(self):
         with tempfile.TemporaryDirectory() as directory:
             secret = "sk-" + "A" * 32

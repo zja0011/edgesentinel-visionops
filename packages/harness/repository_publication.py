@@ -288,8 +288,12 @@ class RepositoryPublicationGate(object):
 
     @staticmethod
     def _allowed_binary(relative_path):
-        return relative_path.startswith("vendor/wheels/") and relative_path.endswith(
-            (".whl", ".tar.gz")
+        return (
+            relative_path.startswith("vendor/wheels/")
+            and relative_path.endswith((".whl", ".tar.gz"))
+        ) or (
+            relative_path.startswith("docs/media/")
+            and relative_path.lower().endswith((".jpg", ".jpeg", ".png"))
         )
 
     @staticmethod
