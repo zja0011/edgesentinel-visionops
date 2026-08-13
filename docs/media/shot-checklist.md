@@ -1444,6 +1444,22 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 
 最终剪辑可压缩模型等待时间，但必须保留两次浏览器确认框和三次明确的模型状态。裁掉/遮挡 LAN IP、“不安全”提示、账户标记、完整 Task/Session ID；移除音轨。天气数值是拍摄时点数据，字幕标明“Open‑Meteo 实时示例”，不得写成长期有效预报。D12 从在线/离线按钮同屏帧提取，D13 从天气回答与成功工具标签同屏帧提取。
 
+### V07 原片验收记录：在线、外部天气与离线本地视觉
+
+已验收原片：
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-13\20260813_V07_online-weather-offline-vision-switch_take01.mp4
+```
+
+- 时长 `106.3` 秒，画面 `1920×1080`，约 `23.6 FPS`，文件约 `11.8 MiB`；连续录制完整覆盖 `在线 → 离线 → 在线`。
+- 在线一般问题正确回答 `2026 年 8 月 13 日，星期四`；正文明确当前由在线远程模型网关处理，同时未调用工具。Workbench 显示 `chat-completions-compatible · 1 step`、`NO_MATCH · 0 tools`、`remote → remote`、`0 retry`、`0 fallback`、Circuit `CLOSED`。
+- 武汉天气任务为 `TASK COMPLETED · 2 steps`，回答用中文列出天气状况、气温、体感温度、湿度、降水和风速，并显示 `weather.get_current · SUCCEEDED`；数据来源明确标为 Open‑Meteo 和查询时点，未把模型知识冒充实时数据。
+- 第一次切换完整录到浏览器确认框，随后“离线规则”激活；离线问题由 `offline-rule-mock · 2 steps` 完成，本地 `vision.get_people_count · SUCCEEDED` 返回 `0 人`，与空画面一致。
+- 第二次切换同样录到浏览器确认框，终态恢复 `远程 · deepseek`、`在线 DeepSeek` 激活和 `当前在线 · 重启后默认在线`；切换没有改变开机默认模式。
+- 全程未触发 L1/L2 工具、未写长期记忆、无模型 fallback；视频包含音轨，最终发布版必须移除音轨。
+- 原片可验收，无需重录。发布前裁掉或遮挡地址栏 LAN IP、“不安全”提示、浏览器账户标记、完整 Task/Session ID；D12 从模式按钮与状态同屏帧提取，D13 从天气回答和成功工具标签同屏帧提取。
+
 ### P01–P04 详细截图卡：发布工程证明
 
 发布工程展示的是终态、哈希和独立 CI 结论，静态截图比视频信息密度更高。V18 从核心必录项降为可选，README 与项目文档使用以下四张局部截图即可。
@@ -1543,7 +1559,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 | Batch 6 | 其余专项视频 | 1–2 天 |
 | Batch 7 | V20 宣传片 | 1–2 小时 |
 
-H10、D02、D03、D06、D09、D10、D11、V01、V02、V03、V04、V05、V06 和 P01–P04 已完成原片验收。V02 已覆盖 E01–E03 并提供 E04 的跨区动作；V03 已完整覆盖区域事件、匿名 Track ID、证据与 Agent/Harness 查询闭环；V04 已同时覆盖 E09 的事件详情与前后证据；V05 已覆盖 E10 的人员离开、连续无人确认、遗留事件与主要证据；发布工程核心证明截图已经齐备。
+H10、D02、D03、D06、D09、D10、D11、V01、V02、V03、V04、V05、V06、V07 和 P01–P04 已完成原片验收。V02 已覆盖 E01–E03 并提供 E04 的跨区动作；V03 已完整覆盖区域事件、匿名 Track ID、证据与 Agent/Harness 查询闭环；V04 已同时覆盖 E09 的事件详情与前后证据；V05 已覆盖 E10 的人员离开、连续无人确认、遗留事件与主要证据；V07 已覆盖在线/离线模式切换及 Open‑Meteo 外部工具，D12/D13 可直接从原片提取；发布工程核心证明截图已经齐备。
 
 ## 12. 公开前脱敏检查
 
@@ -1581,6 +1597,7 @@ Codex 会检查清晰度、隐私、重复镜头与命名，再挑选、裁剪�
 - [x] V04 瓶子生命周期视频（89.8 秒、1080p，完整闭环已验收）
 - [x] V01 端到端演示（209.4 秒、1080p，待剪至约 150–180 秒）
 - [x] V06 Agent Harness 多步 Skill 与 Trace（50.2 秒、1080p，固定 Skill 与 3 工具已验收）
-- [ ] P01–P04 发布工程截图：测试/门禁、来源/SBOM、产物完整性、GitHub CI
+- [x] V07 在线/离线模型与工具切换（106.3 秒、1080p，在线问答、Open‑Meteo 与离线本地视觉已验收）
+- [x] P01–P04 发布工程截图：测试/门禁、来源/SBOM、产物完整性、GitHub CI
 
 现有硬件总览加上这些核心界面、事件和视频，就能显著提升 GitHub 首页可信度；无需用大量器材特写稀释项目重点。
