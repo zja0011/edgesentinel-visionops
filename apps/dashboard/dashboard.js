@@ -1828,6 +1828,7 @@ function renderEventDetail(event) {
     ["摄像头", event.camera_id],
     ["区域", event.zone_name || event.zone_id],
     ["目标类别", event.object_class || "person"],
+    ["匿名 Track ID", event.track_id ?? "无"],
     [
       "处置状态",
       event.status === "ACKNOWLEDGED" ? "已处理" : "待处理",

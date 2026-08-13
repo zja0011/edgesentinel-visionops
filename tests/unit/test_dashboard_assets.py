@@ -311,6 +311,7 @@ class DashboardAssetTests(unittest.TestCase):
             javascript,
         )
         self.assertIn("renderEventSummary", javascript)
+        self.assertIn("event.track_id", javascript)
         self.assertIn("buildEventSummaryUrl", javascript)
         self.assertIn('parameters.set("minutes", minutes)', javascript)
         self.assertIn(

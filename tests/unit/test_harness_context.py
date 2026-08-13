@@ -251,8 +251,20 @@ class ContextEngineTests(unittest.TestCase):
                     "tool_name": "event.query",
                     "status": "SUCCEEDED",
                     "result": {
-                        "count": 0,
-                        "events": [],
+                        "count": 1,
+                        "events": [
+                            {
+                                "event_type": "ZONE_DWELL",
+                                "severity": "MEDIUM",
+                                "timestamp": "2026-07-28T15:30:00+08:00",
+                                "zone_id": "left_zone",
+                                "object_class": "person",
+                                "event_id": "evt_track",
+                                "track_id": 7,
+                                "status": "OPEN",
+                                "private": "/secret",
+                            }
+                        ],
                         "window": {
                             "minutes": 60,
                             "since_timestamp": (
@@ -287,6 +299,8 @@ class ContextEngineTests(unittest.TestCase):
             )
 
             bounded = result["result"]
+            self.assertEqual(bounded["events"][0]["track_id"], 7)
+            self.assertNotIn("private", bounded["events"][0])
             self.assertEqual(bounded["window"]["minutes"], 60)
             self.assertEqual(
                 bounded["filters"]["status"],

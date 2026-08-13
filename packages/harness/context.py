@@ -366,6 +366,7 @@ class ContextEngine(object):
                         "zone_id": event.get("zone_id"),
                         "object_class": event.get("object_class"),
                         "event_id": event.get("event_id"),
+                        "track_id": event.get("track_id"),
                         "disposition_status": event.get("status"),
                         "acknowledged_at": event.get(
                             "acknowledged_at"
