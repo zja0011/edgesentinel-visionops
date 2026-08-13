@@ -749,7 +749,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 
 ## 7. 视觉与事件闭环截图
 
-最终文件放 `docs/media/vision/` 或 `docs/media/events/`。动态功能优先录制连续视频，再从已验收原片无损提取关键帧作为 README 静态图；不要为了同一结论同时重复录制和截图。E01–E04 由 V02 覆盖，E05–E07 由 V03 覆盖，E08–E09 由 V04 覆盖，E10 由 V05 覆盖，E11 由 V12 覆盖；E12–E13 是稳定的完整性/哈希结论，使用单独截图。
+最终文件放 `docs/media/vision/` 或 `docs/media/events/`。动态功能优先录制连续视频，再从已验收原片无损提取关键帧作为 README 静态图；不要为了同一结论同时重复录制和截图。E01–E03 由 V02 覆盖；E04 使用 V02 的跨区动作并由 V03 中一致的 Track ID 补强；E05–E07 由 V03 覆盖，E08–E09 由 V04 覆盖，E10 由 V05 覆盖，E11 由 V12 覆盖；E12–E13 是稳定的完整性/哈希结论，使用单独截图。
 
 | 编号 | 公开文件名 | 触发动作 | 验收点 |
 |---|---|---|---|
@@ -840,8 +840,8 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 | 编号 | 最终文件名 | 时长 | 演示顺序 | 标记 |
 |---|---|---:|---|---|
 | V01 | `edgesentinel-demo-01-end-to-end-zh-cn-1080p.mp4` | 2–3 分钟 | 实物 → HTTPS → 检测 → 事件 → Agent → Workbench | L0/PHY |
-| V02 | `edgesentinel-demo-02-live-vision-zh-cn-1080p.mp4` | 90–120 秒 | 0/1/2 人 → 跨区域轨迹 → 两瓶加一本书 → 稳定库存 | PHY |
-| V03 | `edgesentinel-demo-03-zone-events-zh-cn-1080p.mp4` | 60–90 秒 | 进入 → 停留 → 离开 → 三类证据 | PHY |
+| V02 | `edgesentinel-demo-02-live-vision-zh-cn-1080p.mp4` | 90–120 秒 | 0/1/2 人 → 跨区域轨迹 → 两瓶加鼠标 → 稳定库存 | PHY |
+| V03 | `edgesentinel-demo-03-zone-events-zh-cn-1080p.mp4` | 150–210 秒 | 左区进入 → 连续停留 → 原路离开 → 三类证据 → Agent 核对匿名 Track ID | PHY/L0 |
 | V04 | `edgesentinel-demo-04-object-lifecycle-zh-cn-1080p.mp4` | 90 秒 | 放瓶 → 稳定库存 → 拿走 → 前后证据 | PHY |
 | V05 | `edgesentinel-demo-05-left-behind-zh-cn-1080p.mp4` | 60–90 秒 | 人携物进入 → 放下 → 离开 → 遗留事件 | PHY |
 | V06 | `edgesentinel-demo-06-agent-harness-zh-cn-1080p.mp4` | 2 分钟 | 改写问题 → Route → Skill → Hooks → Trace → Budget | L0 |
@@ -867,6 +867,58 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 - **视频派生截图**：人数 0→1→2、物品出现/稳定/移除、区域进入/停留/离开等动态功能先录视频；README 所需静态图从验收视频关键帧提取，不要求再次摆拍。
 - **不重复拍摄**：一个已验收视频若完整覆盖某个 E 编号，只补缺失的关键帧，不重新执行物理动作。
 - **危险或扰动操作**：摄像头拔插、重启、清理、长期记忆写入等只在明确的维护窗口录制一次；静态证明优先使用已有 acceptance summary。
+
+### V02 原片验收记录：实时人数、跨区移动与稳定库存
+
+原片：
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-12\20260812_V02_live-vision-people-objects-tracks_take01.mp4
+```
+
+实际规格与结果：
+
+- 时长 `231.1` 秒，画面 `1920×1080`，`30 FPS`，文件约 `21.8 MiB`；时长偏长但核心过程连续，无需整段重录。
+- 清楚录到无人 `Left/Right Zone 0/0`、单人跨区、两人分站左右区域 `1/1`，再依次离场回到无人，E01 动态人数闭环成立。
+- 清楚录到第一瓶、第二瓶和鼠标依次进入画面；最终 Dashboard 显示当前物品 `3`、稳定类别 `2`、库存 `bottle 2 / mouse 1`，E02–E03 成立。
+- 后续事件中心包含本次 `bottle`/`mouse` 物品出现记录，强化了物理动作与系统记录的对应关系。
+- V02 录到了人员跨区域移动，但标注画面没有直接显示 Track ID/轨迹点；E04 不判定为独立完成，由 V03 的 ZONE_ENTER/ZONE_DWELL/ZONE_EXIT 一致 Track ID 补强，不重录 V02。
+- 原片带音轨，发布版必须静音；地址栏包含 LAN IP 和“不安全”提示、右上角账户标记，且至少一名人员面部未完全遮挡，发布剪辑必须裁掉浏览器顶栏并对所有可辨认人脸打码。
+- 推荐发布剪辑保留约 `80–110` 秒：无人基准、单人跨区、两人 `1/1`、人数归零、两瓶与鼠标、最终 `bottle 2 / mouse 1`；删除事件列表中的重复滚动和等待。
+
+### V03 详细录制卡：区域进入、停留、离开与匿名轨迹核对
+
+原片保存为：
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-13\20260813_V03_zone-enter-dwell-exit-track_take01.mp4
+```
+
+录制规格：`1920×1080`、`30 FPS`、预计 `150–210` 秒；关闭麦克风和系统声音。全程只使用一个测试人员，另一人操作 PC。录制前保持瓶子、鼠标等现有物品不动，避免在本段产生无关物品事件；浏览器只打开 EdgeSentinel Dashboard，确保 HTTPS、摄像头与 DeepSeek 均正常。
+
+物理动作必须按以下顺序连续完成，不能暂停或剪切：
+
+1. 将 Dashboard 停在顶部实时画面，测试人员完全离开镜头，保留 `5` 秒无人基准。
+2. 测试人员从画面左边缘进入 **Left Zone**，脚部和人体下缘保持可见；进入后不要跨过中央分界线。
+3. 等 Dashboard 显示当前人数 `1`、Left Zone `1` 后开始计时，在左区原地连续停留 `30–35` 秒。动作可以轻微变化，但不要走出检测框，也不要遮挡摄像头。
+4. 测试人员沿原路径从左侧完全离开，仍然不要经过 Right Zone；离开后保持空画面 `8` 秒，让 `30` 帧离区确认完成。
+
+随后由 PC 操作者在同一段录屏中完成核验：
+
+5. 打开事件中心，时间范围选最近可用窗口，摄像头选 `camera_01`，对象类别选 `person`，事件类型、严重级别和状态均选“全部”，显示数量选 `6`，应用筛选。
+6. 列表必须同时出现本轮 Left Zone 的 `ZONE_ENTER`、`ZONE_DWELL`、`ZONE_EXIT`；时间顺序正确，严重级别应为 `INFO / MEDIUM / INFO`。若出现额外的 Right Zone 事件，本次动作不合格。
+7. 依次打开三条事件详情，各停留约 `4` 秒；至少让事件类型、区域、时间、证据图片和完整性状态进入画面。不要点击“确认事件”等写操作。
+8. 在 Vision Copilot 输入下面这句中文并发送：
+
+```text
+查询最近10分钟 camera_01 的人员区域事件。分别找到最近一次进入区域、长时间停留以及随后对应的离开区域事件，列出三条事件的区域、时间和 track_id，并判断是否属于同一条匿名轨迹。不要推断人员身份。
+```
+
+9. 等待回答完整出现。验收要求：`event.query` 显示 `SUCCEEDED`，回答列出三类事件，三条记录的 `track_id` 一致，并明确说明 Track ID 只是匿名跟踪编号、不能据此识别人名。完整回答保留 `6–8` 秒后停止录制。
+
+重拍条件：停留 `35` 秒仍无 `ZONE_DWELL`、中途丢失检测导致 Track ID 改变、产生 Right Zone 事件、三类事件缺任意一类、Agent 将匿名 Track ID 误说成人员身份。若物理事件链已经正确而只有 Agent 首次回答不完整，不覆盖原片；保存为 `take02` 后仅补录查询与回答，发布剪辑再拼接。
+
+发布处理：裁掉浏览器地址栏和 LAN IP，隐藏账户标记，对所有可辨认人脸持续跟踪打码并彻底移除音轨。E05–E07 静态图直接从三条事件详情关键帧提取，不再重复摆拍。
 
 ### V04 原片验收记录：瓶子生命周期与移除证据
 
@@ -1298,7 +1350,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 | Batch 6 | 其余专项视频 | 1–2 天 |
 | Batch 7 | V20 宣传片 | 1–2 小时 |
 
-H10、D02、D03、D06、D09、D10、D11、V01、V04、V06 和 P01–P04 已完成原片验收。V04 已同时覆盖 E09 的事件详情与前后证据；发布工程核心证明截图已经齐备。
+H10、D02、D03、D06、D09、D10、D11、V01、V02、V04、V06 和 P01–P04 已完成原片验收。V02 已覆盖 E01–E03 并提供 E04 的跨区动作；V04 已同时覆盖 E09 的事件详情与前后证据；发布工程核心证明截图已经齐备。
 
 ## 12. 公开前脱敏检查
 
