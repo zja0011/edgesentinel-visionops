@@ -1507,6 +1507,22 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 
 裁掉浏览器地址栏 LAN IP、“不安全”提示、账户标记，以及 SSH 提示符中的用户名和主机名；保留命令正文和完整验收摘要。结果文件与审计日志路径可以裁掉，避免公开本机目录。移除音轨，字幕可写“本地 MCP stdio：发现、调用、资源与默认拒绝”。
 
+### V08 原片验收记录：MCP Catalog、stdio 与默认拒绝
+
+已验收原片：
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-13\20260813_V08_mcp-server-catalog-stdio-resources-deny_take01.mp4
+```
+
+- 时长 `45.6` 秒，画面 `1280×720`、`30 FPS`，文件约 `1.2 MiB`；虽然短于建议时长且不是 1080p，但原始像素下 Catalog、Schema 和终端摘要均清晰可读。
+- Dashboard 清楚显示 `MCP 工具协议 · 按需启动 · 25工具 · 5资源 · 3提示`，展开目录后显示 `25 个只读 MCP 工具`，多个工具名与 `event.query` 的有界参数 Schema 可辨认。
+- 视频连续切换到已准备好的 Jetson SSH 终端，并使用 `bash -c` 一次运行 `scripts/run_mcp_server_test.sh`；没有密码交互，也没有 `mesg: ttyname failed` 噪声。
+- 验收摘要显示协议 `2025-11-25`、传输 `stdio`、Server `edgesentinel-visionops`、25 个只读工具、5 个有界资源和 3 个用户控制提示。
+- `camera.get_status SUCCEEDED`，视觉、近期事件与模型资源读取成功；运行基准为 PASS，`inventory_check` Prompt 通过验证。
+- 安全边界清晰：`camera.restart POLICY_DENIED`、未知 `system.shell JSON-RPC -32601`、任意文件 URI `JSON-RPC -32002`，并显示 `Stderr empty: True` 与 `MCP Server smoke test passed.`。
+- 原片带音轨，最终发布版必须静音；裁掉或遮挡 LAN IP、“不安全”提示、浏览器账户标记、SSH 用户/主机名，以及结果文件和审计日志的完整路径。原片可验收，无需重录。
+
 ### P01–P04 详细截图卡：发布工程证明
 
 发布工程展示的是终态、哈希和独立 CI 结论，静态截图比视频信息密度更高。V18 从核心必录项降为可选，README 与项目文档使用以下四张局部截图即可。
@@ -1606,7 +1622,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 | Batch 6 | 其余专项视频 | 1–2 天 |
 | Batch 7 | V20 宣传片 | 1–2 小时 |
 
-H10、D02、D03、D06、D09、D10、D11、V01、V02、V03、V04、V05、V06、V07 和 P01–P04 已完成原片验收。V02 已覆盖 E01–E03 并提供 E04 的跨区动作；V03 已完整覆盖区域事件、匿名 Track ID、证据与 Agent/Harness 查询闭环；V04 已同时覆盖 E09 的事件详情与前后证据；V05 已覆盖 E10 的人员离开、连续无人确认、遗留事件与主要证据；V07 已覆盖在线/离线模式切换及 Open‑Meteo 外部工具，D12/D13 可直接从原片提取；发布工程核心证明截图已经齐备。
+H10、D02、D03、D06、D09、D10、D11、V01、V02、V03、V04、V05、V06、V07、V08 和 P01–P04 已完成原片验收。V02 已覆盖 E01–E03 并提供 E04 的跨区动作；V03 已完整覆盖区域事件、匿名 Track ID、证据与 Agent/Harness 查询闭环；V04 已同时覆盖 E09 的事件详情与前后证据；V05 已覆盖 E10 的人员离开、连续无人确认、遗留事件与主要证据；V07 已覆盖在线/离线模式切换及 Open‑Meteo 外部工具，D12/D13 可直接从原片提取；V08 已覆盖 MCP Catalog、stdio 协议、资源读取与默认拒绝；发布工程核心证明截图已经齐备。
 
 ## 12. 公开前脱敏检查
 
@@ -1645,6 +1661,7 @@ Codex 会检查清晰度、隐私、重复镜头与命名，再挑选、裁剪�
 - [x] V01 端到端演示（209.4 秒、1080p，待剪至约 150–180 秒）
 - [x] V06 Agent Harness 多步 Skill 与 Trace（50.2 秒、1080p，固定 Skill 与 3 工具已验收）
 - [x] V07 在线/离线模型与工具切换（106.3 秒、1080p，在线问答、Open‑Meteo 与离线本地视觉已验收）
+- [x] V08 MCP Server 演示（45.6 秒、720p，Catalog、Schema、stdio、资源与默认拒绝已验收）
 - [x] P01–P04 发布工程截图：测试/门禁、来源/SBOM、产物完整性、GitHub CI
 
 现有硬件总览加上这些核心界面、事件和视频，就能显著提升 GitHub 首页可信度；无需用大量器材特写稀释项目重点。
