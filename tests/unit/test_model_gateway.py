@@ -296,6 +296,19 @@ class ChatCompletionsModelGatewayTests(unittest.TestCase):
         payload = transport.calls[0]["payload"]
         self.assertNotIn("tools", payload)
         self.assertNotIn("tool_choice", payload)
+        system_message = payload["messages"][0]["content"]
+        self.assertIn(
+            "online remote model gateway",
+            system_message,
+        )
+        self.assertIn(
+            "it never means that the model is offline",
+            system_message,
+        )
+        self.assertIn(
+            "Never infer model runtime mode from tool availability",
+            system_message,
+        )
 
     def test_rejects_invalid_provider_usage(self):
         invalid_usages = (

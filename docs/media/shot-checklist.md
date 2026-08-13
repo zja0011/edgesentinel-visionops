@@ -1399,10 +1399,10 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 2. **6–25 秒：在线一般问题。** 手动输入并发送：
 
    ```text
-   请告诉我今天是星期几，并说明你当前是否处于在线模型模式；不要调用任何工具。
+   请告诉我今天是星期几；不要调用任何工具。
    ```
 
-   等待 `TASK COMPLETED`。回答应说明当天星期几；Harness 应显示 `NO_MATCH`、`未调用工具` 或工具调用数为 0，证明一般问题由在线模型直接回答。回答若错误、调用了工具或出现 fallback，不要继续录制。
+   等待 `TASK COMPLETED`。回答应说明当天星期几；页面模型状态与 Harness 的模型服务路径应显示在线 `remote → remote`，Harness 还应显示 `NO_MATCH`、`未调用工具` 或工具调用数为 0，证明一般问题由在线模型直接回答。运行模式只以页面和 Harness 的结构化元数据为准，不要求模型在自然语言正文中自报身份。回答若错误、调用了工具或出现 fallback，不要继续录制。
 3. **25–50 秒：在线外部天气工具。** 在输入框中手动输入并发送：
 
    ```text
@@ -1424,7 +1424,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 **验收标准**
 
 - [ ] 在线起点、离线中间态、在线终态三种状态在一段连续视频中可辨认。
-- [ ] 在线一般问题 `TASK COMPLETED`，正确回答当天星期，且未调用工具、无 fallback。
+- [ ] 在线一般问题 `TASK COMPLETED`，正确回答当天星期；页面/Trace 显示 `remote → remote`，且未调用工具、无 fallback。
 - [ ] 武汉天气来自 `weather.get_current · SUCCEEDED`，回答包含实时地点和至少天气状况、气温、湿度；不能仅凭模型知识回答。
 - [ ] 离线阶段显示 `offline-rule-mock`/离线规则，`vision.get_people_count · SUCCEEDED`，人数与现场一致。
 - [ ] 离线阶段没有调用 DeepSeek、天气或其他外部工具；API 和视觉仍在线、实时。
