@@ -845,7 +845,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 | V04 | `edgesentinel-demo-04-object-lifecycle-zh-cn-1080p.mp4` | 90 秒 | 放瓶 → 稳定库存 → 拿走 → 前后证据 | PHY |
 | V05 | `edgesentinel-demo-05-left-behind-zh-cn-1080p.mp4` | 80–110 秒 | 人携瓶进入 → 瓶子稳定 → 人离开 → 无人确认 → 遗留事件与证据 | PHY |
 | V06 | `edgesentinel-demo-06-agent-harness-zh-cn-1080p.mp4` | 2 分钟 | 改写问题 → Route → Skill → Hooks → Trace → Budget | L0 |
-| V07 | `edgesentinel-demo-07-online-offline-tools-zh-cn-1080p.mp4` | 90 秒 | remote 问星期/天气 → offline 视觉 → 切回 | L0 |
+| V07 | `edgesentinel-demo-07-online-offline-tools-zh-cn-1080p.mp4` | 90–120 秒 | 在线星期与外部天气 → 离线本地视觉 → 恢复在线默认 | L0 |
 | V08 | `edgesentinel-demo-08-mcp-server-zh-cn-1080p.mp4` | 90 秒 | Catalog → Schema → stdio → resources → deny | L0 |
 | V09 | `edgesentinel-demo-09-risk-confirmation-rbac-zh-cn-1080p.mp4` | 2 分钟 | L0 → L1 取消/确认 → L2 提示 → RBAC/CSRF | L1/L2/SEC |
 | V10 | `edgesentinel-demo-10-event-analytics-zh-cn-1080p.mp4` | 2 分钟 | 过滤 → 分页 → 趋势 → 环比 → 贡献 → 基线 | L0 |
@@ -1364,6 +1364,85 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 - Workbench 清楚覆盖 Skill 选择、工具路由、模型韧性、模型用量、模型决策、before/after model Hooks、before/after tool Hooks、工具结果、Checkpoint、任务结束、on_task_complete 和会话记忆保存。
 - 执行预算为 `3/5M · 3/8T · 0/2E · 14457/16384 tok`，步骤、耗时与预算均可辨认。
 - 原片可验收，无需重录。发布前遮挡 LAN IP、完整 Task ID 和 Event ID；开头一句英文过渡可保留，也可剪掉以保持中文一致。
+
+### V07 详细录制卡：在线 DeepSeek、外部天气与离线视觉
+
+**为什么录视频**
+
+本项要证明运行时模式确实发生了 `在线 → 离线 → 在线` 的状态迁移，并且两种模式各自执行了合适的工具。单张截图无法证明切换前后来自同一运行实例，因此用一段连续 PC 屏幕录像；D12 模型切换和 D13 天气工具的 README 静态图之后直接从已验收视频提取。
+
+**能力边界**
+
+- 在线 DeepSeek 可以回答一般问题，并通过 `weather.get_current` 调用固定的 Open‑Meteo HTTPS 服务获取实时天气。
+- 天气数据不是 DeepSeek 自身知识，必须看到 `weather.get_current · SUCCEEDED`；提供方应为 Open‑Meteo，属于 L0、只读、外部网络工具。
+- 离线规则不等于摄像头离线。它不调用 DeepSeek，但仍可通过本地 `vision.get_people_count` 读取 Jetson 当前视觉状态。
+- 模式切换需要浏览器确认，服务端使用固定确认短语 `SWITCH_AGENT_MODEL`；它不重启容器，也不改变重启后的默认在线模式。
+
+**原始文件名与保存位置**
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-13\20260813_V07_online-weather-offline-vision-switch_take01.mp4
+```
+
+**录制前准备**
+
+1. 保持 Jetson 联网、API 在线、视觉状态实时。录制前不要运行会占用模型的其他任务。
+2. 在摄像头前选择一个容易维持的真实人数：推荐无人，人数应稳定为 0；如现场无法保持无人，可安排一人稳定站立，后续离线答案必须与实际一致。
+3. 打开 Vision Copilot，使“回答模型”、两个切换按钮、自然语言输入框和回答区域处于容易滚动到的位置。
+4. 初始状态必须显示：`在线 DeepSeek` 按钮激活、`当前在线 · 重启后默认在线`，顶部模型标记为 `远程 · deepseek`。
+5. 不清空短期会话、不写长期记忆、不展开私人记忆内容。可以在同一会话中连续执行三次查询，这更能证明模式切换并未丢失 Harness 运行能力。
+6. 录制 `1920×1080`、30 FPS（实际 23–30 FPS 均可），浏览器缩放 100%。隐藏通知、书签栏和私人标签页。
+
+**一镜到底时间线**
+
+1. **0–6 秒：在线起始状态。** 镜头停在 Vision Copilot，清楚录到 `在线 DeepSeek` 激活、`当前在线 · 重启后默认在线` 和空输入框。
+2. **6–25 秒：在线一般问题。** 手动输入并发送：
+
+   ```text
+   请告诉我今天是星期几，并说明你当前是否处于在线模型模式；不要调用任何工具。
+   ```
+
+   等待 `TASK COMPLETED`。回答应说明当天星期几；Harness 应显示 `NO_MATCH`、`未调用工具` 或工具调用数为 0，证明一般问题由在线模型直接回答。回答若错误、调用了工具或出现 fallback，不要继续录制。
+3. **25–50 秒：在线外部天气工具。** 在输入框中手动输入并发送：
+
+   ```text
+   查询武汉当前天气，必须调用天气工具，并用中文列出天气状况、气温、体感温度、湿度、降水和风速；不要凭模型知识猜测。
+   ```
+
+   等待 `TASK COMPLETED`，停留到回答中的地点、查询时间和天气值清晰可读，并清楚录到 `weather.get_current · SUCCEEDED`。如地点乱码、工具失败、回答未调用工具或使用的不是武汉，停止并报告。
+4. **50–58 秒：切换离线。** 点击“离线规则”，浏览器出现“确认把 Agent 回答模型切换为‘离线规则’吗？”时录到确认框，再点击“确定”。等待界面显示 `当前离线 · 重启后默认在线`、按钮“离线规则”激活、顶部标记“离线规则模型”。
+5. **58–78 秒：离线本地视觉。** 手动输入口语化问题：
+
+   ```text
+   不联网的话，现在摄像头画面里站着几位？请读取本地实时视觉结果。
+   ```
+
+   等待 `TASK COMPLETED`。结果必须显示模型 `offline-rule-mock` 或明确的离线规则标记、人数与现场一致，以及 `vision.get_people_count · SUCCEEDED`。天气工具不得在此阶段调用。
+6. **78–88 秒：恢复在线。** 点击“在线 DeepSeek”，保留浏览器确认框一瞬，再点击“确定”。等待 `在线 DeepSeek` 按钮重新激活，状态恢复为 `当前在线 · 重启后默认在线`，顶部模型为 `远程 · deepseek`。
+7. **88–100 秒：终态证明。** 保持页面静止 5–8 秒，让在线按钮、重启默认在线、最近离线视觉回答和成功工具标签同屏；必要时轻微滚动，但不要再提交第四个任务。然后停止录制。
+
+**验收标准**
+
+- [ ] 在线起点、离线中间态、在线终态三种状态在一段连续视频中可辨认。
+- [ ] 在线一般问题 `TASK COMPLETED`，正确回答当天星期，且未调用工具、无 fallback。
+- [ ] 武汉天气来自 `weather.get_current · SUCCEEDED`，回答包含实时地点和至少天气状况、气温、湿度；不能仅凭模型知识回答。
+- [ ] 离线阶段显示 `offline-rule-mock`/离线规则，`vision.get_people_count · SUCCEEDED`，人数与现场一致。
+- [ ] 离线阶段没有调用 DeepSeek、天气或其他外部工具；API 和视觉仍在线、实时。
+- [ ] 两次切换均出现用户确认，最终恢复 `当前在线 · 重启后默认在线`。
+- [ ] 全程只有 L0 查询和模式选择，不触发 L1/L2 工具确认，不写长期记忆或事件状态。
+
+**立即停止并报告的情况**
+
+- 初始或最终显示“重启后默认离线”，或者在线凭据不可用。
+- 在线任务出现 `served mode: offline`、fallback、Circuit OPEN 或 DeepSeek 请求失败。
+- 天气工具失败、地点乱码、没有调用工具、返回的地点不是武汉或结果明显不是实时数据。
+- 切换离线后摄像头/API 也变成离线，或人数答案与现场不一致。
+- 离线查询调用了外部网络工具，或模型字段仍显示在线 DeepSeek。
+- 录制结束前没有恢复在线模式。
+
+**发布剪辑要求**
+
+最终剪辑可压缩模型等待时间，但必须保留两次浏览器确认框和三次明确的模型状态。裁掉/遮挡 LAN IP、“不安全”提示、账户标记、完整 Task/Session ID；移除音轨。天气数值是拍摄时点数据，字幕标明“Open‑Meteo 实时示例”，不得写成长期有效预报。D12 从在线/离线按钮同屏帧提取，D13 从天气回答与成功工具标签同屏帧提取。
 
 ### P01–P04 详细截图卡：发布工程证明
 
