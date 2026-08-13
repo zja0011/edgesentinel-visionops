@@ -1033,6 +1033,25 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 
 最终成片保留关键等待过程，可将 20–25 秒无人确认段做 2–3 倍速并加“连续 200 个无人帧确认”字幕，但不能跳切成瞬间触发。裁掉地址栏/LAN IP和账户标记，给人脸持续跟踪打码，截断完整 Event ID，移除音轨。E10 的 README 图从终态详情帧提取。
 
+### V05 原片验收记录：瓶子遗留与无人确认
+
+原片：
+
+```text
+H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-13\20260813_V05_left-behind-bottle_take01.mp4
+```
+
+实际规格与结果：
+
+- 时长 `87.2` 秒，画面 `1920×1080`，约 `23.6 FPS`，文件约 `4.6 MiB`；规格符合 V05 发布素材要求。
+- 连续录到了空场、人员携瓶进入、人员与瓶子同时稳定、人员离开、无人画面中瓶子持续存在、筛选本轮事件及打开详情，没有用静态截图代替物理因果过程。
+- 约 `18` 秒时 Dashboard 明确显示当前人员 `1`、当前物品 `1`、稳定库存 `bottle 1`；约 `38` 秒后画面无人且 bottle 检测继续稳定，证明遗留判断不是人员仍在场时触发。
+- 本轮事件为“物品遗留”，北京时间 `2026-08-13T17:26:04.920+08:00`，严重级别 `MEDIUM`，摄像头 `camera_01`，区域 `Global Scene`，目标类别 `bottle`，处置状态仍为“待处理”。
+- 证据完整性为 `PASS · 1/1有效 · primary=VALID`，主要证据清楚显示无人且瓶子仍在画面内。
+- 片尾结构化详情显示 `current_count: 1`、`current_people: 0`、`current_track_ids: [63]`、`confirmation_frames: 200`；轨迹号只代表匿名瓶子检测轨迹，不用于识别人员或物主。
+- 原片通过验收，不需要重录；V05 同时覆盖 E10，README 静态图从约 `79–84` 秒的事件详情清晰帧提取。
+- 原片包含 AAC 音轨，且浏览器地址栏显示 LAN IP、“不安全”提示和账户标记；最终发布必须裁切顶栏或遮挡相关内容、截断完整 Event ID并彻底移除音轨。人员画面没有清晰正脸特写，但公开版仍按默认策略检查并视需要打码。
+
 ### V01 原片验收记录：Dashboard、Agent、事件与 MCP 端到端
 
 原片：
@@ -1445,7 +1464,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 | Batch 6 | 其余专项视频 | 1–2 天 |
 | Batch 7 | V20 宣传片 | 1–2 小时 |
 
-H10、D02、D03、D06、D09、D10、D11、V01、V02、V03、V04、V06 和 P01–P04 已完成原片验收。V02 已覆盖 E01–E03 并提供 E04 的跨区动作；V03 已完整覆盖区域事件、匿名 Track ID、证据与 Agent/Harness 查询闭环；V04 已同时覆盖 E09 的事件详情与前后证据；发布工程核心证明截图已经齐备。
+H10、D02、D03、D06、D09、D10、D11、V01、V02、V03、V04、V05、V06 和 P01–P04 已完成原片验收。V02 已覆盖 E01–E03 并提供 E04 的跨区动作；V03 已完整覆盖区域事件、匿名 Track ID、证据与 Agent/Harness 查询闭环；V04 已同时覆盖 E09 的事件详情与前后证据；V05 已覆盖 E10 的人员离开、连续无人确认、遗留事件与主要证据；发布工程核心证明截图已经齐备。
 
 ## 12. 公开前脱敏检查
 
