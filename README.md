@@ -32,9 +32,14 @@ EdgeSentinel VisionOps 不是“摄像头接一个大模型”的一次性脚本
 | --- | --- | --- | --- |
 | Jetson 实时检测、跟踪、区域与库存 | Agent 按需选择 Tool / Skill / MCP | L0–L3、RBAC、确认门与脱敏 Trace | systemd、熔断降级、加密备份与恢复演练 |
 
+### English overview
+
+EdgeSentinel VisionOps is a self-hosted **Jetson Nano edge AI video analytics and Agent Harness** platform. It combines real-time object detection and tracking, people counting, zone events, inventory monitoring, tamper-evident event evidence, MCP tools, DeepSeek online/offline switching, policy-gated tool calling, observability, encrypted backup and disaster recovery in one verifiable computer-vision system.
+
 ## 目录
 
 - [为什么是 EdgeSentinel](#为什么是-edgesentinel)
+- [English overview](#english-overview)
 - [核心能力](#核心能力)
 - [硬件与器材](#硬件与器材)
 - [系统架构](#系统架构)
