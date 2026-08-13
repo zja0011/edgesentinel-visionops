@@ -99,9 +99,11 @@ TOOL_ALIASES = {
     ),
     "event.query": (
         "query events", "recent events", "latest events",
-        "bottle events", "person events", "camera events",
+        "bottle events", "person events", "camera events", "zone events",
+        "event track id", "event track_id",
         "查询事件", "最近事件", "历史事件", "瓶子事件",
-        "人员事件", "摄像头事件", "发生了什么",
+        "人员事件", "人员区域事件", "区域事件", "摄像头事件",
+        "事件track id", "事件track_id", "发生了什么",
     ),
     "event.summarize": (
         "event summary", "summarize events", "event trend",

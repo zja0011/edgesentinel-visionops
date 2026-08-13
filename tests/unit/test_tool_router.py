@@ -85,6 +85,19 @@ class ToolSchemaRouterTests(unittest.TestCase):
             route["selected_tools"], ["weather.get_current"]
         )
 
+    def test_routes_person_zone_event_track_query(self):
+        route = self.router.route(
+            (
+                "查询最近24小时 camera_01 的全部人员区域事件，"
+                "列出事件类型、区域、时间和 track_id。"
+            ),
+            CATALOG,
+        )
+        self.assertEqual(
+            route["selected_tools"], ["event.query"]
+        )
+        self.assertEqual(route["mode"], "DETERMINISTIC")
+
     def test_general_question_exposes_no_tools(self):
         route = self.router.route("今天星期几？", CATALOG)
         self.assertEqual(route["mode"], "NO_MATCH")
