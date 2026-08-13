@@ -937,7 +937,9 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 - 原片最后的 Agent 查询调用 `event.query` 成功，但回答中的 `track_id` 为“无信息”。检查确认数据库和事件详情保留了匿名 Track ID，缺口来自 Harness 的模型上下文白名单遗漏该字段；已补充上下文字段、Dashboard 事件详情展示和回归测试。
 - `take02` 已录制为 `20260813_V03_zone-enter-dwell-exit-track_take02.mp4`：`1920×1080`、约 `98.7` 秒。事件详情已清楚显示进入与停留的匿名 Track ID `13`，并保留了 `PASS · primary=VALID` 证据状态，Dashboard 字段修复成立。
 - `take02` 的 Agent 查询没有执行工具：Workbench 明确显示 `NO_MATCH · 0/33 tools`。根因是确定性工具路由器尚未覆盖“人员区域事件 + track_id”表达，而不是数据库或上下文字段缺失；已加入精确 `event.query` 路由别名及回归测试，不启用目录兜底，也不扩大 L1/L2 权限。
-- 不重拍物理动作和事件详情。部署第二次修复后只补录最终 Agent 查询为 `take03`；验收要求 Workbench/回答显示 `event.query` 实际执行，回答按真实 Track ID 判断连续性且不推断人员身份。
+- 第二次查询已确认路由为 `DETERMINISTIC · event.query · 1/33`，但模型在 `tool_choice=auto` 下直接复用了会话中的旧上下文，执行预算为 `0/8T`，因此没有真正调用工具；该画面不能作为最终 `take03`。
+- 执行边界已收紧：首步确定性路由恰好选中一个 `L0 + read-only + autoExecute` 工具时，网关强制命名调用一次，下一步恢复自动选择并让模型基于新工具结果总结。一般问题保持零工具，L1/L2、多工具和 Skill 工作流不受影响。
+- 不重拍物理动作和事件详情。部署执行约束后再补录最终 Agent 查询为 `take03`；验收要求回答与 Workbench 均显示 `event.query` 实际执行，回答按真实 Track ID 判断连续性且不推断人员身份。
 - 发布剪辑使用 `take01` 约 `0–36` 秒的物理动作，使用 `take02` 约 `58–73` 秒的三条事件列表与匿名 Track ID 详情，再拼接 `take03`；删除 `take01` 的旧查询回答及 `take02` 约 `76` 秒后的无工具回答。
 - 原片包含音轨，地址栏暴露 LAN IP、“不安全”提示和账户标记；最终发布必须裁切顶栏、隐藏账户并彻底移除音轨。人物在画面中没有可辨认面部特征，仍需逐帧复核后才能免除人脸打码。
 

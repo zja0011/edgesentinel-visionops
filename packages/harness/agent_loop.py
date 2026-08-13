@@ -515,11 +515,31 @@ class AgentLoop(object):
                     }
                 )
             try:
-                response = self.model.generate(
-                    context,
-                    tool_schemas=tool_schemas,
-                    conversation=model_history,
+                forced_tool = self._forced_read_only_tool(
+                    task_id,
+                    step_number,
+                    tool_results,
+                    tool_schemas,
                 )
+                if (
+                    forced_tool is not None
+                    and hasattr(self.model, "generate_with_tool_choice")
+                ):
+                    response = self.model.generate_with_tool_choice(
+                        context,
+                        tool_schemas=tool_schemas,
+                        conversation=model_history,
+                        tool_choice={
+                            "type": "function",
+                            "function": {"name": forced_tool},
+                        },
+                    )
+                else:
+                    response = self.model.generate(
+                        context,
+                        tool_schemas=tool_schemas,
+                        conversation=model_history,
+                    )
                 self._record_model_resilience(
                     task_id,
                     step_number,
@@ -1519,6 +1539,36 @@ class AgentLoop(object):
             ),
             context_hints=hints,
         )
+
+    def _forced_read_only_tool(
+        self,
+        task_id,
+        step_number,
+        tool_results,
+        tool_schemas,
+    ):
+        if int(step_number) != 1 or tool_results:
+            return None
+        route = self._task_routes.get(task_id)
+        if (
+            not isinstance(route, dict)
+            or route.get("mode") != "DETERMINISTIC"
+            or route.get("selected_count") != 1
+        ):
+            return None
+        selected = list(route.get("selected_tools") or [])
+        if len(selected) != 1 or len(tool_schemas) != 1:
+            return None
+        schema = tool_schemas[0]
+        annotations = schema.get("annotations") or {}
+        if (
+            schema.get("name") != selected[0]
+            or annotations.get("readOnlyHint") is not True
+            or annotations.get("autoExecute") is not True
+            or annotations.get("requiresConfirmation") is not False
+        ):
+            return None
+        return selected[0]
 
     def _restore_tool_route(self, checkpoint):
         route = checkpoint.get("tool_route")

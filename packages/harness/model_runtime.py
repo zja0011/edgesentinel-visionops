@@ -149,6 +149,34 @@ class SwitchableModel(object):
         return self.summary()
 
     def generate(self, context, tool_schemas=None, conversation=None):
+        return self._generate(
+            context,
+            tool_schemas=tool_schemas,
+            conversation=conversation,
+            tool_choice=None,
+        )
+
+    def generate_with_tool_choice(
+        self,
+        context,
+        tool_schemas=None,
+        conversation=None,
+        tool_choice="auto",
+    ):
+        return self._generate(
+            context,
+            tool_schemas=tool_schemas,
+            conversation=conversation,
+            tool_choice=tool_choice,
+        )
+
+    def _generate(
+        self,
+        context,
+        tool_schemas=None,
+        conversation=None,
+        tool_choice=None,
+    ):
         with self._lock:
             active_mode = self._active_mode
             model = self._models[active_mode]
@@ -171,6 +199,7 @@ class SwitchableModel(object):
             context,
             tool_schemas=tool_schemas,
             conversation=conversation,
+            tool_choice=tool_choice,
         )
 
     def _generate_remote(
@@ -179,6 +208,7 @@ class SwitchableModel(object):
         context,
         tool_schemas=None,
         conversation=None,
+        tool_choice=None,
     ):
         with self._lock:
             now = float(self._clock())
@@ -212,11 +242,19 @@ class SwitchableModel(object):
         for attempt in range(1, self._retry_attempts + 1):
             attempts = attempt
             try:
-                response = model.generate(
-                    context,
-                    tool_schemas=tool_schemas,
-                    conversation=conversation,
-                )
+                if tool_choice is not None:
+                    response = model.generate_with_tool_choice(
+                        context,
+                        tool_schemas=tool_schemas,
+                        conversation=conversation,
+                        tool_choice=tool_choice,
+                    )
+                else:
+                    response = model.generate(
+                        context,
+                        tool_schemas=tool_schemas,
+                        conversation=conversation,
+                    )
             except ModelGatewayError as error:
                 last_error = error
                 if not error.retryable or attempt >= self._retry_attempts:

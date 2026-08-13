@@ -171,10 +171,25 @@ class ChatCompletionsModelGateway(object):
         tool_schemas=None,
         conversation=None,
     ):
+        return self.generate_with_tool_choice(
+            context,
+            tool_schemas=tool_schemas,
+            conversation=conversation,
+            tool_choice=self.tool_choice,
+        )
+
+    def generate_with_tool_choice(
+        self,
+        context,
+        tool_schemas=None,
+        conversation=None,
+        tool_choice="auto",
+    ):
         payload, internal_names = self._build_payload(
             context,
             tool_schemas or [],
             conversation=conversation,
+            tool_choice=tool_choice,
         )
         response = self.transport.post_json(
             self.endpoint,
@@ -195,7 +210,10 @@ class ChatCompletionsModelGateway(object):
         context,
         tool_schemas,
         conversation=None,
+        tool_choice=None,
     ):
+        if tool_choice is None:
+            tool_choice = self.tool_choice
         tools = []
         internal_names = {}
         for schema in tool_schemas:
@@ -240,10 +258,10 @@ class ChatCompletionsModelGateway(object):
         if tools:
             payload["tools"] = tools
             payload["tool_choice"] = self._external_tool_choice(
-                self.tool_choice,
+                tool_choice,
                 internal_names,
             )
-        elif self.tool_choice not in ("auto", "none"):
+        elif tool_choice not in ("auto", "none"):
             raise ModelGatewayError(
                 "configured tool choice requires a routed tool"
             )

@@ -26,6 +26,7 @@ class RecordingModel(object):
     def __init__(self, first_tool=None):
         self.first_tool = first_tool
         self.visible_tools = []
+        self.tool_choices = []
 
     def generate(self, context, tool_schemas=None, conversation=None):
         del conversation
@@ -37,6 +38,20 @@ class RecordingModel(object):
                 tool_calls=[ToolCall(self.first_tool, {})]
             )
         return ModelResponse(content="done")
+
+    def generate_with_tool_choice(
+        self,
+        context,
+        tool_schemas=None,
+        conversation=None,
+        tool_choice="auto",
+    ):
+        self.tool_choices.append(tool_choice)
+        return self.generate(
+            context,
+            tool_schemas=tool_schemas,
+            conversation=conversation,
+        )
 
 
 class ListTrace(object):
@@ -140,6 +155,17 @@ class AgentToolRoutingTests(unittest.TestCase):
         self.assertEqual(
             result["tool_route"]["selected_tools"],
             ["vision.get_people_count"],
+        )
+        self.assertEqual(
+            model.tool_choices,
+            [
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "vision.get_people_count"
+                    },
+                }
+            ],
         )
         checkpoint = JsonTaskCheckpointStore(
             self.directory

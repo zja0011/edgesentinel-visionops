@@ -194,6 +194,50 @@ class ChatCompletionsModelGatewayTests(unittest.TestCase):
         self.assertEqual(response.content, "当前没有新事件。")
         self.assertEqual(response.tool_calls, [])
 
+    def test_can_force_one_named_routed_tool_for_one_call(self):
+        transport = FakeTransport(
+            {
+                "choices": [
+                    {
+                        "message": {
+                            "content": None,
+                            "tool_calls": [
+                                {
+                                    "function": {
+                                        "name": "event_query",
+                                        "arguments": '{"limit":5}',
+                                    }
+                                }
+                            ],
+                        }
+                    }
+                ]
+            }
+        )
+        gateway = ChatCompletionsModelGateway(
+            endpoint="https://example.invalid/v1/chat/completions",
+            model="offline-demo",
+            api_key="secret",
+            transport=transport,
+        )
+
+        gateway.generate_with_tool_choice(
+            {"user_message": "查询最近事件"},
+            tool_schemas=TOOLS,
+            tool_choice={
+                "type": "function",
+                "function": {"name": "event.query"},
+            },
+        )
+
+        self.assertEqual(
+            transport.calls[0]["payload"]["tool_choice"],
+            {
+                "type": "function",
+                "function": {"name": "event_query"},
+            },
+        )
+
     def test_parses_bounded_provider_usage(self):
         gateway = ChatCompletionsModelGateway(
             endpoint="https://example.invalid/v1/chat/completions",
