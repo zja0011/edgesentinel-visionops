@@ -187,7 +187,7 @@ agent forwarding and port forwarding are denied.
 
 ```bash
 bash scripts/install_recovery_sync_access.sh install \
-  /home/nvidia/edgesentinel-recovery-sync.pub
+  /home/JETSON_USER/edgesentinel-recovery-sync.pub
 bash scripts/install_recovery_sync_access.sh status
 ```
 

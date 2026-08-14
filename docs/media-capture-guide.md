@@ -1,6 +1,6 @@
 # EdgeSentinel 实机素材拍摄与录屏清单
 
-> 当前公开 Demo 按维护者决定使用原始图片与原始视频，不做额外裁剪、压缩、转码或遮挡。本清单中关于脱敏公开版的步骤保留为未来产品化参考；API Key、PAT、Cookie 和私钥仍禁止入镜或入库。
+> 本指南记录真实演示素材的采集与发布规范。当前仓库展示原始媒体，以保留实验过程；生产项目应启用人物授权、标识脱敏和最小披露审查。API Key、PAT、Cookie 和私钥在任何场景下均不得入镜或入库。
 
 这份清单用于补齐 GitHub 项目的真实性证据。素材必须来自实际 Jetson Nano、摄像头、Dashboard 和运行日志；不要使用生成图片替代实拍，也不要为了画面效果伪造检测结果。
 
@@ -141,7 +141,7 @@
 原始照片、截图和视频统一保存在 Git 仓库外：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\
+<PRIVATE_MEDIA_ROOT>\edgesentinel\
 ├─ 01_raw_photos\YYYY-MM-DD\
 ├─ 02_raw_screens\YYYY-MM-DD\
 ├─ 03_raw_videos\YYYY-MM-DD\

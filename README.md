@@ -24,7 +24,7 @@ EdgeSentinel VisionOps 不是“摄像头接一个大模型”的一次性脚本
 项目在真实 Jetson Nano、USB 摄像头、Docker 与 systemd 环境中持续验收；在线模式连接 DeepSeek，网络或模型不可用时可明确降级到确定性离线规则，同时继续读取本地实时视觉结果。
 
 > [!NOTE]
-> 本页照片、截图和视频均来自真实实验环境。当前 Demo 按原貌公开：图片不额外打码，Release 视频保留原始分辨率、音轨和文件内容，不做裁剪、压缩或转码；请勿在生产项目中照搬这一公开策略。
+> 本页媒体均采集自真实 Jetson Nano 实验环境。为完整呈现实验过程，演示素材保留原始画面、分辨率与音轨；生产部署应另行执行人物授权、标识脱敏和最小披露审查。
 
 ### 30 秒看懂
 
@@ -198,7 +198,7 @@ flowchart LR
 
 ## 实机证据与演示素材
 
-以下图片来自真实装置、Dashboard、Agent Workbench 和 Jetson 验收终端。当前 Demo 使用原始照片和截图，没有额外裁剪、像素化或生成式修改。
+以下实机证据展示硬件工作台、Dashboard、Agent Workbench、MCP 工具目录和 Jetson 验收结果，便于访客直接核对系统的运行形态与工程闭环。
 
 ### 实机工作台
 
@@ -210,7 +210,7 @@ flowchart LR
 
 ![EdgeSentinel Dashboard 总览：实时画面、双区域、人数库存与运行状态](docs/media/dashboard/overview.png)
 
-*该图与原始文件 `界面全局截图.png` 字节一致，完整展示从实时视觉到 Agent Copilot 的长页面。*
+*总览长图依次展示实时视觉、区域配置、人员与库存统计、事件中心、运行状态和 Agent Copilot。*
 
 <table>
   <tr>
@@ -304,7 +304,7 @@ flowchart LR
 - [全功能素材拍摄清单](docs/media/shot-checklist.md)
 - [媒体目录说明](docs/media/README.md)
 
-原始大视频未写入 Git 历史；Release 附件与拍摄原片保持相同 SHA‑256。GitHub Pages 只负责在线播放，不生成第二份压缩视频。
+每段 Release 视频均附 SHA‑256 Manifest，可用于核对下载文件的完整性；GitHub Pages 仅提供在线播放界面，不生成二次压缩版本。
 
 ## 快速验证
 

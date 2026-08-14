@@ -1,6 +1,6 @@
 # EdgeSentinel 全功能素材拍摄清单
 
-> 当前公开 Demo 使用原始图片和原始视频；历史条目中的脱敏、裁剪和压缩要求作为未来产品化安全基线保留，不用于改动本次已验收原片。凭据和私钥始终不得公开。
+> 本清单记录演示素材的采集与验收过程。仓库当前发布原始媒体；其中的脱敏、裁剪和压缩条目保留为生产化发布的安全参考。凭据和私钥始终不得公开。
 
 本清单用于制作 GitHub README、作品集、答辩演示和发布视频所需的真实性素材。目标不仅是证明“能运行”，还要证明硬件、视觉流水线、Agent Harness、MCP、安全治理、运维恢复和发布工程均真实可用。
 
@@ -11,7 +11,7 @@
 原片不要直接放入 Git 仓库。请在 Windows 建立：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\
+<PRIVATE_MEDIA_ROOT>\edgesentinel\
 ├─ 00_inbox\
 ├─ 01_raw_photos\YYYY-MM-DD\
 ├─ 02_raw_screens\YYYY-MM-DD\
@@ -114,7 +114,7 @@ edgesentinel-demo-<序号>-<主题>-zh-cn-1080p.mp4
 2. PC 浏览器打开 Dashboard 登录页，用户名和密码框保持空白，不执行登录。
 3. 登录后的实时画面、运行状态和检测结果留给 D02–D11 的系统截图展示。
 4. 浏览器只保留 Dashboard 标签页，关闭书签栏、通知、邮箱和聊天软件。
-5. 如果地址栏显示真实 LAN IP，可以保留原片，公开版由 Codex 统一模糊；不要在照片中出现密码或 API Key。
+5. 如果地址栏显示真实 LAN IP，可以保留在仓库外的原片中；生产化公开版本应按素材发布策略统一脱敏。照片中不得出现密码或 API Key。
 6. 擦拭 PC 屏幕和摄像头镜头，整理桌面线缆，但不要为了整齐改变真实连接关系。
 
 **机位和构图**
@@ -146,7 +146,7 @@ YYYYMMDD_HHMMSS_H10_pc-jetson-workstation_take03.jpg
 原片保存到：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\01_raw_photos\YYYY-MM-DD\
+<PRIVATE_MEDIA_ROOT>\edgesentinel\01_raw_photos\YYYY-MM-DD\
 ```
 
 **不要这样拍**
@@ -211,7 +211,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\01_raw_pho
 
 **截图前准备**
 
-1. 在 PC 上使用 Chrome 或 Edge 打开 `https://192.168.1.101:8443/dashboard`，正常登录。
+1. 在 PC 上使用 Chrome 或 Edge 打开 `https://JETSON_IP:8443/dashboard`，正常登录。
 2. 关闭其他标签页、下载栏、开发者工具、书签栏和系统通知；不要使用无痕窗口提示条。
 3. 浏览器窗口最大化，Windows 显示缩放建议 100%，浏览器缩放先设为 80%。如果文字明显过小，再改为 90%。
 4. 保持 Agent Workbench、MCP 工具目录和事件详情关闭。
@@ -237,7 +237,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\01_raw_pho
 5. 将页面滚动到最顶部。
 6. Edge 使用 `Ctrl+Shift+S` 后选择“捕获整页”；Chrome 使用开发者命令 `Capture full size screenshot`。
 7. 等待整页合成完成并保存 PNG，不要用手机拍屏。
-8. 后续由 Codex 从长截图派生 README 横版图和各功能局部图，原片不覆盖。
+8. README 横版图和各功能局部图可从长截图派生，处理后的文件不得覆盖原片。
 
 **原始文件名**
 
@@ -248,7 +248,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\01_raw_pho
 保存到：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_screens\2026-08-12\
+<PRIVATE_MEDIA_ROOT>\edgesentinel\02_raw_screens\2026-08-12\
 ```
 
 **不要这样截**
@@ -313,7 +313,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 保存到：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_screens\2026-08-12\
+<PRIVATE_MEDIA_ROOT>\edgesentinel\02_raw_screens\2026-08-12\
 ```
 
 **如果识别不到人员**
@@ -406,7 +406,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 保存到：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_screens\2026-08-12\
+<PRIVATE_MEDIA_ROOT>\edgesentinel\02_raw_screens\2026-08-12\
 ```
 
 **隐私与脱敏**
@@ -448,7 +448,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 5. 不点击“当前有几个人？”预设按钮；必须在文本框里手动输入。
 6. 长期记忆列表如包含私人内容，先保持收起/移出截图范围，不要为了截图删除真实记忆。
 
-**本次必须输入的问题**
+**演示输入问题**
 
 ```text
 现在摄像头画面里站着几位？
@@ -502,7 +502,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 保存到：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_screens\2026-08-12\
+<PRIVATE_MEDIA_ROOT>\edgesentinel\02_raw_screens\2026-08-12\
 ```
 
 **不要这样截**
@@ -599,7 +599,7 @@ weather.get_current
 保存到：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_screens\2026-08-12\
+<PRIVATE_MEDIA_ROOT>\edgesentinel\02_raw_screens\2026-08-12\
 ```
 
 **不要这样截**
@@ -719,7 +719,7 @@ minimum_hits：3
 保存到：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_screens\2026-08-12\
+<PRIVATE_MEDIA_ROOT>\edgesentinel\02_raw_screens\2026-08-12\
 ```
 
 **常见失败与处理**
@@ -875,7 +875,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_scr
 原片：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-12\20260812_V02_live-vision-people-objects-tracks_take01.mp4
+<PRIVATE_MEDIA_ROOT>\edgesentinel\03_raw_videos\2026-08-12\20260812_V02_live-vision-people-objects-tracks_take01.mp4
 ```
 
 实际规格与结果：
@@ -893,7 +893,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 原片保存为：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-13\20260813_V03_zone-enter-dwell-exit-track_take01.mp4
+<PRIVATE_MEDIA_ROOT>\edgesentinel\03_raw_videos\2026-08-13\20260813_V03_zone-enter-dwell-exit-track_take01.mp4
 ```
 
 录制规格：`1920×1080`、`30 FPS`、预计 `150–210` 秒；关闭麦克风和系统声音。全程只使用一个测试人员，另一人操作 PC。录制前保持瓶子、鼠标等现有物品不动，避免在本段产生无关物品事件；浏览器只打开 EdgeSentinel Dashboard，确保 HTTPS、摄像头与 DeepSeek 均正常。
@@ -927,7 +927,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 原片：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-13\20260813_V03_zone-enter-dwell-exit-track_take01.mp4
+<PRIVATE_MEDIA_ROOT>\edgesentinel\03_raw_videos\2026-08-13\20260813_V03_zone-enter-dwell-exit-track_take01.mp4
 ```
 
 实际规格与结果：
@@ -945,7 +945,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 原片：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-12\20260812_V04_object-lifecycle-bottle-removal_take01.mp4
+<PRIVATE_MEDIA_ROOT>\edgesentinel\03_raw_videos\2026-08-12\20260812_V04_object-lifecycle-bottle-removal_take01.mp4
 ```
 
 实际规格与结果：
@@ -980,7 +980,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 **原始文件名与保存位置**
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-13\20260813_V05_left-behind-bottle_take01.mp4
+<PRIVATE_MEDIA_ROOT>\edgesentinel\03_raw_videos\2026-08-13\20260813_V05_left-behind-bottle_take01.mp4
 ```
 
 如第一次确实失败，第二次才使用 `take02`；不要保留无意义的试录片。
@@ -1040,7 +1040,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 原片：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-13\20260813_V05_left-behind-bottle_take01.mp4
+<PRIVATE_MEDIA_ROOT>\edgesentinel\03_raw_videos\2026-08-13\20260813_V05_left-behind-bottle_take01.mp4
 ```
 
 实际规格与结果：
@@ -1059,7 +1059,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 原片：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-12\20260812_V01_end-to-end-dashboard-agent-mcp_take01.mp4
+<PRIVATE_MEDIA_ROOT>\edgesentinel\03_raw_videos\2026-08-12\20260812_V01_end-to-end-dashboard-agent-mcp_take01.mp4
 ```
 
 实际规格与结果：
@@ -1108,7 +1108,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 
 **录制前准备**
 
-1. 确认 `https://192.168.1.101:8443/dashboard` 可以打开，证书仍为当前已验证证书。
+1. 确认 `https://JETSON_IP:8443/dashboard` 可以打开，证书仍为当前已验证证书。
 2. 退出 Dashboard 回到登录页，但不要在录像中展示或输入真实密码。可在开始录制前让浏览器已记住表单，或只展示登录页 2 秒后暂停录制、登录、再继续；最终会剪辑转场。
 3. 确认 Dashboard 启动模式为远程 DeepSeek，API 在线，视觉状态为 `LIVE/实时`。
 4. 让摄像头初始画面无人，当前人员为 0；移走桌面上会干扰识别的其他物品。
@@ -1189,7 +1189,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 **原始文件名与位置**
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-12\20260812_V01_end-to-end-dashboard-agent-mcp_take01.mp4
+<PRIVATE_MEDIA_ROOT>\edgesentinel\03_raw_videos\2026-08-12\20260812_V01_end-to-end-dashboard-agent-mcp_take01.mp4
 ```
 
 如果因登录剪切必须录成两段，第二段命名：
@@ -1320,7 +1320,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 **原始文件名与位置**
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-12\20260812_V06_agent-harness-skill-hooks-trace_take01.mp4
+<PRIVATE_MEDIA_ROOT>\edgesentinel\03_raw_videos\2026-08-12\20260812_V06_agent-harness-skill-hooks-trace_take01.mp4
 ```
 
 如第一次任务因远端网络短暂失败需要重拍，不覆盖原文件，使用：
@@ -1353,7 +1353,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 原片：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-12\20260812_V06_agent-harness-skill-hooks-trace_take01.mp4
+<PRIVATE_MEDIA_ROOT>\edgesentinel\03_raw_videos\2026-08-12\20260812_V06_agent-harness-skill-hooks-trace_take01.mp4
 ```
 
 实际规格与结果：
@@ -1383,7 +1383,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 **原始文件名与保存位置**
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-13\20260813_V07_online-weather-offline-vision-switch_take01.mp4
+<PRIVATE_MEDIA_ROOT>\edgesentinel\03_raw_videos\2026-08-13\20260813_V07_online-weather-offline-vision-switch_take01.mp4
 ```
 
 **录制前准备**
@@ -1451,7 +1451,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 已验收原片：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-13\20260813_V07_online-weather-offline-vision-switch_take01.mp4
+<PRIVATE_MEDIA_ROOT>\edgesentinel\03_raw_videos\2026-08-13\20260813_V07_online-weather-offline-vision-switch_take01.mp4
 ```
 
 - 时长 `106.3` 秒，画面 `1920×1080`，约 `23.6 FPS`，文件约 `11.8 MiB`；连续录制完整覆盖 `在线 → 离线 → 在线`。
@@ -1471,7 +1471,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 **原始文件名与保存位置**
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-13\20260813_V08_mcp-server-catalog-stdio-resources-deny_take01.mp4
+<PRIVATE_MEDIA_ROOT>\edgesentinel\03_raw_videos\2026-08-13\20260813_V08_mcp-server-catalog-stdio-resources-deny_take01.mp4
 ```
 
 **录制前准备**
@@ -1514,7 +1514,7 @@ H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_vid
 已验收原片：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\03_raw_videos\2026-08-13\20260813_V08_mcp-server-catalog-stdio-resources-deny_take01.mp4
+<PRIVATE_MEDIA_ROOT>\edgesentinel\03_raw_videos\2026-08-13\20260813_V08_mcp-server-catalog-stdio-resources-deny_take01.mp4
 ```
 
 - 时长 `45.6` 秒，画面 `1280×720`、`30 FPS`，文件约 `1.2 MiB`；虽然短于建议时长且不是 1080p，但原始像素下 Catalog、Schema 和终端摘要均清晰可读。
@@ -1601,7 +1601,7 @@ sudo docker exec edgesentinel-visionops bash -c 'cd /workspace/edgesentinel && b
 以上四张统一保存到：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_screens\2026-08-12\
+<PRIVATE_MEDIA_ROOT>\edgesentinel\02_raw_screens\2026-08-12\
 ```
 
 **验收标准**
@@ -1637,33 +1637,33 @@ H10、D02、D03、D06、D09、D10、D11、V01、V02、V03、V04、V05、V06、V0
 - [ ] Evidence 绝对路径已裁剪；人脸已获授权或打码。
 - [ ] 视频音轨没有读出任何秘密。
 
-## 13. 交付给 Codex
+## 13. 素材整理与入库
 
-每完成一个 Batch，把原片放进对应日期目录，然后提供准确路径，例如：
+每完成一个批次，应将原片放入对应日期目录，并记录准确路径，例如：
 
 ```text
 Batch 2 已完成：
-H:\AI_learning\jetson-nano-ai-harness\pictures_and_media\edgesentinel\02_raw_screens\2026-08-11
+<PRIVATE_MEDIA_ROOT>\edgesentinel\02_raw_screens\2026-08-11
 ```
 
-Codex 会检查清晰度、隐私、重复镜头与命名，再挑选、裁剪并复制到 `docs/media/`。不要把原片目录整体复制进仓库；不确定的素材先放 `99_rejected_private`。
+素材维护者应检查清晰度、隐私、重复镜头与命名，再将入选文件复制到 `docs/media/`。原片目录不应整体提交；未确定是否公开的素材可移入 `99_rejected_private`。
 
 ## 14. 最小可发布组合
 
 - [x] H01 整机总览（已有）
-- [x] H10 PC Dashboard 与 Jetson 同框（原片已验收；公开前遮挡 IP、用户名和二维码）
-- [x] D02 Dashboard 总览（原始长截图已验收）
-- [x] D03 人员检测（原片已验收；公开前默认打码人脸）
-- [x] D06 事件中心（局部截图已验收）
-- [x] D09 Agent 工具调用（0 人/1 人整页原片已验收，待制作对照裁图）
-- [x] D10 Agent Workbench（整页原片已覆盖完整 Workbench，待安全裁图）
-- [x] D11 MCP Catalog（局部截图已验收）
-- [x] E09 物品移走事件与证据（V04 清晰帧已覆盖，直接截图可选）
-- [x] V04 瓶子生命周期视频（89.8 秒、1080p，完整闭环已验收）
-- [x] V01 端到端演示（209.4 秒、1080p，待剪至约 150–180 秒）
-- [x] V06 Agent Harness 多步 Skill 与 Trace（50.2 秒、1080p，固定 Skill 与 3 工具已验收）
-- [x] V07 在线/离线模型与工具切换（106.3 秒、1080p，在线问答、Open‑Meteo 与离线本地视觉已验收）
-- [x] V08 MCP Server 演示（45.6 秒、720p，Catalog、Schema、stdio、资源与默认拒绝已验收）
+- [x] H10 PC Dashboard 与 Jetson 同框（已公开为 `docs/media/hardware/lab-workbench.jpg`）
+- [x] D02 Dashboard 总览（已公开为 `docs/media/dashboard/overview.png`）
+- [x] D03 人员检测（已公开为 `docs/media/dashboard/live-person.png`）
+- [x] D06 事件中心（已公开为 `docs/media/dashboard/event-center.png`）
+- [x] D09 Agent 工具调用（由实时视觉截图和专项演示视频共同覆盖）
+- [x] D10 Agent Workbench（已公开为 `docs/media/dashboard/agent-workbench.jpg`）
+- [x] D11 MCP Catalog（已公开为 `docs/media/dashboard/mcp-catalog.png`）
+- [x] E09 物品移走事件与证据（由 V04 的事件详情和前后证据覆盖）
+- [x] V04 瓶子生命周期视频（89.8 秒、1080p，原始视频已发布）
+- [x] V01 端到端演示（209.4 秒、1080p，原始视频已发布）
+- [x] V06 Agent Harness 多步 Skill 与 Trace（50.2 秒、1080p，原始视频已发布）
+- [x] V07 在线/离线模型与工具切换（106.3 秒、1080p，原始视频已发布）
+- [x] V08 MCP Server 演示（45.6 秒、720p，原始视频已发布）
 - [x] P01–P04 发布工程截图：测试/门禁、来源/SBOM、产物完整性、GitHub CI
 
 现有硬件总览加上这些核心界面、事件和视频，就能显著提升 GitHub 首页可信度；无需用大量器材特写稀释项目重点。

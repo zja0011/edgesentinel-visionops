@@ -1,6 +1,7 @@
 # EdgeSentinel VisionOps 实现演进日志
 
 > 本文保留项目从视觉 Demo 到生产级 Agent Harness 的逐阶段实现与验收记录。面向新读者的项目介绍、架构和快速开始请返回[项目首页](../README.md)。
+> 命令示例中的 `WINDOWS_WORKSPACE`、`JETSON_USER`、`JETSON_HOST` 和 `JETSON_IP` 均为部署占位符，应由部署者替换为实际环境值。
 
 EdgeSentinel VisionOps is an edge-vision operations platform targeting the
 Jetson Nano.  The repository is being built in small, independently verifiable
@@ -59,7 +60,7 @@ sudo docker exec edgesentinel-visionops bash -lc \
 Windows 端使用真实 DeepSeek 验收正常远程路径与 Dashboard 观测：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass `
   -File .\scripts\check_agent_model_resilience_dashboard.ps1
 ```
@@ -89,7 +90,7 @@ sudo docker exec edgesentinel-visionops bash -lc \
 Windows 端使用真实 DeepSeek 验收路由、Prompt Token 上限和 Workbench：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass `
   -File .\scripts\check_agent_tool_routing_dashboard.ps1
 ```
@@ -130,7 +131,7 @@ bash scripts/configure_model_cost_boot.sh install
 sudo systemctl restart edgesentinel-visionops.service
 ```
 
-费率必须由你根据自己的 DeepSeek 账户/合同填写；项目不硬编码可能过期的公开价格。
+费率必须由部署者根据实际 DeepSeek 账户或合同填写；项目不硬编码可能过期的公开价格。
 查看或移除配置分别使用 `status`、`remove`。即使移除费率卡，Token 上限仍然生效。
 
 Jetson 容器内验收：
@@ -143,7 +144,7 @@ sudo docker exec edgesentinel-visionops bash -lc \
 Windows 端使用真实 DeepSeek usage 验收：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass `
   -File .\scripts\check_agent_token_governance_dashboard.ps1
 ```
@@ -154,10 +155,10 @@ powershell -ExecutionPolicy Bypass `
 
 ```text
 Jetson 主机项目：
-/home/nvidia/projects/edgesentinel-visionops
+/home/JETSON_USER/projects/edgesentinel-visionops
 
 jetson-inference：
-/home/nvidia/projects/jetson-inference
+/home/JETSON_USER/projects/jetson-inference
 
 容器内项目：
 /workspace/edgesentinel
@@ -168,7 +169,7 @@ jetson-inference：
 在 Windows PowerShell 中执行：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 ### 2. 启动 jetson-inference 容器
@@ -177,11 +178,11 @@ scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192
 
 ```bash
 cd ~/projects/jetson-inference
-bash docker/run.sh --volume /home/nvidia/projects/edgesentinel-visionops:/workspace/edgesentinel
+bash docker/run.sh --volume /home/JETSON_USER/projects/edgesentinel-visionops:/workspace/edgesentinel
 ```
 
 `--volume` 不会复制项目。它把 Jetson 主机上的
-`/home/nvidia/projects/edgesentinel-visionops` 映射为容器内的
+`/home/JETSON_USER/projects/edgesentinel-visionops` 映射为容器内的
 `/workspace/edgesentinel`。两边看到的是同一组文件，容器产生的日志和截图
 会直接保存在 Jetson 主机项目目录中。
 
@@ -190,7 +191,7 @@ bash docker/run.sh --volume /home/nvidia/projects/edgesentinel-visionops:/worksp
 
 ### 3. 在容器内运行单元测试
 
-看到类似 `root@nvidia-desktop:/jetson-inference#` 的提示符后执行：
+看到类似 `root@JETSON_HOST:/jetson-inference#` 的提示符后执行：
 
 ```bash
 cd /workspace/edgesentinel
@@ -440,14 +441,14 @@ Windows 下载器本身运行在 Python 3.8 时，不会自动选择只在 Pytho
 在 Windows PowerShell 中执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\download_api_dependencies.ps1
 ```
 
 下载结果位于：
 
 ```text
-H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops\vendor\wheels
+<WINDOWS_WORKSPACE>\edgesentinel-visionops\vendor\wheels
 ```
 
 下载脚本还会把纯 Python 的 `contextvars` 源码包预先构建成通用 wheel，
@@ -456,7 +457,7 @@ H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops\vendor\wheels
 然后上传整个项目：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 ### 2. 容器内离线安装并验收
@@ -465,7 +466,7 @@ scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192
 
 ```bash
 cd ~/projects/jetson-inference
-bash docker/run.sh --volume /home/nvidia/projects/edgesentinel-visionops:/workspace/edgesentinel
+bash docker/run.sh --volume /home/JETSON_USER/projects/edgesentinel-visionops:/workspace/edgesentinel
 ```
 
 进入容器后执行：
@@ -551,14 +552,14 @@ WARNING: Running pip as the 'root' user...
 在 Windows PowerShell 上传整个项目：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 在 Jetson 桌面终端启动容器：
 
 ```bash
 cd ~/projects/jetson-inference
-bash docker/run.sh --volume /home/nvidia/projects/edgesentinel-visionops:/workspace/edgesentinel
+bash docker/run.sh --volume /home/JETSON_USER/projects/edgesentinel-visionops:/workspace/edgesentinel
 ```
 
 ### 2. 启动 API
@@ -584,7 +585,7 @@ EDGESENTINEL_API_PORT=8080 bash scripts/run_api_server.sh
 保持 API 终端运行，另开一个 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_api.ps1
 ```
 
@@ -603,7 +604,7 @@ API smoke test passed.
 也可以用浏览器打开：
 
 ```text
-http://192.168.1.101:8000/docs
+http://JETSON_IP:8000/docs
 ```
 
 本小步验收标准：
@@ -960,7 +961,7 @@ bash scripts/run_api_server.sh
 保持该终端运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_agent_api.ps1
 ```
 
@@ -1162,7 +1163,7 @@ EDGESENTINEL_MODEL_MAX_TOKENS
 在 Windows PowerShell 中执行：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 ### 容器内一键验收模型配置
@@ -1282,7 +1283,7 @@ DeepSeek 要求函数名只能包含字母、数字、下划线和连字符。�
 在 Windows PowerShell 中执行：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 ### 容器内进行一次真实调用
@@ -1369,7 +1370,7 @@ Checkpoint 和 Trace。
 ### 从 Windows 上传本阶段项目
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 ### 容器内运行真实 Agent 闭环
@@ -1447,7 +1448,7 @@ data/harness/deepseek-agent-checkpoints-YYYYMMDDTHHMMSS+0800/
 先停止旧 API 服务，然后在 Windows PowerShell 执行：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 ### 2. 在 Jetson 容器中启动 DeepSeek Agent API
@@ -1479,7 +1480,7 @@ Uvicorn running on http://0.0.0.0:8000
 另开 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_deepseek_agent_api.ps1
 powershell -ExecutionPolicy Bypass -File .\scripts\check_deepseek_general_agent.ps1
 ```
@@ -1558,7 +1559,7 @@ GET /api/v1/vision/objects
 先在运行 API 的 Jetson 终端按 `Ctrl+C`，然后在 Windows PowerShell 执行：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 ### 2. 在 Jetson 容器内启动本地 API
@@ -1586,7 +1587,7 @@ Uvicorn running on http://0.0.0.0:8000
 另开 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_dashboard.ps1
 ```
 
@@ -1601,7 +1602,7 @@ Recent events: 2
 Dashboard HTML bytes: ...
 Dashboard CSS bytes: ...
 Dashboard JS bytes: ...
-Dashboard URL: http://192.168.1.101:8000/dashboard
+Dashboard URL: http://JETSON_IP:8000/dashboard
 Dashboard smoke test passed.
 ```
 
@@ -1613,7 +1614,7 @@ Dashboard smoke test passed.
 Windows 浏览器打开：
 
 ```text
-http://192.168.1.101:8000/dashboard
+http://JETSON_IP:8000/dashboard
 ```
 
 点击事件右侧的“查看证据”可以打开对应的本地 JPEG。此小步没有实时视频、Agent
@@ -1660,7 +1661,7 @@ Dashboard 现在可以直接提交自然语言任务：
 在 Jetson API 终端按 `Ctrl+C`，然后在 Windows PowerShell 执行：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 ### 2. 启动离线 API
@@ -1680,7 +1681,7 @@ bash scripts/run_api_server.sh
 另开 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_dashboard_agent.ps1
 ```
 
@@ -1703,7 +1704,7 @@ Dashboard Agent chat smoke test passed.
 浏览器打开或刷新：
 
 ```text
-http://192.168.1.101:8000/dashboard
+http://JETSON_IP:8000/dashboard
 ```
 
 在页面底部找到“询问 EdgeSentinel”，点击“最近的瓶子事件”，再点击“发送问题”。
@@ -1765,7 +1766,7 @@ GET /api/v1/vision/frame
 在 Jetson API 终端按 `Ctrl+C`，然后在 Windows PowerShell 执行：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 ### 2. 在容器内联合启动视觉推理和 API
@@ -1790,7 +1791,7 @@ bash scripts/run_dashboard_live.sh
 ```text
 Starting the offline API in the background...
 Starting headless camera inference...
-Dashboard: http://192.168.1.101:8000/dashboard
+Dashboard: http://JETSON_IP:8000/dashboard
 Latest frame: /workspace/edgesentinel/data/state/current-frame.jpg
 Press Ctrl+C to stop vision and API together.
 ```
@@ -1802,7 +1803,7 @@ Press Ctrl+C to stop vision and API together.
 等待摄像头运行约5秒，然后在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_live_dashboard.ps1
 ```
 
@@ -1818,7 +1819,7 @@ People: 1
 JPEG content type: image/jpeg
 JPEG bytes: 54321
 Frame stale header: false
-Dashboard URL: http://192.168.1.101:8000/dashboard
+Dashboard URL: http://JETSON_IP:8000/dashboard
 Live Dashboard smoke test passed.
 ```
 
@@ -1827,7 +1828,7 @@ Live Dashboard smoke test passed.
 打开或按 `Ctrl+F5` 刷新：
 
 ```text
-http://192.168.1.101:8000/dashboard
+http://JETSON_IP:8000/dashboard
 ```
 
 页面顶部应显示持续更新的摄像头画面，画面内保留目标检测框、类别、置信度和左右区域
@@ -1875,7 +1876,7 @@ Dashboard 每5秒随其他状态一起刷新这些数据。
 执行：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 ### 2. 在 Jetson 容器中启动 Dashboard 与视觉推理
@@ -1890,7 +1891,7 @@ bash scripts/run_dashboard_live.sh
 ### 3. 从 Windows 验收设备指标
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_system_dashboard.ps1
 ```
 
@@ -1917,7 +1918,7 @@ System Dashboard smoke test passed.
 打开或按 `Ctrl+F5` 刷新：
 
 ```text
-http://192.168.1.101:8000/dashboard
+http://JETSON_IP:8000/dashboard
 ```
 
 “服务运行状态”区域现在应额外显示：
@@ -1970,7 +1971,7 @@ JSON 使用纯文本渲染；证据图片只使用后端 `EvidenceService` 已�
 执行：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 ### 2. 启动 Dashboard
@@ -1987,7 +1988,7 @@ bash scripts/run_dashboard_live.sh
 ### 3. 从 Windows 验收事件筛选、详情和证据
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_dashboard.ps1
 ```
 
@@ -2010,7 +2011,7 @@ Event Center smoke test passed.
 打开或按 `Ctrl+F5`：
 
 ```text
-http://192.168.1.101:8000/dashboard
+http://JETSON_IP:8000/dashboard
 ```
 
 在“事件中心”中：
@@ -2065,7 +2066,7 @@ GET /api/v1/zones
 PowerShell 执行：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 ### 2. 启动实时 Dashboard
@@ -2084,7 +2085,7 @@ bash scripts/run_dashboard_live.sh
 另开 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_zone_dashboard.ps1
 ```
 
@@ -2107,7 +2108,7 @@ Zone Dashboard smoke test passed.
 打开或按 `Ctrl+F5` 刷新：
 
 ```text
-http://192.168.1.101:8000/dashboard
+http://JETSON_IP:8000/dashboard
 ```
 
 严格按下面顺序操作：
@@ -2173,7 +2174,7 @@ PUT /api/v1/zones
 在 Jetson 运行实时服务的终端按 `Ctrl+C`，然后在 Windows PowerShell 执行：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 ### 2. 启动带配置口令的实时 Dashboard
@@ -2206,7 +2207,7 @@ Zone configuration saving: enabled
 变化。它不会保存或修改区域：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_zone_save_dashboard.ps1
 ```
 
@@ -2229,7 +2230,7 @@ Protected Zone Save smoke test passed.
 打开或按 `Ctrl+F5` 刷新：
 
 ```text
-http://192.168.1.101:8000/dashboard
+http://JETSON_IP:8000/dashboard
 ```
 
 严格按下面顺序操作：
@@ -2315,7 +2316,7 @@ Dashboard 新增：
 在 Jetson 运行实时服务的终端按 `Ctrl+C`，然后在 Windows PowerShell 上传：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 在 Jetson 容器启动：
@@ -2330,7 +2331,7 @@ bash scripts/run_dashboard_live.sh
 ### 2. 从 Windows 进行无写入验收
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_zone_guidance_dashboard.ps1
 ```
 
@@ -2357,7 +2358,7 @@ Zone Guidance smoke test passed.
 打开或按 `Ctrl+F5`：
 
 ```text
-http://192.168.1.101:8000/dashboard
+http://JETSON_IP:8000/dashboard
 ```
 
 严格执行：
@@ -2426,7 +2427,7 @@ last_error
 在 Jetson 旧实时服务终端按 `Ctrl+C`，然后从 Windows PowerShell 上传：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 在 Jetson 容器启动：
@@ -2447,7 +2448,7 @@ bash scripts/run_dashboard_live.sh
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_zone_hot_reload_dashboard.ps1
 ```
 
@@ -2550,19 +2551,19 @@ stop    终止同一进程组中的 API 与视觉推理
 ### 1. 停止旧的前台任务并上传
 
 如果 `bash scripts/run_dashboard_live.sh` 仍在 Jetson 容器前台运行，先在那个终端按
-`Ctrl+C`，确认回到 `root@nvidia-desktop:/workspace/edgesentinel#`。
+`Ctrl+C`，确认回到 `root@JETSON_HOST:/workspace/edgesentinel#`。
 
 然后在 Windows PowerShell 上传当前项目：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 保持原来的目录映射进入容器：
 
 ```bash
 cd ~/projects/jetson-inference
-bash docker/run.sh --volume /home/nvidia/projects/edgesentinel-visionops:/workspace/edgesentinel
+bash docker/run.sh --volume /home/JETSON_USER/projects/edgesentinel-visionops:/workspace/edgesentinel
 ```
 
 ### 2. 在容器中后台启动
@@ -2673,14 +2674,14 @@ stop    先安全停止实时进程组，再停止容器
 - 不使用 Docker `--env`，口令不会进入容器持久配置或命令参数；
 - 使用 `--init` 回收孤儿子进程；
 - 本阶段的 Docker restart policy 明确为 `no`，**尚未启用开机自启动**；
-- 本脚本只能在 `nvidia@nvidia-desktop` 主机终端运行，在容器中会直接拒绝。
+- 本脚本只能在 `JETSON_USER@JETSON_HOST` 主机终端运行，在容器中会直接拒绝。
 
 ### 1. 上传项目
 
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 ### 2. 退出旧的交互容器
@@ -2695,13 +2696,13 @@ exit
 第一条命令应显示 `EdgeSentinel stopped.`。第二条命令后提示符应从：
 
 ```text
-root@nvidia-desktop:/workspace/edgesentinel#
+root@JETSON_HOST:/workspace/edgesentinel#
 ```
 
 变成：
 
 ```text
-nvidia@nvidia-desktop:~$
+JETSON_USER@JETSON_HOST:~$
 ```
 
 旧容器由原来的 `docker/run.sh --rm` 创建，因此退出后会自动删除；项目数据仍保存在
@@ -2709,7 +2710,7 @@ nvidia@nvidia-desktop:~$
 
 ### 3. 在 Jetson 主机创建并启动后台容器
 
-确认当前提示符以 `nvidia@` 开头，然后执行：
+确认当前提示符以 `JETSON_USER@` 开头，然后执行：
 
 ```bash
 cd ~/projects/edgesentinel-visionops
@@ -2721,7 +2722,7 @@ bash scripts/host_edgesentinel.sh start
 
 ### 4. 在 Jetson 主机一键验收
 
-仍在 `nvidia@` 主机提示符执行：
+仍在 `JETSON_USER@` 主机提示符执行：
 
 ```bash
 bash scripts/check_host_container.sh
@@ -2799,12 +2800,12 @@ systemd 单元的权限边界：
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 ### 2. 安装并启用 systemd 单元
 
-在 Jetson 主机提示符 `nvidia@nvidia-desktop` 执行：
+在 Jetson 主机提示符 `JETSON_USER@JETSON_HOST` 执行：
 
 ```bash
 cd ~/projects/edgesentinel-visionops
@@ -2891,12 +2892,12 @@ Boot Service installation test passed.
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 ### 2. 一键执行受控切换
 
-在 Jetson 主机 `nvidia@` 提示符执行：
+在 Jetson 主机 `JETSON_USER@` 提示符执行：
 
 ```bash
 cd ~/projects/edgesentinel-visionops
@@ -3026,7 +3027,7 @@ data/runtime/reboot-preflight.json
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机：
@@ -3074,7 +3075,7 @@ SSH 连接立即断开是正常现象。等待约60到120秒，不要连续断�
 Windows PowerShell：
 
 ```powershell
-ssh nvidia@192.168.1.101
+ssh JETSON_USER@JETSON_IP
 ```
 
 重新连接后，在 Jetson 主机执行：
@@ -3360,7 +3361,7 @@ POST /api/v1/agent/tasks
 Windows PowerShell 上传：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 然后在 Jetson 主机终端执行：
@@ -3379,7 +3380,7 @@ bash scripts/check_systemd_runtime.sh
 在 Windows PowerShell 项目目录执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_agent_confirmation_dashboard.ps1
 ```
 
@@ -3414,7 +3415,7 @@ Agent Confirmation Dashboard smoke test passed.
 也可以打开：
 
 ```text
-http://192.168.1.101:8000/dashboard
+http://JETSON_IP:8000/dashboard
 ```
 
 在 `VISION COPILOT` 中点击“拍摄当前快照”并发送。页面应先显示黄色 L1 确认卡；
@@ -3485,7 +3486,7 @@ ETag: "<完整哈希>"
 先在 Windows PowerShell 上传：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 然后在 Jetson 主机终端加载新的 Python API：
@@ -3501,7 +3502,7 @@ bash scripts/check_systemd_runtime.sh
 在 Windows PowerShell 项目目录执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_agent_snapshot_dashboard.ps1
 ```
 
@@ -3537,7 +3538,7 @@ Agent Snapshot Dashboard smoke test passed.
 也可以打开：
 
 ```text
-http://192.168.1.101:8000/dashboard
+http://JETSON_IP:8000/dashboard
 ```
 
 在 `VISION COPILOT` 中请求“拍摄当前画面快照”并确认。任务完成后，回答下方应
@@ -3609,7 +3610,7 @@ Dashboard 的 `EDGE RUNTIME` 新增“摄像头监督器”。正常时显示
 在 Windows PowerShell 上传：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 然后在 Jetson 主机终端重启受管服务：
@@ -3636,7 +3637,7 @@ exit
 回到 Windows PowerShell 项目目录执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_camera_recovery.ps1
 ```
 
@@ -3729,7 +3730,7 @@ Dashboard 事件中心新增“摄像头离线”和“摄像头恢复”筛选�
 先在 Windows PowerShell 上传完整项目：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 然后在 Jetson 主机终端重启 systemd 服务：
@@ -3761,7 +3762,7 @@ OK
 回到 Windows PowerShell 项目目录：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_camera_recovery.ps1
 ```
 
@@ -3850,7 +3851,7 @@ object_class=person
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -3874,7 +3875,7 @@ OK
 在 Windows PowerShell 项目目录执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_zone_dwell.ps1
 ```
 
@@ -3997,7 +3998,7 @@ Dashboard 新增“生成今日报告”快捷问题、针对报告的确认说�
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -4021,7 +4022,7 @@ OK
 直接执行即可。当天没有事件时也会生成一份合法的“0条事件”日报：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_report_dashboard.ps1
 ```
 
@@ -4160,7 +4161,7 @@ acknowledge event evt_...
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -4185,7 +4186,7 @@ OK
 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_acknowledgement_dashboard.ps1
 ```
 
@@ -4313,7 +4314,7 @@ Dashboard 的 Vision Copilot 新增“检查 Jetson 状态”快捷问题。该�
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -4335,7 +4336,7 @@ OK
 ### Windows 一键验收 Agent 设备健康查询
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_system_health_agent.ps1
 ```
 
@@ -4450,7 +4451,7 @@ Dashboard 的 Vision Copilot 新增“左侧区域人数”快捷问题。
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -4474,7 +4475,7 @@ OK
 保持摄像头和 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_zone_status_agent.ps1
 ```
 
@@ -4584,7 +4585,7 @@ camera status healthy?
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端依次执行：
@@ -4608,7 +4609,7 @@ OK
 本次不需要拔插摄像头，只需保持摄像头和服务正常运行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_camera_status_agent.ps1
 ```
 
@@ -4718,7 +4719,7 @@ event_id”则路由到只读 `event.get_detail`，两种动作不会混淆。
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端逐条执行：
@@ -4742,7 +4743,7 @@ OK
 脚本会自动读取最新事件ID，不需要手工复制：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_detail_agent.ps1
 ```
 
@@ -4844,7 +4845,7 @@ readOnlyHint=true
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端逐条执行：
@@ -4868,7 +4869,7 @@ OK
 准备一个瓶子，在 Windows PowerShell 中执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_inventory_state_agent.ps1
 ```
 
@@ -4971,7 +4972,7 @@ readOnlyHint=true
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端逐条执行：
@@ -4995,7 +4996,7 @@ OK
 准备一个瓶子，在 Windows PowerShell 中执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_removed_items_agent.ps1
 ```
 
@@ -5103,7 +5104,7 @@ Dashboard Vision Copilot 新增“核对瓶子库存”快捷问题。
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端逐条执行：
@@ -5127,7 +5128,7 @@ OK
 准备一个瓶子，在 Windows PowerShell 中执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_inventory_compare_agent.ps1
 ```
 
@@ -5233,7 +5234,7 @@ Count current bottles with minimum confidence 0.5.
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端逐条执行：
@@ -5257,7 +5258,7 @@ OK
 准备一个瓶子，在 Windows PowerShell 中执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_object_count_agent.ps1
 ```
 
@@ -5355,7 +5356,7 @@ Dashboard Vision Copilot 新增“当前人员轨迹”快捷问题。
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端逐条执行：
@@ -5379,7 +5380,7 @@ OK
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_track_history_agent.ps1
 ```
 
@@ -5477,7 +5478,7 @@ Dashboard Vision Copilot 新增“重启摄像头推理”快捷动作。确认�
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端逐条执行：
@@ -5501,7 +5502,7 @@ OK
 本测试不需要拔插摄像头，也不需要在 Jetson 显示器前做动作。Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_camera_restart_dashboard.ps1
 ```
 
@@ -5640,7 +5641,7 @@ MCP 工具协议
 Windows PowerShell：
 
 ```powershell
-scp -r "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+scp -r "<WINDOWS_WORKSPACE>\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端逐条执行：
@@ -5778,8 +5779,8 @@ MCP 工具协议
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端逐条执行：
@@ -5902,8 +5903,8 @@ Policy Engine 和 URI 白名单继续保留，形成两层防护。
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -6017,8 +6018,8 @@ Dashboard 首次加载时校验一次；后台5秒状态刷新不会反复读取
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -6078,7 +6079,7 @@ data/harness/model-tools-YYYYMMDDTHHMMSS+0800.jsonl
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_model_info_agent.ps1
 ```
 
@@ -6140,8 +6141,8 @@ Prompt。
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -6164,7 +6165,7 @@ OK
 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_vision_performance_agent.ps1
 ```
 
@@ -6232,8 +6233,8 @@ data/benchmarks/runtime-benchmark-YYYYMMDDTHHMMSS+0800.json
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -6336,8 +6337,8 @@ MCP 当前发现结果为15个 L0 工具、5个固定资源、3个 Prompt。
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -6360,7 +6361,7 @@ OK
 等待60秒。保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_runtime_benchmark_agent.ps1
 ```
 
@@ -6433,8 +6434,8 @@ minutes: 1..1440
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -6456,7 +6457,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_window_agent.ps1
 ```
 
@@ -6523,8 +6524,8 @@ Dashboard:      EVENT TIMELINE / 最近事件汇总
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -6546,7 +6547,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_summary_agent.ps1
 ```
 
@@ -6617,8 +6618,8 @@ Dashboard:      EDGE RUNTIME / 项目数据占用
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -6640,7 +6641,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_storage_usage_agent.ps1
 ```
 
@@ -6678,7 +6679,7 @@ Storage Usage Agent smoke test passed.
 - 9类文件数、字节数之和分别等于总计；
 - 扫描状态为 `COMPLETE`、错误为0且没有截断；
 - 符号链接被跳过，不扫描项目外路径；
-- 结果不包含 `/workspace/...` 或 `/home/nvidia/...` 绝对路径；
+- 结果不包含 `/workspace/...` 或 `/home/JETSON_USER/...` 绝对路径；
 - 工具为 L0、只读、自动执行且不要求确认；
 - MCP 发现17个 L0 工具，Dashboard 显示占用与快捷提问；
 - 脚本末行显示 `Storage Usage Agent smoke test passed.`。
@@ -6732,8 +6733,8 @@ Dashboard:      EDGE RUNTIME / 旧数据清理预览
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -6755,7 +6756,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_retention_preview_agent.ps1
 ```
 
@@ -6831,8 +6832,8 @@ Dashboard 会展示 L2 风险、计划 ID 和全部待删除相对路径，并�
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -6854,7 +6855,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行安全的取消验收：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_retention_cleanup_dashboard.ps1
 ```
 
@@ -6928,8 +6929,8 @@ Server 中。
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -6951,7 +6952,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_retention_cleanup_history_agent.ps1
 ```
 
@@ -7028,8 +7029,8 @@ Dashboard:      EDGE RUNTIME / 近期事件证据
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -7051,7 +7052,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_evidence_integrity_agent.ps1
 ```
 
@@ -7136,8 +7137,8 @@ Dashboard:      EVENT DETAIL / 证据完整性
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -7159,7 +7160,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_evidence_agent.ps1
 ```
 
@@ -7233,8 +7234,8 @@ ACKNOWLEDGED  已处理
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -7256,7 +7257,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_disposition_filter_agent.ps1
 ```
 
@@ -7329,8 +7330,8 @@ CRITICAL
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -7352,7 +7353,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_severity_filter_agent.ps1
 ```
 
@@ -7432,8 +7433,8 @@ Event Severity Filter smoke test passed.
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -7455,7 +7456,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_cursor_pagination_agent.ps1
 ```
 
@@ -7540,8 +7541,8 @@ Event Cursor Pagination smoke test passed.
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -7563,7 +7564,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_trend_agent.ps1
 ```
 
@@ -7651,8 +7652,8 @@ Event Trend smoke test passed.
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -7674,7 +7675,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_period_comparison_agent.ps1
 ```
 
@@ -7766,8 +7767,8 @@ Event Period Comparison smoke test passed.
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -7789,7 +7790,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_change_contributors_agent.ps1
 ```
 
@@ -7881,8 +7882,8 @@ Windows PowerShell 5.1 将无 BOM UTF-8 脚本中的中文匹配词按本地代�
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -7904,7 +7905,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_change_assessment_agent.ps1
 ```
 
@@ -7993,8 +7994,8 @@ Event Change Assessment smoke test passed.
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -8016,7 +8017,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_group_change_signals_agent.ps1
 ```
 
@@ -8108,8 +8109,8 @@ Event Group Change Signals smoke test passed.
 Windows PowerShell：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -8131,7 +8132,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_change_cancellation_agent.ps1
 ```
 
@@ -8214,8 +8215,8 @@ Compare events with the same time last week
 Windows 上传整个项目：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -8237,7 +8238,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_aligned_baseline_agent.ps1
 ```
 
@@ -8308,8 +8309,8 @@ Compare open INFO bottle events from the last 60 minutes with the same time yest
 Windows 上传整个项目：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -8331,7 +8332,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_reference_baselines_agent.ps1
 ```
 
@@ -8400,8 +8401,8 @@ Context 和 Checkpoint 仅保留评估状态、原因与两个布尔标记；Das
 Windows 上传整个项目：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -8423,7 +8424,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_reference_assessment_agent.ps1
 ```
 
@@ -8501,8 +8502,8 @@ Current activity: False
 Windows 上传整个项目：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness"
-scp -r ".\edgesentinel-visionops" nvidia@192.168.1.101:/home/nvidia/projects/
+cd "<WINDOWS_WORKSPACE>"
+scp -r ".\edgesentinel-visionops" JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/
 ```
 
 Jetson 主机终端：
@@ -8524,7 +8525,7 @@ OK
 保持 systemd 服务运行，在 Windows PowerShell 执行：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_event_reference_consistency_agent.ps1
 ```
 
@@ -9301,7 +9302,7 @@ DeepSeek 本身不应被当作实时天气数据源。要可靠回答“今天�
 该模式适合调试。先停止 systemd 管理的运行时，再启动临时服务：
 
 ```bash
-cd /home/nvidia/projects/edgesentinel-visionops
+cd /home/JETSON_USER/projects/edgesentinel-visionops
 sudo systemctl stop edgesentinel-visionops.service
 bash scripts/host_edgesentinel.sh start-deepseek
 ```
@@ -9322,7 +9323,7 @@ sudo systemctl start edgesentinel-visionops.service
 systemd 单元：
 
 ```bash
-cd /home/nvidia/projects/edgesentinel-visionops
+cd /home/JETSON_USER/projects/edgesentinel-visionops
 bash scripts/install_host_service.sh
 ```
 
@@ -9377,11 +9378,11 @@ Persistent DeepSeek Runtime smoke test passed.
 Windows PowerShell 再执行一次真实、可计费的 Agent 闭环：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_deepseek_agent_api.ps1
 ```
 
-打开 `http://192.168.1.101:8000/dashboard` 后，模型标签应从“离线规则模型”变为
+打开 `http://JETSON_IP:8000/dashboard` 后，模型标签应从“离线规则模型”变为
 “远程 · deepseek”。除了快捷按钮，也可以直接输入：
 
 ```text
@@ -9398,7 +9399,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\check_deepseek_agent_api.ps1
 如果只是临时选择离线、但希望保留 root-only Key：
 
 ```bash
-cd /home/nvidia/projects/edgesentinel-visionops
+cd /home/JETSON_USER/projects/edgesentinel-visionops
 bash scripts/configure_deepseek_boot.sh offline
 sudo systemctl restart edgesentinel-visionops.service
 bash scripts/check_systemd_runtime.sh
@@ -9420,7 +9421,7 @@ bash scripts/check_deepseek_systemd_runtime.sh
 只有明确决定停用开机 DeepSeek 时才执行：
 
 ```bash
-cd /home/nvidia/projects/edgesentinel-visionops
+cd /home/JETSON_USER/projects/edgesentinel-visionops
 bash scripts/configure_deepseek_boot.sh remove
 sudo systemctl restart edgesentinel-visionops.service
 bash scripts/check_systemd_runtime.sh
@@ -9466,7 +9467,7 @@ DeepSeek。
 打开：
 
 ```text
-http://192.168.1.101:8000/dashboard
+http://JETSON_IP:8000/dashboard
 ```
 
 在 `VISION COPILOT` 区域使用：
@@ -9497,7 +9498,7 @@ Content-Type: application/json
 更新项目并重启 systemd 后，在 Windows 验收：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_agent_model_switch_dashboard.ps1
 ```
 
@@ -9536,7 +9537,7 @@ current weather in Shenzhen
 城市：
 
 ```bash
-cd /home/nvidia/projects/edgesentinel-visionops
+cd /home/JETSON_USER/projects/edgesentinel-visionops
 bash scripts/configure_weather_boot.sh install
 bash scripts/configure_weather_boot.sh status
 ```
@@ -9551,7 +9552,7 @@ bash scripts/configure_weather_boot.sh status
 受控文件，避免普通用户修改 systemd 运行参数。配置后重新安装最新版 unit 并重启：
 
 ```bash
-cd /home/nvidia/projects/edgesentinel-visionops
+cd /home/JETSON_USER/projects/edgesentinel-visionops
 bash scripts/install_host_service.sh
 sudo systemctl restart edgesentinel-visionops.service
 bash scripts/check_systemd_runtime.sh
@@ -9560,11 +9561,11 @@ bash scripts/check_systemd_runtime.sh
 Windows 端使用明确城市进行联网验收：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_weather_agent.ps1 -Location "Chengdu"
 ```
 
-`"你的城市"` 是文档占位符，不能原样作为参数。建议使用具体城市名，并优先使用
+`"<城市名>"` 是文档占位符，不能原样作为参数。建议使用具体城市名，并优先使用
 天气地理编码服务稳定识别的英文拼写，例如 `Chengdu`、`Shenzhen` 或 `Beijing`；
 省份名称不是具体天气观测位置。
 
@@ -9621,7 +9622,7 @@ stdio。
 也可以直接在浏览器打开：
 
 ```text
-http://192.168.1.101:8000/api/v1/harness/tools
+http://JETSON_IP:8000/api/v1/harness/tools
 ```
 
 本机协议级验收仍使用：
@@ -9653,7 +9654,7 @@ sudo docker exec edgesentinel-visionops bash -lc \
    Dashboard MCP 目录验收。
 
 ```bash
-cd /home/nvidia/projects/edgesentinel-visionops
+cd /home/JETSON_USER/projects/edgesentinel-visionops
 sudo systemctl restart edgesentinel-visionops.service
 bash scripts/check_systemd_runtime.sh
 sudo docker exec edgesentinel-visionops bash -lc \
@@ -9665,7 +9666,7 @@ sudo docker exec edgesentinel-visionops bash -lc \
 Windows 端验证目录与事件按钮：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_mcp_catalog_dashboard.ps1
 ```
 
@@ -9722,7 +9723,7 @@ GET /api/v1/agent/tasks/{task_id}/trace?limit=100
 同步并重启后，在 Windows 验收：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_agent_workbench_dashboard.ps1
 ```
 
@@ -9774,7 +9775,7 @@ GET /api/v1/harness/skills
 同步到 Jetson 并重启服务后，在 Windows 验收：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_agent_skill_dashboard.ps1
 ```
 
@@ -9826,7 +9827,7 @@ GET /api/v1/harness/hooks
 同步并重启后，在 Windows 验收：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_agent_hooks_dashboard.ps1
 ```
 
@@ -9904,7 +9905,7 @@ data/harness/sessions/sess_<32位随机十六进制>.json
 同步并重启后，在 Windows 验收：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_agent_session_memory_dashboard.ps1
 ```
 
@@ -9985,7 +9986,7 @@ data/harness/jobs/job_<32位随机十六进制>.json
 同步并重启后，在 Windows 验收：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass -File .\scripts\check_agent_job_stream_dashboard.ps1
 ```
 
@@ -10050,7 +10051,7 @@ sudo docker exec edgesentinel-visionops bash -lc \
 再从 Windows 验证真实 Agent 响应、终态 Checkpoint 和 Dashboard：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass `
   -File .\scripts\check_agent_execution_budget_dashboard.ps1
 ```
@@ -10110,7 +10111,7 @@ sudo docker exec edgesentinel-visionops bash -lc \
 然后在 Windows 验证只读 API 和 Dashboard：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass `
   -File .\scripts\check_agent_evaluation_dashboard.ps1
 ```
@@ -10185,7 +10186,7 @@ sudo docker exec edgesentinel-visionops bash -lc \
 一条随机验收记忆、确认写入、读取来源、确认删除，最后恢复原来的在线 DeepSeek 模式：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass `
   -File .\scripts\check_agent_long_term_memory_dashboard.ps1
 ```
@@ -10244,7 +10245,7 @@ Dashboard 与 `/api/v1/*` 现在支持本地认证。`/health`、Dashboard HTML 
 默认值会让受保护 API 返回 HTTP 503：
 
 ```bash
-cd /home/nvidia/projects/edgesentinel-visionops
+cd /home/JETSON_USER/projects/edgesentinel-visionops
 bash scripts/install_host_service.sh
 bash scripts/configure_auth_boot.sh install
 sudo systemctl restart edgesentinel-visionops.service
@@ -10259,7 +10260,7 @@ Windows 端进行真实登录、匿名拒绝、错误密码、HttpOnly Cookie、
 失效验收：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 powershell -ExecutionPolicy Bypass `
   -File .\scripts\check_auth_rbac_dashboard.ps1
 ```
@@ -10283,7 +10284,7 @@ powershell -ExecutionPolicy Bypass `
 Jetson 主机安装顺序：
 
 ```bash
-cd /home/nvidia/projects/edgesentinel-visionops
+cd /home/JETSON_USER/projects/edgesentinel-visionops
 bash scripts/install_host_service.sh
 bash scripts/configure_tls_boot.sh install
 sudo systemctl restart edgesentinel-visionops.service
@@ -10300,9 +10301,9 @@ data/runtime/tls/edgesentinel-server.crt
 固定（certificate pinning）完成验收，不会临时关闭所有 TLS 校验：
 
 ```powershell
-cd "H:\AI_learning\jetson-nano-ai-harness\edgesentinel-visionops"
+cd "<WINDOWS_WORKSPACE>\edgesentinel-visionops"
 New-Item -ItemType Directory -Force .\data\runtime\tls | Out-Null
-scp nvidia@192.168.1.101:/home/nvidia/projects/edgesentinel-visionops/data/runtime/tls/edgesentinel-server.crt .\data\runtime\tls\
+scp JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/edgesentinel-visionops/data/runtime/tls/edgesentinel-server.crt .\data\runtime\tls\
 powershell -ExecutionPolicy Bypass `
   -File .\scripts\check_tls_dashboard.ps1 `
   -Username "zja"

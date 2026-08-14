@@ -117,7 +117,7 @@ class GitHubRepositoryAssetTests(unittest.TestCase):
         self.assertIn("不要使用生成图片替代实拍", guide)
         self.assertIn("API Key", guide)
         self.assertIn("GitHub Release", media_readme)
-        self.assertIn("保持原貌", media_readme)
+        self.assertIn("真实实验过程", media_readme)
         self.assertIn("video-gallery.html", media_readme)
         self.assertIn("全功能素材拍摄清单", guide)
         for token in (
@@ -142,6 +142,41 @@ class GitHubRepositoryAssetTests(unittest.TestCase):
         self.assertIn("PC 电脑", readme)
         self.assertTrue(os.path.isfile(overview))
         self.assertGreater(os.path.getsize(overview), 100000)
+
+    def test_public_documentation_uses_reader_facing_placeholders(self):
+        public_documents = (
+            "README.md",
+            "docs/media/README.md",
+            "docs/media-capture-guide.md",
+            "docs/media/shot-checklist.md",
+            "docs/implementation-journal.md",
+            "docs/tls-operations.md",
+            "docs/disaster-recovery.md",
+        )
+        prohibited_fragments = (
+            "H:" + "\\AI_learning",
+            "192." + "168.1.101",
+            "nvidia" + "@",
+            "/home/" + "nvidia",
+            "按维护者" + "决定",
+            "交付给 " + "Codex",
+            "Codex " + "会检查",
+            "字节" + "一致",
+        )
+
+        for relative_path in public_documents:
+            content = self.read(relative_path)
+            for fragment in prohibited_fragments:
+                self.assertNotIn(
+                    fragment,
+                    content,
+                    "{} contains a private environment value or internal "
+                    "handoff phrase".format(relative_path),
+                )
+
+        readme = self.read("README.md")
+        self.assertIn("便于访客直接核对系统的运行形态与工程闭环", readme)
+        self.assertIn("总览长图依次展示实时视觉", readme)
 
 
 if __name__ == "__main__":

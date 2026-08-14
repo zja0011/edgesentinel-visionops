@@ -49,7 +49,7 @@ copy the new public certificate to the Windows checkout and rerun the pinned
 Dashboard check:
 
 ```powershell
-scp nvidia@192.168.1.101:/home/nvidia/projects/edgesentinel-visionops/data/runtime/tls/edgesentinel-server.crt `
+scp JETSON_USER@JETSON_IP:/home/JETSON_USER/projects/edgesentinel-visionops/data/runtime/tls/edgesentinel-server.crt `
   .\data\runtime\tls\edgesentinel-server.crt
 powershell -ExecutionPolicy Bypass `
   -File .\scripts\check_tls_dashboard.ps1 `
