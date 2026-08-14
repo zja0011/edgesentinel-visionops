@@ -10,7 +10,8 @@
 [![Jetson Nano](https://img.shields.io/badge/edge-Jetson%20Nano-76B900?logo=nvidia&logoColor=white)](https://developer.nvidia.com/embedded/jetson-nano)
 [![Python 3.6+](https://img.shields.io/badge/python-3.6%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![MCP](https://img.shields.io/badge/MCP-stdio-6E56CF)](https://modelcontextprotocol.io/)
-[![Tests](https://img.shields.io/badge/tests-650%2B%20passing-19C37D)](#快速验证)
+[![Code](https://img.shields.io/badge/code-86.8k%20LOC-5C2D91)](docs/engineering-scale.md)
+[![Tests](https://img.shields.io/badge/tests-660%2B%20passing-19C37D)](#快速验证)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 [▶ 在线播放 8 段原始演示](https://zja0011.github.io/edgesentinel-visionops/video-gallery.html) · [⚡ 5 分钟快速验证](#快速验证) · [📦 Release 与 SBOM](https://github.com/zja0011/edgesentinel-visionops/releases/tag/v0.1.0-dev.1) · [📚 文档导航](#文档导航)
@@ -32,6 +33,14 @@ EdgeSentinel VisionOps 不是“摄像头接一个大模型”的一次性脚本
 | --- | --- | --- | --- |
 | Jetson 实时检测、跟踪、区域与库存 | Agent 按需选择 Tool / Skill / MCP | L0–L3、RBAC、确认门与脱敏 Trace | systemd、熔断降级、加密备份与恢复演练 |
 
+### 第一版工程规模
+
+| 自研代码 | 核心应用 | 自动化测试 | Agent / MCP | 实机证明 |
+| ---: | ---: | ---: | ---: | ---: |
+| **约 86,800 行 / 365 文件** | 40,911 行 | 663 项通过 | 33 Tools · 25 MCP Tools · 6 Hooks | 8 段原始视频 |
+
+统计仅包含 Git 跟踪的自研源文件，排除 `vendor`、媒体、运行数据和发布产物；测试、运维代码与 13,347 行文档分别列示。详见[工程规模与统计边界](docs/engineering-scale.md)。
+
 ### English overview
 
 EdgeSentinel VisionOps is a self-hosted **Jetson Nano edge AI video analytics and Agent Harness** platform. It combines real-time object detection and tracking, people counting, zone events, inventory monitoring, tamper-evident event evidence, MCP tools, DeepSeek online/offline switching, policy-gated tool calling, observability, encrypted backup and disaster recovery in one verifiable computer-vision system.
@@ -40,6 +49,7 @@ EdgeSentinel VisionOps is a self-hosted **Jetson Nano edge AI video analytics an
 
 - [为什么是 EdgeSentinel](#为什么是-edgesentinel)
 - [English overview](#english-overview)
+- [第一版工程规模](#第一版工程规模)
 - [核心能力](#核心能力)
 - [硬件与器材](#硬件与器材)
 - [系统架构](#系统架构)
@@ -70,7 +80,7 @@ EdgeSentinel VisionOps is a self-hosted **Jetson Nano edge AI video analytics an
 | 写操作立即执行 | L1/L2/L3 风险分级、RBAC、确认短语和 Checkpoint 恢复 |
 | 在线模型失败即不可用 | 有界重试、熔断、半开探测和明确标注的离线降级 |
 | 只看最终回答 | Workbench 展示脱敏 Trace、工具结果、预算、Hooks 与生命周期 |
-| 能运行但难发布 | 650+ 单元测试、发布边界扫描、CycloneDX SBOM 和内容寻址清单 |
+| 能运行但难发布 | 660+ 单元测试、发布边界扫描、CycloneDX SBOM 和内容寻址清单 |
 
 ## 核心能力
 
@@ -411,7 +421,7 @@ edgesentinel-visionops/
 ├─ evals/                # 离线路由评估数据集
 ├─ deploy/               # systemd 单元模板
 ├─ scripts/              # 安装、验收、备份、发布与恢复脚本
-├─ tests/unit/           # 650+ 单元测试
+├─ tests/unit/           # 660+ 单元测试
 ├─ docs/                 # 运维、安全、发布与素材文档
 └─ vendor/wheels/        # JetPack 4 / Python 3.6 离线依赖
 ```
@@ -450,6 +460,7 @@ model engines  evidence  recovery backups  absolute host paths
 | [实机素材拍摄与录屏清单](docs/media-capture-guide.md) | 照片、截图、视频的优先级与执行脚本 |
 | [全功能素材拍摄清单](docs/media/shot-checklist.md) | 每张照片、截图与视频的编号、命名、动作和验收标准 |
 | [实现演进日志](docs/implementation-journal.md) | 从视觉 Demo 到生产级 Harness 的完整阶段记录 |
+| [工程规模与统计边界](docs/engineering-scale.md) | 代码量、语言构成、测试与 Harness 工程指标 |
 | [灾难恢复](docs/disaster-recovery.md) | 备份、恢复预览、加密异机导出与演练 |
 | [TLS 运维](docs/tls-operations.md) | HTTPS、证书固定、轮换与恢复 |
 | [发布来源与 SBOM](docs/release-provenance.md) | 内容寻址清单、供应链边界与验证 |
