@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EdgeSentinel 边缘智哨｜Jetson Nano 视觉 Agent Harness</title>
+  <meta name="description" content="运行在 Jetson Nano 上的开源边缘视觉 Agent Harness：实时目标检测、人员跟踪、区域事件、证据链、MCP、DeepSeek 在线/离线切换、安全治理与灾难恢复。">
+  <meta name="keywords" content="Jetson Nano, 边缘AI, 边缘视觉智能体, 视觉Agent Harness, MCP, Model Context Protocol, DeepSeek, 目标检测, 人员计数, 物体跟踪, 区域检测, 事件证据链, edge AI, computer vision agent, video analytics">
+  <meta name="author" content="zja0011">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://zja0011.github.io/edgesentinel-visionops/">
+  <link rel="alternate" type="text/plain" href="llms.txt" title="LLM-readable project summary">
+  <link rel="stylesheet" href="site.css">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="EdgeSentinel VisionOps">
+  <meta property="og:title" content="EdgeSentinel 边缘智哨｜可信边缘视觉 Agent Harness">
+  <meta property="og:description" content="让 Jetson Nano 不止看见：从实时视觉、事件证据到 MCP 工具、Agent 治理与故障恢复。">
+  <meta property="og:url" content="https://zja0011.github.io/edgesentinel-visionops/">
+  <meta property="og:image" content="https://zja0011.github.io/edgesentinel-visionops/media/dashboard/overview.png">
+  <meta property="og:image:alt" content="EdgeSentinel VisionOps Dashboard 全局总览">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="EdgeSentinel 边缘智哨">
+  <meta name="twitter:description" content="Jetson Nano 上的可信边缘视觉 Agent Harness">
+  <meta name="twitter:image" content="https://zja0011.github.io/edgesentinel-visionops/media/dashboard/overview.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    "name": "EdgeSentinel VisionOps",
+    "alternateName": ["EdgeSentinel 边缘智哨", "EdgeSentinel Vision Agent Harness"],
+    "description": "An open-source edge vision Agent Harness for Jetson Nano with real-time video analytics, event evidence, MCP tools, online and offline model modes, policy governance, observability, and disaster recovery.",
+    "url": "https://zja0011.github.io/edgesentinel-visionops/",
+    "codeRepository": "https://github.com/zja0011/edgesentinel-visionops",
+    "downloadUrl": "https://github.com/zja0011/edgesentinel-visionops/releases/tag/v0.1.0-dev.1",
+    "image": "https://zja0011.github.io/edgesentinel-visionops/media/dashboard/overview.png",
+    "license": "https://www.apache.org/licenses/LICENSE-2.0",
+    "version": "0.1.0-dev.1",
+    "datePublished": "2026-08-13",
+    "programmingLanguage": ["Python", "JavaScript", "Shell", "PowerShell"],
+    "runtimePlatform": ["NVIDIA Jetson Nano", "Docker", "systemd"],
+    "applicationCategory": "DeveloperApplication",
+    "keywords": "Jetson Nano, edge AI, computer vision, Agent Harness, MCP, DeepSeek, object detection, object tracking, people counting, zone monitoring, event evidence",
+    "author": {
+      "@type": "Person",
+      "name": "zja0011",
+      "url": "https://github.com/zja0011"
+    },
+    "isAccessibleForFree": true
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <header class="hero">
+    <nav class="nav" aria-label="主导航">
+      <a class="brand" href="./" aria-label="EdgeSentinel 首页">
+        <span class="brand-mark" aria-hidden="true">ES</span>
+        <span>EdgeSentinel <b>VisionOps</b></span>
+      </a>
+      <div class="nav-links">
+        <a href="#proof">真实验证</a>
+        <a href="#architecture">系统架构</a>
+        <a href="video-gallery.html">演示视频</a>
+        <a class="nav-cta" href="https://github.com/zja0011/edgesentinel-visionops">GitHub ↗</a>
+      </div>
+    </nav>
+
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">JETSON NANO · EDGE AI · AGENT HARNESS</p>
+        <h1>边缘智哨<br><span>让摄像头成为可治理的智能体</span></h1>
+        <p class="lead">EdgeSentinel 把实时视觉、结构化事件、证据核验、Agent 工具调用、MCP 协议、安全策略与灾难恢复组织成一套可验证的边缘智能体工程。</p>
+        <p class="english">A trustworthy edge vision Agent Harness—built on a real Jetson Nano, designed to see, reason, act within policy, and recover.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="https://github.com/zja0011/edgesentinel-visionops">查看源代码 <span>↗</span></a>
+          <a class="button secondary" href="video-gallery.html">▶ 播放 8 段原始演示</a>
+        </div>
+        <div class="hero-badges" aria-label="项目特性">
+          <span>Apache-2.0</span><span>Python 3.6+</span><span>DeepSeek + 离线规则</span><span>MCP stdio</span>
+        </div>
+      </div>
+      <aside class="signal-panel" aria-label="系统能力摘要">
+        <div class="signal-head"><span class="pulse"></span> REAL DEVICE · VERIFIED</div>
+        <div class="signal-row"><span>Vision Runtime</span><strong>Jetson Nano</strong></div>
+        <div class="signal-row"><span>Agent Boundary</span><strong>L0–L3 Policy</strong></div>
+        <div class="signal-row"><span>Tool Protocol</span><strong>MCP 2025-11-25</strong></div>
+        <div class="signal-row"><span>Failure Mode</span><strong>Offline Fallback</strong></div>
+        <div class="terminal" aria-label="验收结果示意">
+          <code><i>$</i> run_repository_publication_gate.sh</code>
+          <code><em>PASS</em> · secrets 0 · issues 0</code>
+          <code><i>$</i> python -m unittest discover</code>
+          <code><em>OK</em> · 663 tests passed</code>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="metrics" aria-label="工程规模">
+      <div><strong>86.8k</strong><span>行自研代码</span></div>
+      <div><strong>663</strong><span>项测试通过</span></div>
+      <div><strong>33</strong><span>Registry Tools</span></div>
+      <div><strong>25</strong><span>MCP 只读工具</span></div>
+      <div><strong>8</strong><span>段实机原始演示</span></div>
+    </section>
+
+    <section class="section proof" id="proof">
+      <div class="section-heading">
+        <p class="eyebrow">NOT A SLIDEWARE DEMO</p>
+        <h2>真实设备，真实运行，真实证据</h2>
+        <p>项目在 Jetson Nano、USB 摄像头、Docker 与 systemd 环境中持续验收。下面的画面和视频来自实际实验，而不是概念效果图。</p>
+      </div>
+      <a class="overview-frame" href="media/dashboard/overview.png" aria-label="查看 Dashboard 全尺寸总览">
+        <img src="media/dashboard/overview.png" alt="EdgeSentinel Dashboard 长页面总览，包含实时视觉、区域、库存、事件、Agent Copilot 与系统状态" loading="eager">
+        <span>打开全尺寸 Dashboard 总览 ↗</span>
+      </a>
+      <div class="proof-grid">
+        <figure><img src="media/hardware/lab-workbench.jpg" alt="PC Dashboard 与 Jetson Nano 实验台同框实拍" loading="lazy"><figcaption><b>实机实验台</b><span>PC Dashboard、Jetson Nano 与摄像头协同运行</span></figcaption></figure>
+        <figure><img src="media/dashboard/agent-workbench.jpg" alt="Agent Harness Workbench 脱敏执行轨迹" loading="lazy"><figcaption><b>Harness 工作台</b><span>Skill、Tool Route、Hook、预算与脱敏 Trace</span></figcaption></figure>
+        <figure><img src="media/release/quality-gates.png" alt="自动化测试、发布边界与来源完整性检查通过" loading="lazy"><figcaption><b>发布质量门</b><span>测试、秘密扫描、SBOM 与来源完整性可复核</span></figcaption></figure>
+      </div>
+    </section>
+
+    <section class="section architecture" id="architecture">
+      <div class="section-heading">
+        <p class="eyebrow">FOUR-LAYER HARNESS</p>
+        <h2>不只是“一问一答”</h2>
+        <p>模型只是决策环的一部分；确定性路由、策略执行、工具协议、状态记忆、生命周期 Hook 和可观测性共同构成 Harness。</p>
+      </div>
+      <div class="layer-stack">
+        <article><span>01</span><div><h3>能力层 · Skills / Tools</h3><p>视觉、事件、证据、设备、天气、内存与恢复工具；版本固定的 Skill 编排复杂调查流程。</p></div><b>33 Tools</b></article>
+        <article><span>02</span><div><h3>连接层 · API / MCP</h3><p>FastAPI 服务面与本地只读 MCP stdio Server，共享 JSON Schema 与默认拒绝策略。</p></div><b>25 MCP</b></article>
+        <article><span>03</span><div><h3>构建层 · Agent Loop</h3><p>DeepSeek 在线推理、离线确定性回退、工具路由、执行预算、会话与长期确认记忆。</p></div><b>Bounded</b></article>
+        <article><span>04</span><div><h3>运行管控层 · Runtime</h3><p>Docker、systemd、RBAC、TLS、Hooks、脱敏 Trace、熔断降级、加密备份与恢复演练。</p></div><b>Fail-closed</b></article>
+      </div>
+    </section>
+
+    <section class="section capabilities" id="capabilities">
+      <div class="section-heading">
+        <p class="eyebrow">FROM PIXELS TO OPERATIONS</p>
+        <h2>一条完整的边缘视觉闭环</h2>
+      </div>
+      <div class="capability-grid">
+        <article><span>◎</span><h3>实时视觉</h3><p>目标检测、稳定计数、匿名轨迹、双区域与画面新鲜度。</p></article>
+        <article><span>⌁</span><h3>事件与证据</h3><p>进入、停留、离开、移除与遗留事件，配套前后帧和 SHA-256 核验。</p></article>
+        <article><span>◇</span><h3>Agent Harness</h3><p>确定性工具路由、版本化 Skill、生命周期 Hook、预算与协作取消。</p></article>
+        <article><span>↔</span><h3>在线 / 离线</h3><p>默认 DeepSeek 在线；网络异常时明确标注并降级到本地规则。</p></article>
+        <article><span>▣</span><h3>MCP 协议面</h3><p>只读 Tools、Resources、Prompts、JSON Schema 与任意文件访问拒绝。</p></article>
+        <article><span>⛨</span><h3>安全与恢复</h3><p>L0–L3 风险、确认门、RBAC、HTTPS、加密异机备份与隔离恢复演练。</p></article>
+      </div>
+    </section>
+
+    <section class="demo-callout">
+      <div>
+        <p class="eyebrow">WATCH THE SYSTEM WORK</p>
+        <h2>8 段原始视频，覆盖完整功能链</h2>
+        <p>端到端全景、实时视觉、区域事件、物品生命周期、遗留检测、Agent Harness、在线/离线模式与 MCP Server。视频保留原始文件，可通过 SHA-256 Manifest 核验。</p>
+      </div>
+      <a class="button primary" href="video-gallery.html">进入视频展厅 →</a>
+    </section>
+
+    <section class="section start" id="start">
+      <div class="section-heading">
+        <p class="eyebrow">READ · VERIFY · BUILD</p>
+        <h2>从这里开始</h2>
+      </div>
+      <div class="start-grid">
+        <a href="https://github.com/zja0011/edgesentinel-visionops#快速开始"><span>01</span><b>快速开始</b><small>部署 API、Dashboard 与 Jetson 运行时</small></a>
+        <a href="https://github.com/zja0011/edgesentinel-visionops#系统架构"><span>02</span><b>阅读架构</b><small>理解 Vision → Event → Harness → Tool 链路</small></a>
+        <a href="https://github.com/zja0011/edgesentinel-visionops/releases/tag/v0.1.0-dev.1"><span>03</span><b>核验 Release</b><small>查看 Manifest、CycloneDX SBOM 与原始视频</small></a>
+        <a href="https://github.com/zja0011/edgesentinel-visionops/blob/main/CONTRIBUTING.md"><span>04</span><b>参与贡献</b><small>运行测试、提交修复或扩展工具</small></a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div><b>EdgeSentinel VisionOps</b><p>Real Jetson Nano · Verifiable Agent Harness · Apache-2.0</p></div>
+    <div class="footer-links"><a href="https://github.com/zja0011/edgesentinel-visionops">GitHub</a><a href="video-gallery.html">Videos</a><a href="llms.txt">LLM Summary</a><a href="sitemap.xml">Sitemap</a></div>
+  </footer>
+</body>
+</html>

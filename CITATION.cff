@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use EdgeSentinel VisionOps in research or engineering work, please cite the software and its release."
+title: "EdgeSentinel VisionOps: A Trustworthy Edge Vision Agent Harness for Jetson Nano"
+type: software
+authors:
+  - family-names: "Zhao"
+    given-names: "Jianan"
+    alias: "zja0011"
+version: "0.1.0-dev.1"
+date-released: "2026-08-13"
+repository-code: "https://github.com/zja0011/edgesentinel-visionops"
+url: "https://zja0011.github.io/edgesentinel-visionops/"
+license: "Apache-2.0"
+keywords:
+  - "Jetson Nano"
+  - "edge AI"
+  - "computer vision"
+  - "Agent Harness"
+  - "Model Context Protocol"
+  - "DeepSeek"
+  - "video analytics"
+abstract: >-
+  EdgeSentinel VisionOps is an open-source edge vision Agent Harness for
+  NVIDIA Jetson Nano. It integrates real-time video analytics, structured
+  event evidence, bounded tool use, a read-only MCP server, online and offline
+  model modes, security policy enforcement, observability, and disaster
+  recovery in a verifiable self-hosted system.

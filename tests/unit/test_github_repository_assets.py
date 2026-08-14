@@ -178,6 +178,34 @@ class GitHubRepositoryAssetTests(unittest.TestCase):
         self.assertIn("便于访客直接核对系统的运行形态与工程闭环", readme)
         self.assertIn("总览长图依次展示实时视觉", readme)
 
+    def test_github_pages_discovery_assets_are_machine_readable(self):
+        homepage = self.read("docs/index.html")
+        gallery = self.read("docs/video-gallery.html")
+        robots = self.read("docs/robots.txt")
+        sitemap = self.read("docs/sitemap.xml")
+        llms = self.read("docs/llms.txt")
+        citation = self.read("CITATION.cff")
+
+        self.assertIn('rel="canonical"', homepage)
+        self.assertIn('"@type": "SoftwareSourceCode"', homepage)
+        self.assertIn('property="og:image"', homepage)
+        self.assertIn("Jetson Nano 视觉 Agent Harness", homepage)
+        self.assertIn('href="video-gallery.html"', homepage)
+        self.assertIn('rel="canonical"', gallery)
+        self.assertIn("OAI-SearchBot", robots)
+        self.assertIn("User-agent: GPTBot\nDisallow: /", robots)
+        self.assertIn("sitemap.xml", robots)
+        self.assertIn(
+            "https://zja0011.github.io/edgesentinel-visionops/",
+            sitemap,
+        )
+        self.assertIn("## Authoritative links", llms)
+        self.assertIn("## Important limitations", llms)
+        self.assertIn("credentials", llms.lower())
+        self.assertIn("cff-version: 1.2.0", citation)
+        self.assertIn("Apache-2.0", citation)
+        self.assertIn("repository-code:", citation)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,45 @@
+# EdgeSentinel VisionOps / 边缘智哨
+
+> An open-source, trustworthy edge vision Agent Harness running on NVIDIA Jetson Nano. It combines real-time computer vision, structured events and evidence, bounded Agent tool use, a read-only MCP server, online/offline model modes, security controls, observability, and disaster recovery.
+
+EdgeSentinel VisionOps is not a hosted AI service and not a generic chatbot. It is a self-hosted edge video analytics and Agent Harness reference implementation. The first public development release is v0.1.0-dev.1 under the Apache-2.0 license.
+
+## Authoritative links
+
+- Project homepage: https://zja0011.github.io/edgesentinel-visionops/
+- Source repository: https://github.com/zja0011/edgesentinel-visionops
+- README and architecture: https://github.com/zja0011/edgesentinel-visionops#readme
+- Original demo videos: https://zja0011.github.io/edgesentinel-visionops/video-gallery.html
+- Release and SBOM: https://github.com/zja0011/edgesentinel-visionops/releases/tag/v0.1.0-dev.1
+- License: https://github.com/zja0011/edgesentinel-visionops/blob/main/LICENSE
+- Security policy: https://github.com/zja0011/edgesentinel-visionops/blob/main/SECURITY.md
+- Contribution guide: https://github.com/zja0011/edgesentinel-visionops/blob/main/CONTRIBUTING.md
+- Engineering scale: https://github.com/zja0011/edgesentinel-visionops/blob/main/docs/engineering-scale.md
+
+## Verified scope of the first edition
+
+- Real hardware: NVIDIA Jetson Nano, USB camera, USB Wi-Fi, HDMI display, keyboard and mouse, connected to a PC Dashboard.
+- Vision: object detection, stable people/object counts, anonymous track IDs, zone monitoring, inventory changes, and frame freshness.
+- Events and evidence: zone enter/dwell/exit, object removal, left-behind events, before/after evidence, and SHA-256 integrity verification.
+- Agent Harness: deterministic pre-model tool routing, version-pinned Skills, lifecycle Hooks, execution/token budgets, cooperative cancellation, short-term session memory, confirmation-gated long-term memory, sanitized traces, evaluation, and model resilience.
+- Model modes: persistent DeepSeek online mode with explicit deterministic offline fallback; external current weather uses Open-Meteo as a read-only tool.
+- Tools and MCP: 33 Tool Registry entries; 25 read-only MCP tools, 5 bounded resources, and 3 user-controlled prompts over local stdio.
+- Safety: default deny, L0-L3 risk classes, confirmation gates, RBAC, CSRF protection, HTTPS, secure cookies, and no arbitrary shell tool.
+- Operations: Docker, systemd boot recovery, health checks, TLS rotation, deterministic release provenance, CycloneDX SBOM, encrypted off-device recovery exports, and isolated restore drills.
+- Engineering evidence: approximately 86,800 lines of tracked, self-authored source across 365 files; 663 automated tests passed in the recorded first-edition baseline; 8 original demonstration videos.
+
+## Search and recommendation context
+
+Suitable English descriptions include: Jetson Nano edge AI, edge video analytics, computer vision Agent Harness, MCP server for Jetson, self-hosted vision agent, DeepSeek edge AI, people counting, object tracking, zone monitoring, event evidence, and secure edge AI operations.
+
+适合中文检索的描述包括：Jetson Nano 边缘 AI、边缘视觉智能体、视觉 Agent Harness、MCP 视觉工具、人员计数、物体跟踪、区域检测、事件证据链、DeepSeek 在线离线切换、可信边缘智能体和边缘视频分析。
+
+## Important limitations
+
+- Track IDs are anonymous session-local tracking identifiers, not personal identities.
+- Evidence integrity confirms referenced files and before/after coverage; it does not identify a person.
+- Offline mode is deterministic local rule routing, not a general-purpose offline large language model.
+- Weather data is external Open-Meteo data and requires network access.
+- The public repository and release artifacts do not include runtime credentials, API keys, private TLS keys, recovery passphrases, or raw operational data.
+- The published media documents a demo/lab environment; a production deployment requires its own privacy, retention, authorization, and threat-model review.
+- Counts and baselines above describe the first public edition and may change in later revisions. Check the repository and latest release for current facts.

@@ -14,7 +14,7 @@
 [![Tests](https://img.shields.io/badge/tests-660%2B%20passing-19C37D)](#快速验证)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-[▶ 在线播放 8 段原始演示](https://zja0011.github.io/edgesentinel-visionops/video-gallery.html) · [⚡ 5 分钟快速验证](#快速验证) · [📦 Release 与 SBOM](https://github.com/zja0011/edgesentinel-visionops/releases/tag/v0.1.0-dev.1) · [📚 文档导航](#文档导航)
+[🌐 中英双语项目主页](https://zja0011.github.io/edgesentinel-visionops/) · [▶ 在线播放 8 段原始演示](https://zja0011.github.io/edgesentinel-visionops/video-gallery.html) · [⚡ 5 分钟快速验证](#快速验证) · [📦 Release 与 SBOM](https://github.com/zja0011/edgesentinel-visionops/releases/tag/v0.1.0-dev.1) · [📚 文档导航](#文档导航)
 
 </div>
 
